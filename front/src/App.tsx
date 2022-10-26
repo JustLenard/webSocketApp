@@ -1,3 +1,5 @@
+import UserCard from './components/UserCard'
+
 interface Props {}
 
 const App: React.FC<Props> = () => {
@@ -5,6 +7,7 @@ const App: React.FC<Props> = () => {
 		<>
 			<input placeholder="Somethings" />
 			<button>Click me</button>
+			<UserCard />
 		</>
 	)
 }
