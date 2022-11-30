@@ -1,24 +1,27 @@
-import UserCard from './components/UserCard'
-import io, { Socket } from 'socket.io-client'
-
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io('http://localhost:3001')
+import { useEffect } from 'react'
+import { useAppSelector } from './hooks/reduxHooks'
+import { useSocket } from './hooks/useSocket'
 
 interface Props {}
 
 const App: React.FC<Props> = () => {
-	const sendMessage = () => {
-		socket.emit(' hey')
-	}
+	const socketReducer = useAppSelector((state) => state.socketReducer)
 
-	io.on('connection', (socket) => {
-		console.log(`user connect with ${socket.id}`)
+	const socket = useSocket('ws://localhost:5000', {
+		reconnectionAttempts: 5,
+		reconnectionDelay: 5000,
+		autoConnect: false,
 	})
+
+	useEffect(() => {
+		// Connet to the webSocket
+	}, [])
 	return (
-		<>
-			<input placeholder="Somethings" />
-			<button>Click me</button>
-			<UserCard />
-		</>
+		<div>
+			<div>socket id {socketReducer.uid}</div>
+			<div>active users: {socketReducer.users.length}</div>
+			<div></div>
+		</div>
 	)
 }
 
