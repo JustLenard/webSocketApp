@@ -22,21 +22,26 @@ export const socketSlice = createSlice({
 	initialState: defaultSocketIoState,
 	reducers: {
 		update_Socket: (state, acion) => {
+			console.log('This is the acion', acion)
 			return { ...state, socket: acion.payload as Socket }
+			// return { ...state, socket: acion.payload as undefined }
+
+			// return { ...state, socket: undefined }
 		},
 		update_uid: (state, acion) => {
 			return { ...state, uid: acion.payload as string }
 		},
 		update_users: (state, acion) => {
+			console.log('updating the users')
 			return { ...state, users: acion.payload as string[] }
 		},
-		remove_users: (state, acion) => {
+		remove_user: (state, acion) => {
 			return { ...state, users: state.users.filter((user) => user !== acion.payload) }
 		},
 	},
 })
 
-export const { update_Socket, update_uid, update_users, remove_users } = socketSlice.actions
+export const { update_Socket, update_uid, update_users, remove_user } = socketSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectSocket = (state: RootState) => state.socketReducer
