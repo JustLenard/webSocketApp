@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import UserCard from './components/UserCard'
 import { useAppDispatch, useAppSelector } from './hooks/reduxHooks'
 import { useSocket } from './hooks/useSocket'
 import { remove_user, update_Socket, update_uid, update_users } from './store/socketSlice'
+import { getColorNumber } from './utils/getColorNumber'
 
 interface Props {}
 
@@ -97,19 +99,26 @@ const App: React.FC<Props> = () => {
 		setMessages((messages) => [...messages, inputValue])
 	}
 
+	// const i = getColorNumber()
+	// console.log('This is i', i)
+
 	return (
-		<div>
-			<form onSubmit={(e) => handleClick(e)}>
+		<div className="bg-slate-400 p-5 min-h-screen flex">
+			<div className="basis-1/4 bg-slate-200 ">1</div>
+
+			<div className="basis-3/4">2</div>
+
+			<div className="basis-1/4 bg-slate-200 p-1">
+				<UserCard name="hey" />
+				<UserCard />
+				<UserCard />
+			</div>
+
+			{/* <form onSubmit={(e) => handleClick(e)}>
 				<input onChange={(e) => setInputValue(e.target.value)} />
 
 				<button>Click</button>
-			</form>
-			<ul>
-				{messages.map((message, id) => (
-					<li key={id + message}>{message}</li>
-				))}
-			</ul>
-			<div></div>
+			</form> */}
 		</div>
 	)
 }
