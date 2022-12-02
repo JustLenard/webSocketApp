@@ -76,6 +76,18 @@ export class ServerSocket {
 				this.sendMessage('user_disconnetced', users, socket.id)
 			}
 		})
+
+		socket.on('message', (message: string) => {
+			console.info('Disconnect was received from ' + socket.id)
+			console.log('This is message', message)
+
+			socket.broadcast.emit('receive-message', message)
+
+			// const uid = this.getUidFromSocketId(socket.id)
+			// const users = Object.values(this.users)
+
+			// this.sendMessage('message', users, message)
+		})
 	}
 
 	getUidFromSocketId = (id: string) =>

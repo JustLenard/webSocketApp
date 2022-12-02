@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from './hooks/reduxHooks'
 import { useSocket } from './hooks/useSocket'
 import { remove_user, update_Socket, update_uid, update_users } from './store/socketSlice'
@@ -8,6 +8,8 @@ interface Props {}
 const App: React.FC<Props> = () => {
 	const socketReducer = useAppSelector((state) => state.socketReducer)
 	const dispatch = useAppDispatch()
+	const [messages, setMessages] = useState<string[]>([])
+	const [inputValue, setInputValue] = useState('')
 
 	const socket = useSocket('ws://localhost:5000', {
 		reconnectionAttempts: 5,
@@ -66,7 +68,17 @@ const App: React.FC<Props> = () => {
 			console.info('Reconnection failure')
 			alert('We were unable to connect to the webSocket')
 		})
+
+		// Message received
+		socket.on('receive-message', (message: string) => {
+			console.info(`message received ${message}`)
+			// dispatch(update_users(users))
+			// setMessages((messages) => messages.push(message))
+
+			setMessages((messages) => [...messages, message])
+		})
 	}
+
 	const sendHandshake = () => {
 		console.info('Sending handshake to the server...')
 
@@ -78,10 +90,25 @@ const App: React.FC<Props> = () => {
 
 	console.log('This is socketReducer', socketReducer)
 
+	const handleClick = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault()
+
+		socket.emit('message', inputValue)
+		setMessages((messages) => [...messages, inputValue])
+	}
+
 	return (
 		<div>
-			<div>socket id {socketReducer.uid}</div>
-			<div>active users: {socketReducer.users.length}</div>
+			<form onSubmit={(e) => handleClick(e)}>
+				<input onChange={(e) => setInputValue(e.target.value)} />
+
+				<button>Click</button>
+			</form>
+			<ul>
+				{messages.map((message, id) => (
+					<li key={id + message}>{message}</li>
+				))}
+			</ul>
 			<div></div>
 		</div>
 	)
