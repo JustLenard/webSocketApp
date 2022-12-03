@@ -3,7 +3,7 @@ import UserCard from './components/UserCard'
 import { useAppDispatch, useAppSelector } from './hooks/reduxHooks'
 import { useSocket } from './hooks/useSocket'
 import { remove_user, update_Socket, update_uid, update_users } from './store/socketSlice'
-import { getColorNumber } from './utils/getColorNumber'
+import { chooseRandomColor, getColorNumber } from './utils/getColorNumber'
 
 interface Props {}
 
@@ -101,10 +101,21 @@ const App: React.FC<Props> = () => {
 
 	// const i = getColorNumber()
 	// console.log('This is i', i)
+	const f = () => {
+		console.log('f')
+		const arr: number[] = []
+		for (let i = 50; i < 1000; i = i + 50) {
+			arr.push(i)
+			console.log(i)
+		}
+		console.log(arr)
+		console.log(arr.length)
+	}
 
 	return (
 		<div className="bg-slate-400 p-5 min-h-screen flex">
 			<div className="basis-1/4 bg-slate-200 ">1</div>
+			<button onClick={() => chooseRandomColor()}>Click</button>
 
 			<div className="basis-3/4">2</div>
 
