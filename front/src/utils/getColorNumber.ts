@@ -44,8 +44,13 @@ export const chooseRandomColor = () => {
 	const randomColor = Math.floor(Math.random() * tailwindColors.length)
 	const number = tailwindShades[randomShade]
 	const color = tailwindColors[randomColor]
+	const tailwindClass = `bg-${color}-${number}`
+	console.log('This is tailwindClass', tailwindClass)
 
-	console.log('This is res', number)
-	console.log(`color bg-${color}-${number}`)
-	return `color bg-${color}-${number}`
+	// console.log('This is number', number)
+	// console.log('This is res', number)
+	// console.log(`bg-${color}-${number}`)
+	// return `bg-${color}-${number}`
+	// return 'bg-pink-700 '
+	return tailwindClass
 }

@@ -120,9 +120,12 @@ const App: React.FC<Props> = () => {
 			<div className="basis-3/4">2</div>
 
 			<div className="basis-1/4 bg-slate-200 p-1">
-				<UserCard name="hey" />
-				<UserCard />
-				<UserCard />
+				{/* <UserCard name="hey" colorP={chooseRandomColor()} />
+				<UserCard name="what" colorP={'bg-blue-600'} />
+				<UserCard name="the" colorP={'bg-blue-600'} /> */}
+				{socketReducer.users.map((userId) => (
+					<UserCard name={userId} key={userId} colorP={'bg-blue-600'} />
+				))}
 			</div>
 
 			{/* <form onSubmit={(e) => handleClick(e)}>
