@@ -1,7 +1,13 @@
+import Root from './router/Root'
+
 interface Props {}
 
 const App: React.FC<Props> = () => {
-	return <></>
+	return (
+		<>
+			<Root />
+		</>
+	)
 }
 
 export default App
