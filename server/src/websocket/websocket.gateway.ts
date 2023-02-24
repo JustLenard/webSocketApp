@@ -1,36 +1,63 @@
 import {
+  ConnectedSocket,
+  MessageBody,
+  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  OnGatewayInit,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
+import { Injectable } from '@nestjs/common';
+import { WebsocketEvents } from './websocket.event';
+import { identity } from 'rxjs';
 
 @WebSocketGateway({ cors: true })
-export class WebsocketGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
-  @WebSocketServer()
-  server!: Server;
+@Injectable()
+export class WebsocketGateway {
+  constructor(private readonly events: WebsocketEvents) {}
 
-  private connectedClients = 0;
+  @WebSocketServer()
+  server: Server;
 
   afterInit(server: Server) {
     console.log('WebSocket server initialized');
   }
 
-  handleConnection() {
-    this.connectedClients++;
-    console.log(
-      `Client connected (total connected clients: ${this.connectedClients})`,
-    );
+  @SubscribeMessage('events')
+  handleEvent(
+    @MessageBody() data: string,
+    @ConnectedSocket() client: Socket,
+  ): string {
+    console.log('This is data', data);
+    return data;
   }
 
-  handleDisconnect() {
-    this.connectedClients--;
-    console.log(
-      `Client disconnected (total connected clients: ${this.connectedClients})`,
-    );
+  @SubscribeMessage('clickStream')
+  handleClickStream(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+  ): any {
+    const arrClientsIds = [];
+
+    console.log('This is data', data);
+
+    this.server.sockets.sockets.forEach((sokc) => arrClientsIds.push(sokc.id));
+
+    console.log('This is arrClientsIds', arrClientsIds);
+
+    this.server.emit('message', 'from backend');
+
+    return data;
+  }
+
+  handleConnection(client: Socket) {
+    this.events.handleConnection(client, this.server);
+  }
+
+  handleDisconnect(client: Socket) {
+    this.events.handleDisconnect(client);
+  }
+
+  handleMessage(client: Socket, payload: any) {
+    this.events.handleMessage(client, payload, this.server);
   }
 }
