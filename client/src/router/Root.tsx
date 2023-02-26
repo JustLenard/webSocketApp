@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Login from '../pages/Login'
+import ChatPage from '../pages/ChatPage'
+import Login from '../pages/LoginPage'
 
 const router = createBrowserRouter([
 	{
@@ -12,7 +13,7 @@ const router = createBrowserRouter([
 	},
 	{
 		path: '/',
-		element: <div>Hello world!</div>,
+		element: <ChatPage />,
 	},
 ])
 
