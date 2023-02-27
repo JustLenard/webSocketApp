@@ -1,10 +1,12 @@
-import { Box, Input } from '@mui/material'
+import { Box, Button, Input, OutlinedInput } from '@mui/material'
+import { Form } from 'react-router-dom'
+import ChatInput from './ChatInput'
 
 const ChatContainer = () => {
 	return (
-		<Box>
-			<Box></Box>
-			<Input />
+		<Box display={'flex'} flexDirection={'column'} flexGrow={1}>
+			<Box border={'2px solid blue'} flexGrow={1}></Box>
+			<ChatInput />
 		</Box>
 	)
 }

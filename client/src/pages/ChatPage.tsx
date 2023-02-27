@@ -13,12 +13,17 @@ const ChatPage = () => {
 			minHeight={'100vh'}
 			border={'2px solid blue'}
 		>
-			<Grid xs={2}>
+			<Grid xs={2} item>
 				<LeftMenu />
 			</Grid>
 			<Grid xs={10} display={'flex'} direction={'column'}>
 				<Header />
-				<Grid display={'flex'} justifyContent={'space-between'} border={'2px solid red'}>
+				<Grid
+					display={'flex'}
+					justifyContent={'space-between'}
+					border={'2px solid red'}
+					height={'100%'}
+				>
 					<ChatContainer />
 					<RightMenu />
 				</Grid>

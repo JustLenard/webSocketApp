@@ -49,6 +49,16 @@ export class WebsocketGateway {
     return data;
   }
 
+  @SubscribeMessage('sendMessage')
+  receiveMessage(
+    @MessageBody() data: string,
+    @ConnectedSocket() client: Socket,
+  ): any {
+    console.log('This is data', data);
+    this.server.emit('message', 'from backend');
+
+    return data;
+  }
   handleConnection(client: Socket) {
     this.events.handleConnection(client, this.server);
   }
