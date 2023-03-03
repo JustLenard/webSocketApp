@@ -6,6 +6,11 @@ socket.on('connect', () => {
 	console.log('Connected to WebSocket server')
 })
 
+socket.on('message', (data) => {
+	console.log('This is data', data)
+	console.log('message')
+})
+
 socket.on('disconnect', () => {
 	console.log('Disconnected from WebSocket server')
 })

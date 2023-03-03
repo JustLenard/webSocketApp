@@ -15,6 +15,8 @@ import { identity } from 'rxjs';
 export class WebsocketGateway {
   constructor(private readonly events: WebsocketEvents) {}
 
+  messages = [];
+
   @WebSocketServer()
   server: Server;
 
@@ -54,12 +56,15 @@ export class WebsocketGateway {
     @MessageBody() data: string,
     @ConnectedSocket() client: Socket,
   ): any {
+    this.messages.push(data);
     console.log('This is data', data);
     this.server.emit('message', 'from backend');
 
     return data;
   }
+
   handleConnection(client: Socket) {
+    client.send(this.messages);
     this.events.handleConnection(client, this.server);
   }
 
