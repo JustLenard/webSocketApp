@@ -8,7 +8,6 @@ const ChatContainer = () => {
 	useEffect(() => {
 		const getSTuff = async () => {
 			const res = await apiRequest('/users', 'POST', {
-				id: 1,
 				username: 'len',
 				password: '123',
 			})

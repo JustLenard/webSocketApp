@@ -5,7 +5,7 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn({
     comment: 'User uuid',
   })
-  id: string;
+  id: number;
 
   @Column({
     type: 'varchar',

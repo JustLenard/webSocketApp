@@ -1,3 +1,4 @@
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
@@ -12,6 +13,15 @@ async function bootstrap() {
   // });
   app.enableCors();
 
+  // Set the logging level to "verbose"
+  const logger = new Logger();
+  app.useLogger(logger);
+
+  // Enable global validation
+  app.useGlobalPipes(new ValidationPipe());
+
   await app.listen(5000);
+  // Start the application
+  logger.verbose('Application started.');
 }
 bootstrap();
