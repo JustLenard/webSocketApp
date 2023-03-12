@@ -7,7 +7,11 @@ import { CssVarsProvider } from '@mui/joy/styles'
 import Typography from '@mui/joy/Typography'
 import { Link } from 'react-router-dom'
 
-const LoginPage: React.FC = () => {
+const SignUpPage: React.FC = () => {
+	const handleSubmit = (e) => {
+		console.log('submiting')
+	}
+
 	return (
 		<CssVarsProvider>
 			<main>
@@ -28,17 +32,16 @@ const LoginPage: React.FC = () => {
 				>
 					<div>
 						<Typography level="h4" component="h1">
-							<b>Welcome!</b>
+							<b>Sign Up!</b>
 						</Typography>
-						<Typography level="body2">Sign in to continue.</Typography>
 					</div>
 					<FormControl>
-						<FormLabel>Email</FormLabel>
+						<FormLabel>Username</FormLabel>
 						<Input
 							// html input attribute
-							name="email"
-							type="email"
-							placeholder="johndoe@email.com"
+							name="username"
+							type="text"
+							placeholder="Connor"
 						/>
 					</FormControl>
 					<FormControl>
@@ -50,14 +53,25 @@ const LoginPage: React.FC = () => {
 							placeholder="password"
 						/>
 					</FormControl>
+					<FormControl>
+						<FormLabel>Confirm password</FormLabel>
+						<Input
+							// html input attribute
+							name="password"
+							type="password"
+							placeholder="password"
+						/>
+					</FormControl>
 
-					<Button sx={{ mt: 1 /* margin top */ }}>Log in</Button>
+					<Button sx={{ mt: 1 /* margin top */ }} onSubmit={handleSubmit}>
+						Sign Up
+					</Button>
 					<Typography
-						endDecorator={<Link to={'/sign-up'}>Sign up</Link>}
+						endDecorator={<Link to={'/login'}>Log in!</Link>}
 						fontSize="sm"
 						sx={{ alignSelf: 'center' }}
 					>
-						Don&apos;t have an account?
+						Already have a account?
 					</Typography>
 				</Sheet>
 			</main>
@@ -65,4 +79,4 @@ const LoginPage: React.FC = () => {
 	)
 }
 
-export default LoginPage
+export default SignUpPage

@@ -1,8 +1,6 @@
 import Root from './router/Root'
 
-interface Props {}
-
-const App: React.FC<Props> = () => {
+const App: React.FC = () => {
 	return <Root />
 }
 
