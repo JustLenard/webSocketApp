@@ -5,12 +5,24 @@ import Input from '@mui/joy/Input'
 import Sheet from '@mui/joy/Sheet'
 import { CssVarsProvider } from '@mui/joy/styles'
 import Typography from '@mui/joy/Typography'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 
+interface SignUpForm {
+	username: string
+	password: string
+	repeatPassword: string
+}
+
 const SignUpPage: React.FC = () => {
-	const handleSubmit = (e) => {
-		console.log('submiting')
-	}
+	const {
+		register,
+		handleSubmit,
+		watch,
+		formState: { errors },
+	} = useForm<SignUpForm>()
+
+	const onSubmit: SubmitHandler<SignUpForm> = (data) => console.log(data)
 
 	return (
 		<CssVarsProvider>
@@ -35,37 +47,38 @@ const SignUpPage: React.FC = () => {
 							<b>Sign Up!</b>
 						</Typography>
 					</div>
-					<FormControl>
-						<FormLabel>Username</FormLabel>
-						<Input
-							// html input attribute
-							name="username"
-							type="text"
-							placeholder="Connor"
-						/>
-					</FormControl>
-					<FormControl>
-						<FormLabel>Password</FormLabel>
-						<Input
-							// html input attribute
-							name="password"
-							type="password"
-							placeholder="password"
-						/>
-					</FormControl>
-					<FormControl>
-						<FormLabel>Confirm password</FormLabel>
-						<Input
-							// html input attribute
-							name="password"
-							type="password"
-							placeholder="password"
-						/>
-					</FormControl>
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<FormControl>
+							<FormLabel>Username</FormLabel>
+							<Input
+								type="text"
+								placeholder="Connor"
+								{...(register('username'), { required: true })}
+							/>
+						</FormControl>
+						<FormControl>
+							<FormLabel>Password</FormLabel>
+							<Input
+								type="password"
+								placeholder="password"
+								{...(register('password'), { required: true, maxLength: 5 })}
+							/>
+							{errors.password && <span>This field is required</span>}
+						</FormControl>
 
-					<Button sx={{ mt: 1 /* margin top */ }} onSubmit={handleSubmit}>
-						Sign Up
-					</Button>
+						<FormControl>
+							<FormLabel>Confirm password</FormLabel>
+							<Input
+								type="password"
+								placeholder="password"
+								{...(register('repeatPassword'), { required: true })}
+							/>
+						</FormControl>
+
+						<Button sx={{ mt: 1 /* margin top */ }} type="submit">
+							Sign Up
+						</Button>
+					</form>
 					<Typography
 						endDecorator={<Link to={'/login'}>Log in!</Link>}
 						fontSize="sm"

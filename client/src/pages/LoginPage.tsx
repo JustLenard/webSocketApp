@@ -5,9 +5,24 @@ import Input from '@mui/joy/Input'
 import Sheet from '@mui/joy/Sheet'
 import { CssVarsProvider } from '@mui/joy/styles'
 import Typography from '@mui/joy/Typography'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 
+interface LoginForm {
+	username: string
+	password: string
+}
+
 const LoginPage: React.FC = () => {
+	const {
+		register,
+		handleSubmit,
+		watch,
+		formState: { errors },
+	} = useForm<LoginForm>()
+
+	const onSubmit: SubmitHandler<LoginForm> = (data) => console.log(data)
+
 	return (
 		<CssVarsProvider>
 			<main>
@@ -32,32 +47,34 @@ const LoginPage: React.FC = () => {
 						</Typography>
 						<Typography level="body2">Sign in to continue.</Typography>
 					</div>
-					<FormControl>
-						<FormLabel>Email</FormLabel>
-						<Input
-							// html input attribute
-							name="email"
-							type="email"
-							placeholder="johndoe@email.com"
-						/>
-					</FormControl>
-					<FormControl>
-						<FormLabel>Password</FormLabel>
-						<Input
-							// html input attribute
-							name="password"
-							type="password"
-							placeholder="password"
-						/>
-					</FormControl>
-
-					<Button sx={{ mt: 1 /* margin top */ }}>Log in</Button>
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<FormControl>
+							<FormLabel>Email</FormLabel>
+							<Input
+								type="username"
+								placeholder="ex: Connor"
+								{...(register('username'), { required: true })}
+							/>
+							{errors.username && <span>This field is required</span>}
+						</FormControl>
+						<FormControl>
+							<FormLabel>Password</FormLabel>
+							<Input
+								type="password"
+								placeholder="password"
+								{...register('password', { required: true })}
+							/>
+						</FormControl>
+						<Button type="submit" sx={{ mt: 1 /* margin top */ }}>
+							Log in
+						</Button>
+					</form>
 					<Typography
 						endDecorator={<Link to={'/sign-up'}>Sign up</Link>}
 						fontSize="sm"
 						sx={{ alignSelf: 'center' }}
 					>
-						Don&apos;t have an account?
+						Don't have an account?
 					</Typography>
 				</Sheet>
 			</main>
