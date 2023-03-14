@@ -21,8 +21,12 @@ export const apiRequest = async <T>(
 		data: ['PATCH', 'POST'].includes(method) ? params : undefined,
 	}
 
+	console.log('This is config', config)
+
 	try {
 		const response: AxiosResponse<T> = await axios.request(config)
+
+		console.log('This is response', response)
 
 		return { data: response.data, error: null }
 	} catch (error) {

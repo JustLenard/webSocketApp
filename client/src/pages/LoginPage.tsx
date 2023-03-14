@@ -51,9 +51,8 @@ const LoginPage: React.FC = () => {
 						<FormControl>
 							<FormLabel>Email</FormLabel>
 							<Input
-								type="username"
 								placeholder="ex: Connor"
-								{...(register('username'), { required: true })}
+								{...register('username', { required: true })}
 							/>
 							{errors.username && <span>This field is required</span>}
 						</FormControl>

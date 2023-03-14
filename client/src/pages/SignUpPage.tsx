@@ -7,6 +7,7 @@ import { CssVarsProvider } from '@mui/joy/styles'
 import Typography from '@mui/joy/Typography'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { apiRequest } from '../utils/ApiRequest'
 
 interface SignUpForm {
 	username: string
@@ -22,7 +23,12 @@ const SignUpPage: React.FC = () => {
 		formState: { errors },
 	} = useForm<SignUpForm>()
 
-	const onSubmit: SubmitHandler<SignUpForm> = (data) => console.log(data)
+	const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
+		const res = await apiRequest('/users', 'POST', {
+			username: data.username,
+			password: data.password,
+		})
+	}
 
 	return (
 		<CssVarsProvider>
@@ -53,7 +59,7 @@ const SignUpPage: React.FC = () => {
 							<Input
 								type="text"
 								placeholder="Connor"
-								{...(register('username'), { required: true })}
+								{...register('username', { required: true })}
 							/>
 						</FormControl>
 						<FormControl>
@@ -61,7 +67,8 @@ const SignUpPage: React.FC = () => {
 							<Input
 								type="password"
 								placeholder="password"
-								{...(register('password'), { required: true, maxLength: 5 })}
+								{...register('password', { required: true, maxLength: 5 })}
+								autoComplete="off"
 							/>
 							{errors.password && <span>This field is required</span>}
 						</FormControl>
@@ -69,9 +76,10 @@ const SignUpPage: React.FC = () => {
 						<FormControl>
 							<FormLabel>Confirm password</FormLabel>
 							<Input
+								autoComplete="off"
 								type="password"
 								placeholder="password"
-								{...(register('repeatPassword'), { required: true })}
+								{...register('repeatPassword', { required: true })}
 							/>
 						</FormControl>
 
