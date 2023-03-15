@@ -6,10 +6,13 @@ import { typeOrm } from './config/TypeOrmConfig';
 import { WebsocketEvents } from './websocket/websocket.event';
 import { WebsocketGateway } from './websocket/websocket.gateway';
 import { UsersModule } from './modules/users/users.module';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [TypeOrmModule.forRoot(typeOrm), UsersModule],
   controllers: [AppController],
   providers: [AppService, WebsocketGateway, WebsocketEvents],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+}

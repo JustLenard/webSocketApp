@@ -15,14 +15,15 @@ export class UsersService {
     console.log('This is createUserDto', user);
     console.log('This is userRepostiry', this.userRepostiry);
     return await this.userRepostiry.save(user);
+    // return this.userRepostiry.find();
   }
 
-  findAll() {
-    return `This action returns all users`;
+  findAll(): Promise<User[]> {
+    return this.userRepostiry.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.userRepostiry.findOneBy({ id: id });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -31,5 +32,24 @@ export class UsersService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  private readonly users = [
+    {
+      userId: 1,
+      username: 'john',
+      password: 'changeme',
+    },
+    {
+      userId: 2,
+      username: 'maria',
+      password: 'guess',
+    },
+  ];
+
+  async findUser(username: string): Promise<User | undefined> {
+    // return this.users.find((user) => user.username === username);
+    // return this.userRepostiry.findBy()
+    return;
   }
 }
