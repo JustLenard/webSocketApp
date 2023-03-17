@@ -7,9 +7,10 @@ import { WebsocketEvents } from './websocket/websocket.event';
 import { WebsocketGateway } from './websocket/websocket.gateway';
 import { UsersModule } from './modules/users/users.module';
 import { DataSource } from 'typeorm';
+import { AuthModule } from './src/modules/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeOrm), UsersModule],
+  imports: [TypeOrmModule.forRoot(typeOrm), UsersModule, AuthModule],
   controllers: [AppController],
   providers: [AppService, WebsocketGateway, WebsocketEvents],
 })
