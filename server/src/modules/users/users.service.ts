@@ -26,6 +26,10 @@ export class UsersService {
     return this.userRepostiry.findOneBy({ id: id });
   }
 
+  async findByUsername(username: string) {
+    return this.userRepostiry.findOneBy({ username });
+  }
+
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
@@ -49,7 +53,7 @@ export class UsersService {
 
   async findUser(username: string): Promise<User | undefined> {
     // return this.users.find((user) => user.username === username);
-    // return this.userRepostiry.findBy()
+    // return this.userRepostiry.findBy();
     return;
   }
 }
