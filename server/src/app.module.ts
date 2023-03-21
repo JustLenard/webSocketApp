@@ -13,7 +13,7 @@ import { AuthService } from './modules/auth/auth.service';
 @Module({
   imports: [TypeOrmModule.forRoot(typeOrm), UsersModule, AuthModule],
   controllers: [AppController],
-  providers: [AppService, WebsocketGateway, WebsocketEvents, AuthService],
+  providers: [AppService, WebsocketGateway, WebsocketEvents],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
