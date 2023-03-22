@@ -23,7 +23,7 @@ export class AuthService {
 
   async login(user: User) {
     console.log('This is process.env.SECRET', process.env.SECRET);
-    const payload = { name: user.password, id: user.id };
+    const payload = { name: user.username, id: user.id };
 
     return {
       acces_token: this.jwtService.sign(payload),
