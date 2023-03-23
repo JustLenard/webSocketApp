@@ -1,10 +1,10 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
   // app.enableCors({
   //   origin: ['http://localhost:3000/users', 'http://localhost:3000', 'yomama'],
   //   allowedHeaders:
@@ -12,6 +12,7 @@ async function bootstrap() {
   //   credentials: true,
   // });
   app.enableCors();
+  app.use(cookieParser());
 
   // Set the logging level to "verbose"
   const logger = new Logger();
