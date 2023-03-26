@@ -5,13 +5,18 @@ import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // app.enableCors({
-  //   origin: ['http://localhost:3000/users', 'http://localhost:3000', 'yomama'],
-  //   allowedHeaders:
-  //     'Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Origin',
-  //   credentials: true,
-  // });
-  app.enableCors();
+  app.enableCors({
+    origin: ['http://localhost:5173'],
+    allowedHeaders: [
+      'Origin',
+      'X-Requested-With',
+      'Content-Type',
+      'Accept',
+      'Access-Control-Allow-Origin',
+    ],
+    credentials: true,
+  });
+  // app.enableCors();
   app.use(cookieParser());
 
   // Set the logging level to "verbose"

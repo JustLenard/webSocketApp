@@ -8,7 +8,11 @@ import Button from '@mui/joy/Button'
 import Link from '@mui/joy/Link'
 import { useEffect, useState } from 'react'
 
-function ModeToggle() {
+const publicUsername = import.meta.env.VITE_PUBLIC_USERNAME
+const publicPassword = import.meta.env.VITE_PUBLIC_PASSWORD
+
+const ModeToggle = () => {
+	console.log('This is publicUsername', publicUsername)
 	const { mode, setMode } = useColorScheme()
 	const [mounted, setMounted] = useState(false)
 
@@ -62,6 +66,7 @@ const LoginForm: React.FC = () => {
 					<FormControl>
 						<FormLabel>Email</FormLabel>
 						<Input
+							defaultValue={publicUsername}
 							// html input attribute
 							name="email"
 							type="email"
@@ -72,6 +77,7 @@ const LoginForm: React.FC = () => {
 						<FormLabel>Password</FormLabel>
 						<Input
 							// html input attribute
+							defaultValue={publicPassword}
 							name="password"
 							type="password"
 							placeholder="password"

@@ -6,12 +6,15 @@ import Sheet from '@mui/joy/Sheet'
 import { CssVarsProvider } from '@mui/joy/styles'
 import Typography from '@mui/joy/Typography'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { useAppDispatch } from '../hooks/reduxHooks'
+import { authenticateUser } from '../store/authSlice'
+import { AppDispatch } from '../store/store'
+import { LogInCredentials } from '../types/types'
 
-interface LoginForm {
-	username: string
-	password: string
-}
+const publicUsername = import.meta.env.VITE_PUBLIC_USERNAME
+const publicPassword = import.meta.env.VITE_PUBLIC_PASSWORD
 
 const LoginPage: React.FC = () => {
 	const {
@@ -19,9 +22,13 @@ const LoginPage: React.FC = () => {
 		handleSubmit,
 		watch,
 		formState: { errors },
-	} = useForm<LoginForm>()
+	} = useForm<LogInCredentials>()
 
-	const onSubmit: SubmitHandler<LoginForm> = (data) => console.log(data)
+	// const dispatch = useAppDispatch()
+	const dispatch = useDispatch<AppDispatch>()
+
+	const onSubmit: SubmitHandler<LogInCredentials> = (credentials) =>
+		dispatch(authenticateUser(credentials))
 
 	return (
 		<CssVarsProvider>
@@ -49,9 +56,10 @@ const LoginPage: React.FC = () => {
 					</div>
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<FormControl>
-							<FormLabel>Email</FormLabel>
+							<FormLabel>Username</FormLabel>
 							<Input
 								placeholder="ex: Connor"
+								defaultValue={publicUsername}
 								{...register('username', { required: true })}
 							/>
 							{errors.username && <span>This field is required</span>}
@@ -61,6 +69,7 @@ const LoginPage: React.FC = () => {
 							<Input
 								type="password"
 								placeholder="password"
+								defaultValue={publicPassword}
 								{...register('password', { required: true })}
 							/>
 						</FormControl>

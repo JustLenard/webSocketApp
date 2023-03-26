@@ -18,6 +18,7 @@ export const apiRequest = async <T>(
 		headers: {
 			'Content-Type': 'application/json',
 		},
+		withCredentials: true,
 		data: ['PATCH', 'POST'].includes(method) ? params : undefined,
 	}
 
@@ -31,6 +32,7 @@ export const apiRequest = async <T>(
 		return { data: response.data, error: null }
 	} catch (error) {
 		let errorMessage = 'Unknown error'
+		console.error(error)
 
 		if (axios.isAxiosError(error)) {
 			const response = error.response
