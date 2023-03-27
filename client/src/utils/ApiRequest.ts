@@ -2,9 +2,14 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 export type ApiMethod = 'GET' | 'POST' | 'DELETE' | 'PATCH'
 
+interface ErrorResponse {
+	message: string
+	statusCode: number
+}
+
 interface ApiResponse<T> {
 	data: T | null
-	error: string | null
+	error: ErrorResponse | null
 }
 
 export const apiRequest = async <T>(
@@ -32,15 +37,27 @@ export const apiRequest = async <T>(
 		return { data: response.data, error: null }
 	} catch (error) {
 		let errorMessage = 'Unknown error'
-		console.error(error)
 
 		if (axios.isAxiosError(error)) {
+			console.error(error)
 			const response = error.response
+
+			const customError: ErrorResponse = {
+				message: error.message,
+				statusCode: error.code,
+			}
+
 			if (response) {
 				errorMessage = response?.data?.message ?? response?.statusText
 			}
 		}
 
-		return { data: null, error: errorMessage }
+		return {
+			data: null,
+			error: {
+				message: errorMessage,
+				statusCode: 500,
+			},
+		}
 	}
 }
