@@ -2,19 +2,32 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import ChatPage from '../pages/ChatPage'
 import LoginPage from '../pages/LoginPage'
 import SignUpPage from '../pages/SignUpPage'
+import ProtectedRoute from './ProtectedRoute'
 
+// Define routes for the project
+export const routes = {
+	login: '/login',
+	signUp: '/sign-up',
+	home: '/',
+}
+
+// Create browser router
 const router = createBrowserRouter([
 	{
-		path: '/login',
+		path: routes.login,
 		element: <LoginPage />,
 	},
 	{
-		path: '/sign-up',
+		path: routes.signUp,
 		element: <SignUpPage />,
 	},
 	{
-		path: '/',
-		element: <ChatPage />,
+		path: routes.home,
+		element: (
+			<ProtectedRoute>
+				<ChatPage />
+			</ProtectedRoute>
+		),
 	},
 ])
 
