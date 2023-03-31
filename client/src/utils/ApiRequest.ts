@@ -32,8 +32,6 @@ export const apiRequest = async <T>(
 	try {
 		const response: AxiosResponse<T> = await axios.request(config)
 
-		console.log('This is response', response)
-
 		return { data: response.data, error: null }
 	} catch (error) {
 		let errorMessage = 'Unknown error'
@@ -44,11 +42,16 @@ export const apiRequest = async <T>(
 
 			const customError: ErrorResponse = {
 				message: error.message,
-				statusCode: error.code,
+				statusCode: Number(error.code),
 			}
 
 			if (response) {
 				errorMessage = response?.data?.message ?? response?.statusText
+			}
+
+			return {
+				data: null,
+				error: customError,
 			}
 		}
 
