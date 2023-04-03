@@ -9,9 +9,17 @@ import { UsersModule } from './modules/users/users.module';
 import { DataSource } from 'typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { AuthService } from './modules/auth/auth.service';
+import { ChatGptModule } from './modules/chat-gpt/chat-gpt.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeOrm), UsersModule, AuthModule],
+  imports: [
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRoot(typeOrm),
+    UsersModule,
+    AuthModule,
+    ChatGptModule,
+  ],
   controllers: [AppController],
   providers: [AppService, WebsocketGateway, WebsocketEvents],
 })
