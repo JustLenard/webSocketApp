@@ -1,9 +1,11 @@
 # compiled output
 server/dist
 server/node_modules
+server/.env
 
 client/dist
 client/node_modules
+client/.env
 
 
 # Logs

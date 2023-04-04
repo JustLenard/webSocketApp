@@ -25,20 +25,4 @@ export class ChatGptService {
     // return 'This action adds a new chatGpt';
     return completion;
   }
-
-  findAll() {
-    return `This action returns all chatGpt`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} chatGpt`;
-  }
-
-  update(id: number, updateChatGptDto: UpdateChatGptDto) {
-    return `This action updates a #${id} chatGpt`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} chatGpt`;
-  }
 }
