@@ -6,10 +6,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { typeOrm } from './config/TypeOrmConfig';
 import { AuthModule } from './modules/auth/auth.module';
-import { ChatGptModule } from './modules/chat-gpt/chat-gpt.module';
 import { UsersModule } from './modules/users/users.module';
 import { WebsocketEvents } from './websocket/websocket.event';
 import { WebsocketGateway } from './websocket/websocket.gateway';
+import { OpenAiModule } from './modules/open-ai/open-ai.module';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { WebsocketGateway } from './websocket/websocket.gateway';
     TypeOrmModule.forRoot(typeOrm),
     UsersModule,
     AuthModule,
-    ChatGptModule,
+    OpenAiModule,
   ],
   controllers: [AppController],
   providers: [AppService, WebsocketGateway, WebsocketEvents],
