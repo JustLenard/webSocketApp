@@ -18,13 +18,16 @@ export class AuthController {
     const token = await this.authService.login(body);
     console.log('This is token', token);
 
-    res.cookie('token', token);
+    res.cookie('token', token.acces_token);
 
-    return res.send({ message: 'Logged in successfully' });
+    return res.send({
+      message: 'Logged in successfully',
+      token: token.acces_token,
+    });
   }
 
   @UseGuards(JwtGuard)
-  @Post('u')
+  @Post('protected')
   protected(@Req() req: Request): any {
     return req.user;
   }
