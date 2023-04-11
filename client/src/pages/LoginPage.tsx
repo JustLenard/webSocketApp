@@ -7,16 +7,20 @@ import { CssVarsProvider } from '@mui/joy/styles'
 import Typography from '@mui/joy/Typography'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { useAppDispatch } from '../hooks/reduxHooks'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
 import { authenticateUser } from '../store/authSlice'
 import { AppDispatch } from '../store/store'
 import { LogInCredentials } from '../types/types'
+import { useEffect } from 'react'
 
 const publicUsername = import.meta.env.VITE_PUBLIC_USERNAME
 const publicPassword = import.meta.env.VITE_PUBLIC_PASSWORD
 
 const LoginPage: React.FC = () => {
+	const dispatch = useAppDispatch()
+	const location = useLocation()
+	const navigate = useNavigate()
 	const {
 		register,
 		handleSubmit,
@@ -24,8 +28,14 @@ const LoginPage: React.FC = () => {
 		formState: { errors },
 	} = useForm<LogInCredentials>()
 
-	// const dispatch = useAppDispatch()
-	const dispatch = useDispatch<AppDispatch>()
+	const { errorMessage, logedIn } = useAppSelector((state) => state.auth)
+
+	// If the user is loged in, send him from the page he was coming from or to Home page
+	useEffect(() => {
+		if (logedIn) {
+			location.state ? navigate(location.state.path) : navigate('/')
+		}
+	}, [logedIn, navigate, location.state])
 
 	const onSubmit: SubmitHandler<LogInCredentials> = (credentials) =>
 		dispatch(authenticateUser(credentials))

@@ -7,11 +7,6 @@ export class OpenAiController {
 
   @Post()
   async getResponse(@Body('message') message: string): Promise<any> {
-    console.log(message);
-    const response = await this.openAiService.getModelAnswer(message);
-    // const response = 'f';
-
-    console.log('This is response', response);
-    return response;
+    return await this.openAiService.getModelAnswer(message);
   }
 }

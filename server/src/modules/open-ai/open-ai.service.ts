@@ -31,8 +31,11 @@ export class OpenAiService {
 
       const response = await this.openAiApi.createCompletion(params);
 
-      console.log('This is response', response);
+      const { data } = response;
 
+      if (data.choices.length) return data.choices;
+
+      console.log('This is response', response);
       return response.data;
     } catch (e) {
       console.log('This is e', e);

@@ -11,6 +11,8 @@ const ProtectedRoute: React.FC<Props> = ({ children }) => {
 	const location = useLocation()
 	const logedIn = useAppSelector((state) => state.auth.logedIn)
 
+	console.log('This is logedIn', logedIn)
+
 	// If the user is not loged in, send him to log in page.
 	// Save the curent page route to memory for redirect after log in.
 	if (!logedIn) {
