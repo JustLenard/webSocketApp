@@ -17,11 +17,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  @UsePipes(ValidationPipe)
-  async create(@Body() createUserDto: CreateUserDto) {
-    return await this.usersService.create(createUserDto);
-  }
+  // @Post()
+  // @UsePipes(ValidationPipe)
+  // async create(@Body() createUserDto: CreateUserDto) {
+  //   return await this.usersService.create(createUserDto);
+  // }
 
   @Get()
   findAll() {

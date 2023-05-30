@@ -3,16 +3,14 @@ import FormControl from '@mui/joy/FormControl'
 import FormLabel from '@mui/joy/FormLabel'
 import Input from '@mui/joy/Input'
 import Sheet from '@mui/joy/Sheet'
-import { CssVarsProvider } from '@mui/joy/styles'
 import Typography from '@mui/joy/Typography'
+import { CssVarsProvider } from '@mui/joy/styles'
+import { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { useDispatch } from 'react-redux'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
 import { authenticateUser } from '../store/authSlice'
-import { AppDispatch } from '../store/store'
 import { LogInCredentials } from '../types/types'
-import { useEffect } from 'react'
 
 const publicUsername = import.meta.env.VITE_PUBLIC_USERNAME
 const publicPassword = import.meta.env.VITE_PUBLIC_PASSWORD

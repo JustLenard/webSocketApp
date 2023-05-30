@@ -1,34 +1,40 @@
-import { Res, Body, Controller, Post, UseGuards, Req } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { JwtGuard, LocalAuthGuard } from './local-auth.guard';
+import { AuthDto } from './auth.dto';
+import { Tokens } from 'src/types/tokens.types';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-  @UseGuards(LocalAuthGuard)
-  @Post('login')
-  async login(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Body() body: any,
-  ): Promise<any> {
-    console.log('This is req', req.cookies);
 
-    const token = await this.authService.login(body);
-    console.log('This is token', token);
+  // @Post('/signup')
+  // async createUser(
+  //   @Body('password') password: string,
+  //   @Body('username') username: string,
+  // ): Promise<User> {
+  //   const saltOrRounds = 10;
+  //   const hashedPassword = await bcrypt.hash(password, saltOrRounds);
+  //   const result = await this.authService.createUser(username, hashedPassword);
+  //   return result;
+  // }
 
-    res.cookie('token', token.acces_token);
-
-    return res.send({
-      message: 'Logged in successfully',
-      token: token.acces_token,
-    });
+  @Post('/signup')
+  async signupLocal(@Body() dto: AuthDto): Promise<Tokens> {
+    return await this.authService.signupLocal(dto);
   }
 
-  @UseGuards(JwtGuard)
-  @Post('protected')
-  protected(@Req() req: Request): any {
-    return req.user;
+  @Post('/signin')
+  signinLocal() {
+    this.authService.signinLocal();
+  }
+
+  @Post('/logout')
+  logout() {
+    this.authService.logout();
+  }
+
+  @Post('/refresh')
+  refresh() {
+    this.authService.refresh();
   }
 }

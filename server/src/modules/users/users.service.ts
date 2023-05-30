@@ -11,13 +11,6 @@ export class UsersService {
     @InjectRepository(User) private userRepostiry: Repository<User>,
   ) {}
 
-  async create(user: CreateUserDto) {
-    console.log('This is createUserDto', user);
-    console.log('This is userRepostiry', this.userRepostiry);
-    return await this.userRepostiry.save(user);
-    // return this.userRepostiry.find();
-  }
-
   findAll(): Promise<User[]> {
     return this.userRepostiry.find();
   }
