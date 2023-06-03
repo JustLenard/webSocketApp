@@ -5,12 +5,15 @@ import Input from '@mui/joy/Input'
 import Sheet from '@mui/joy/Sheet'
 import Typography from '@mui/joy/Typography'
 import { CssVarsProvider } from '@mui/joy/styles'
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
-import { authenticateUser } from '../store/authSlice'
 import { LogInCredentials } from '../types/types'
+import AuthContext from '../auth/AuthProvider'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import { appAxios } from '../api/axios'
+import { routes } from '../router/Root'
 
 const publicUsername = import.meta.env.VITE_PUBLIC_USERNAME
 const publicPassword = import.meta.env.VITE_PUBLIC_PASSWORD
@@ -26,17 +29,24 @@ const LoginPage: React.FC = () => {
 		formState: { errors },
 	} = useForm<LogInCredentials>()
 
-	const { errorMessage, logedIn } = useAppSelector((state) => state.auth)
+	const { accessToken, login } = useContext(AuthContext)
 
 	// If the user is loged in, send him from the page he was coming from or to Home page
 	useEffect(() => {
-		if (logedIn) {
-			location.state ? navigate(location.state.path) : navigate('/')
+		console.log('This is accessToken', accessToken)
+		if (accessToken) {
+			// location.state ? navigate(location.state.path) : navigate(routes.chat)
+			console.log('This is navigate(routes.chat)', navigate(routes.chat))
 		}
-	}, [logedIn, navigate, location.state])
+	}, [navigate, location.state, accessToken])
 
-	const onSubmit: SubmitHandler<LogInCredentials> = (credentials) =>
-		dispatch(authenticateUser(credentials))
+	const onSubmit: SubmitHandler<LogInCredentials> = async (credentials) => {
+		const response = await appAxios.post('/auth/signin', credentials)
+
+		login(response.data.accessToken)
+
+		console.log('This is response', response)
+	}
 
 	return (
 		<CssVarsProvider>

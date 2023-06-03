@@ -7,8 +7,6 @@ import { AtGuard } from './common/guards/at.guard'
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule)
 
-	console.log(process.env.ACCESS_TOKEN_SECRET)
-
 	app.enableCors({
 		origin: ['http://localhost:5173'],
 		allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Access-Control-Allow-Origin'],

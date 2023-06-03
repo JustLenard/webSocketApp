@@ -7,10 +7,10 @@
 // @Injectable()
 // export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
 // 	constructor() {
-// 		console.log('This is process.env.ACCESS_TOKEN_SECRET,', process.env.ACCESS_TOKEN_SECRET)
+// 		console.log('This is process.env.accessToken_SECRET,', process.env.accessToken_SECRET)
 // 		super({
 // 			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-// 			secretOrKey: process.env.ACCESS_TOKEN_SECRET,
+// 			secretOrKey: process.env.accessToken_SECRET,
 // 			passReqToCallback: true,
 // 		})
 // 	}

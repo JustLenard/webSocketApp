@@ -8,7 +8,7 @@ import ProtectedRoute from './ProtectedRoute'
 export const routes = {
 	login: '/login',
 	signUp: '/sign-up',
-	home: '/',
+	chat: '/chat',
 }
 
 // Create browser router
@@ -22,7 +22,7 @@ const router = createBrowserRouter([
 		element: <SignUpPage />,
 	},
 	{
-		path: routes.home,
+		path: routes.chat,
 		element: (
 			<ProtectedRoute>
 				<ChatPage />

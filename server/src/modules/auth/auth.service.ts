@@ -45,8 +45,8 @@ export class AuthService {
 		])
 
 		return {
-			access_token: at,
-			refresh_token: rt,
+			accessToken: at,
+			refreshToken: rt,
 		}
 	}
 
@@ -72,7 +72,7 @@ export class AuthService {
 			.save()
 
 		const tokens = await this.getTokens(newUser.id, newUser.username)
-		await this.updateRtHash(newUser.id, tokens.refresh_token)
+		await this.updateRtHash(newUser.id, tokens.refreshToken)
 
 		return tokens
 	}
@@ -88,7 +88,7 @@ export class AuthService {
 		if (!passwordMatches) throw new ForbiddenException('Access Denied')
 
 		const tokens = await this.getTokens(user.id, user.username)
-		await this.updateRtHash(user.id, tokens.refresh_token)
+		await this.updateRtHash(user.id, tokens.refreshToken)
 
 		return tokens
 	}
@@ -124,7 +124,7 @@ export class AuthService {
 		if (!rtMatches) throw new ForbiddenException('Access Denied')
 
 		const tokens = await this.getTokens(user.id, user.username)
-		await this.updateRtHash(user.id, tokens.refresh_token)
+		await this.updateRtHash(user.id, tokens.refreshToken)
 
 		return tokens
 	}
@@ -142,6 +142,6 @@ export class AuthService {
 }
 
 // {
-//     "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIzLCJ1c2VybmFtZSI6ImxlbiIsImlhdCI6MTY4NTYyMTA1OSwiZXhwIjoxNjg1NjIxOTU5fQ.HIOnuTNeguw4gqQ70F5bcrM4ggdK5ziJqj_yBqO2r4c",
-//     "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIzLCJ1c2VybmFtZSI6ImxlbiIsImlhdCI6MTY4NTYyMTA1OSwiZXhwIjoxNjg2MjI1ODU5fQ.K6lUnyLWAYrpl3pWXO7JdOqD6qD02OthqNG_42X4tiU"
+//     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIzLCJ1c2VybmFtZSI6ImxlbiIsImlhdCI6MTY4NTYyMTA1OSwiZXhwIjoxNjg1NjIxOTU5fQ.HIOnuTNeguw4gqQ70F5bcrM4ggdK5ziJqj_yBqO2r4c",
+//     "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIzLCJ1c2VybmFtZSI6ImxlbiIsImlhdCI6MTY4NTYyMTA1OSwiZXhwIjoxNjg2MjI1ODU5fQ.K6lUnyLWAYrpl3pWXO7JdOqD6qD02OthqNG_42X4tiU"
 // }
