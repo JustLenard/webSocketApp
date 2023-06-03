@@ -1,34 +1,27 @@
-import { Grid } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 import ChatContainer from '../components/ChatContainer'
 import Header from '../components/Header'
 import LeftMenu from '../components/LeftMenu'
 import RightMenu from '../components/RightMenu'
+import { useContext } from 'react'
+import AuthContext from '../auth/AuthProvider'
 
 const ChatPage = () => {
+	const { logOut } = useContext(AuthContext)
 	return (
-		<Grid
-			display={'flex'}
-			justifyContent={'space-between'}
-			container
-			minHeight={'100vh'}
-			border={'2px solid blue'}
-		>
-			<Grid xs={2} item>
-				<LeftMenu />
-			</Grid>
-			<Grid xs={10} display={'flex'} direction={'column'}>
-				<Header />
-				<Grid
-					display={'flex'}
-					justifyContent={'space-between'}
-					border={'2px solid red'}
-					height={'100%'}
-				>
-					<ChatContainer />
-					<RightMenu />
-				</Grid>
-			</Grid>
-		</Grid>
+		<div>
+			<div>{/* <LeftMenu /> */}</div>
+			<div>
+				{/* <Header /> */}
+				<div>
+					{/* <ChatContainer />
+					<RightMenu /> */}
+					chat
+				</div>
+			</div>
+
+			<Button onClick={logOut}>Logout</Button>
+		</div>
 	)
 }
 

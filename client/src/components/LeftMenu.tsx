@@ -1,4 +1,4 @@
-import { Card, Divider, Grid } from '@mui/material'
+import { Card, Divider, div } from '@mui/material'
 import { Stack } from '@mui/system'
 import RoomName from './RoomName'
 

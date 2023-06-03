@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
 import { LogInCredentials } from '../types/types'
 import AuthContext from '../auth/AuthProvider'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { appAxios } from '../api/axios'
+import { appAxios, axiosPrivate } from '../api/axios'
 import { routes } from '../router/Root'
 
 const publicUsername = import.meta.env.VITE_PUBLIC_USERNAME
@@ -41,7 +41,7 @@ const LoginPage: React.FC = () => {
 	}, [navigate, location.state, accessToken])
 
 	const onSubmit: SubmitHandler<LogInCredentials> = async (credentials) => {
-		const response = await appAxios.post('/auth/signin', credentials)
+		const response = await axiosPrivate.post('/auth/signin', credentials)
 
 		login(response.data.accessToken)
 

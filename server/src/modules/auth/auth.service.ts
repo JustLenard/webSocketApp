@@ -7,7 +7,7 @@ import { Repository } from 'typeorm'
 import { User } from '../users/entities/user.entity'
 import { UsersService } from '../users/users.service'
 import { AuthDto } from './auth.dto'
-
+import { Response } from 'express'
 @Injectable()
 export class AuthService {
 	constructor(
@@ -77,7 +77,7 @@ export class AuthService {
 		return tokens
 	}
 
-	async signinLocal(dto: AuthDto): Promise<Tokens> {
+	async signinLocal(dto: AuthDto, res: Response): Promise<Tokens> {
 		const user = await this.userRepostiry.findOne({
 			where: { username: dto.username },
 		})
@@ -89,6 +89,18 @@ export class AuthService {
 
 		const tokens = await this.getTokens(user.id, user.username)
 		await this.updateRtHash(user.id, tokens.refreshToken)
+
+		// res.cookie('refreshToken', tokens.refreshToken, {
+		// 	httpOnly: true,
+		// 	secure: false,
+		// 	domain: 'localhost',
+		// })
+
+		this.setCookie(res, tokens.refreshToken)
+
+		console.log('This is res', res)
+
+		console.log('This is res.cookie', res.cookie)
 
 		return tokens
 	}
@@ -105,7 +117,7 @@ export class AuthService {
 		)
 	}
 
-	async refresh(userId: number, rt: string) {
+	async refresh(userId: number, rt: string, res: Response) {
 		const user = await this.userRepostiry.findOne({
 			where: {
 				id: userId,
@@ -126,6 +138,14 @@ export class AuthService {
 		const tokens = await this.getTokens(user.id, user.username)
 		await this.updateRtHash(user.id, tokens.refreshToken)
 
+		// res.cookie('refreshToken', tokens.refreshToken, {
+		// 	httpOnly: true,
+		// 	secure: false,
+		// 	domain: 'localhost',
+		// })
+
+		this.setCookie(res, tokens.refreshToken)
+
 		return tokens
 	}
 
@@ -139,9 +159,13 @@ export class AuthService {
 		}
 		return null
 	}
-}
 
-// {
-//     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIzLCJ1c2VybmFtZSI6ImxlbiIsImlhdCI6MTY4NTYyMTA1OSwiZXhwIjoxNjg1NjIxOTU5fQ.HIOnuTNeguw4gqQ70F5bcrM4ggdK5ziJqj_yBqO2r4c",
-//     "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIzLCJ1c2VybmFtZSI6ImxlbiIsImlhdCI6MTY4NTYyMTA1OSwiZXhwIjoxNjg2MjI1ODU5fQ.K6lUnyLWAYrpl3pWXO7JdOqD6qD02OthqNG_42X4tiU"
-// }
+	async setCookie(res: Response, value: string, cookieName = 'refreshToken') {
+		return res.cookie(cookieName, value, {
+			httpOnly: true,
+			secure: false,
+			domain: 'localhost',
+			sameSite: 'strict',
+		})
+	}
+}

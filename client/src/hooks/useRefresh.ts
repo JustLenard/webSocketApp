@@ -1,18 +1,27 @@
 import { useContext } from 'react'
-import { appAxios } from '../api/axios'
+import { appAxios, axiosPrivate } from '../api/axios'
 import AuthContext, { AuthProvider } from '../auth/AuthProvider'
 
 const useRefreshToken = () => {
 	const { login } = useContext(AuthContext)
 
 	const refresh = async () => {
-		const response = await appAxios.get('/refresh', {
-			withCredentials: true,
-		})
+		try {
+			const response = await axiosPrivate.post('/auth/refresh', {
+				withCredentials: true,
+			})
 
-		login(response.data.accessToken)
+			console.log('This is response', response)
 
-		return response.data.accessToken
+			console.log('Refresh')
+
+			console.log('This is login', login)
+			// login(response.data.accessToken)
+
+			return response.data.accessToken
+		} catch (err) {
+			console.log('This is err', err)
+		}
 	}
 	return refresh
 }
