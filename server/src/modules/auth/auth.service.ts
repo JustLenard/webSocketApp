@@ -64,6 +64,8 @@ export class AuthService {
 	async signupLocal(dto: AuthDto): Promise<Tokens> {
 		const hash = await this.hashData(dto.password)
 
+		this.userRepostiry.create({})
+
 		const newUser = await this.userRepostiry
 			.create({
 				username: dto.username,
@@ -98,15 +100,10 @@ export class AuthService {
 
 		this.setCookie(res, tokens.refreshToken)
 
-		console.log('This is res', res)
-
-		console.log('This is res.cookie', res.cookie)
-
 		return tokens
 	}
 
 	async logout(userId: number) {
-		console.log('This is userId', userId)
 		await this.userRepostiry.update(
 			{
 				id: userId,
@@ -124,14 +121,9 @@ export class AuthService {
 			},
 		})
 
-		console.log('This is user', user)
-		console.log('This is rt', rt)
-
 		if (!user || !user.refreshToken) throw new ForbiddenException('Access Denied')
 
 		const rtMatches = await argon2.verify(user.refreshToken, rt)
-
-		console.log('This is rtMatches', rtMatches)
 
 		if (!rtMatches) throw new ForbiddenException('Access Denied')
 
@@ -166,6 +158,12 @@ export class AuthService {
 			secure: false,
 			domain: 'localhost',
 			sameSite: 'strict',
+		})
+	}
+
+	verifyJwt(jwt: string): Promise<any> {
+		return this.jwtService.verifyAsync(jwt, {
+			secret: process.env.ACCESS_TOKEN_SECRET,
 		})
 	}
 }

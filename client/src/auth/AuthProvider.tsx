@@ -31,13 +31,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 				setLoading(true)
 				const newAccesToken = await refresh()
 
-				console.log('This is newAccesToken', newAccesToken)
-
 				if (newAccesToken) {
 					setAccessTokens(newAccesToken)
 					return setLoading(false)
 				}
-				console.log('logout')
 				logOut()
 				setLoading(false)
 			}
@@ -52,7 +49,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 	}
 
 	const login = (accessToken: string) => {
-		console.log('Loging in ')
 		setAccessTokens(accessToken)
 		setLoggedIn(true)
 		localStorage.setItem(loggedInKey, 'true')
@@ -65,9 +61,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 		login,
 	}
 
-	console.log('This is accessToken', accessToken)
-
-	console.log('This is loggedIn', loggedIn)
 	if (loading) return <div>loading</div>
 
 	return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

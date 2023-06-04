@@ -22,6 +22,7 @@ const LoginPage: React.FC = () => {
 	const dispatch = useAppDispatch()
 	const location = useLocation()
 	const navigate = useNavigate()
+	const { loggedIn, login } = useContext(AuthContext)
 	const {
 		register,
 		handleSubmit,
@@ -29,23 +30,17 @@ const LoginPage: React.FC = () => {
 		formState: { errors },
 	} = useForm<LogInCredentials>()
 
-	const { accessToken, login } = useContext(AuthContext)
-
 	// If the user is loged in, send him from the page he was coming from or to Home page
 	useEffect(() => {
-		console.log('This is accessToken', accessToken)
-		if (accessToken) {
-			// location.state ? navigate(location.state.path) : navigate(routes.chat)
-			console.log('This is navigate(routes.chat)', navigate(routes.chat))
+		if (loggedIn) {
+			location.state ? navigate(location.state.path) : navigate(routes.chat)
 		}
-	}, [navigate, location.state, accessToken])
+	}, [navigate, location.state, loggedIn])
 
 	const onSubmit: SubmitHandler<LogInCredentials> = async (credentials) => {
 		const response = await axiosPrivate.post('/auth/signin', credentials)
 
 		login(response.data.accessToken)
-
-		console.log('This is response', response)
 	}
 
 	return (
@@ -93,6 +88,9 @@ const LoginPage: React.FC = () => {
 						</FormControl>
 						<Button type="submit" sx={{ mt: 1 /* margin top */ }}>
 							Log in
+						</Button>
+						<Button type="submit" sx={{ mt: 1 /* margin top */ }}>
+							Random Account
 						</Button>
 					</form>
 					<Typography

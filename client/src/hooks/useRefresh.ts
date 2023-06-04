@@ -11,11 +11,6 @@ const useRefreshToken = () => {
 				withCredentials: true,
 			})
 
-			console.log('This is response', response)
-
-			console.log('Refresh')
-
-			console.log('This is login', login)
 			// login(response.data.accessToken)
 
 			return response.data.accessToken

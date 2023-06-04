@@ -12,7 +12,6 @@ const publicUsername = import.meta.env.VITE_PUBLIC_USERNAME
 const publicPassword = import.meta.env.VITE_PUBLIC_PASSWORD
 
 const ModeToggle = () => {
-	console.log('This is publicUsername', publicUsername)
 	const { mode, setMode } = useColorScheme()
 	const [mounted, setMounted] = useState(false)
 

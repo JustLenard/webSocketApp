@@ -7,7 +7,6 @@
 // @Injectable()
 // export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
 // 	constructor() {
-// 		console.log('This is process.env.accessToken_SECRET,', process.env.accessToken_SECRET)
 // 		super({
 // 			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 // 			secretOrKey: process.env.accessToken_SECRET,
@@ -38,9 +37,6 @@ const extractCookie = (req, cookie = 'refreshToken') => {
 	let token = null
 	if (req && req.cookies) {
 		token = req.cookies[cookie]
-
-		console.log('This is req.cookies', req.cookies)
-		console.log('This is token', token)
 	}
 	return token
 }
@@ -56,7 +52,6 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
 	}
 
 	validate(req: Request, payload: JwtPayload) {
-		console.log('reach')
 		const refreshToken = extractCookie(req)
 
 		if (!refreshToken) throw new ForbiddenException('Refresh token malformed')

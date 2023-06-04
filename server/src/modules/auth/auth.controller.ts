@@ -32,7 +32,6 @@ export class AuthController {
 	@Post('/signin')
 	@HttpCode(HttpStatus.OK)
 	signinLocal(@Body() dto: AuthDto, @Res({ passthrough: true }) res: Response): Promise<Tokens> {
-		res.cookie('man', 'what hte fuck')
 		return this.authService.signinLocal(dto, res)
 	}
 

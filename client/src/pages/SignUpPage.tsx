@@ -6,8 +6,12 @@ import Sheet from '@mui/joy/Sheet'
 import Typography from '@mui/joy/Typography'
 import { CssVarsProvider } from '@mui/joy/styles'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { apiRequest } from '../utils/ApiRequest'
+import { useContext } from 'react'
+import AuthContext from '../auth/AuthProvider'
+import { axiosPrivate } from '../api/axios'
+import { routes } from '../router/Root'
 
 interface SignUpForm {
 	username: string
@@ -23,11 +27,18 @@ const SignUpPage: React.FC = () => {
 		formState: { errors },
 	} = useForm<SignUpForm>()
 
+	const navigate = useNavigate()
+
+	const { accessToken, login } = useContext(AuthContext)
+
 	const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
-		const res = await apiRequest('/users', 'POST', {
+		const response = await axiosPrivate.post('/auth/signup', {
 			username: data.username,
 			password: data.password,
 		})
+
+		login(response.data.accessToken)
+		navigate(routes.chat)
 	}
 
 	return (
@@ -56,11 +67,7 @@ const SignUpPage: React.FC = () => {
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<FormControl>
 							<FormLabel>Username</FormLabel>
-							<Input
-								type="text"
-								placeholder="Connor"
-								{...register('username', { required: true })}
-							/>
+							<Input type="text" placeholder="Connor" {...register('username', { required: true })} />
 						</FormControl>
 						<FormControl>
 							<FormLabel>Password</FormLabel>

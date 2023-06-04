@@ -10,7 +10,6 @@ type JwtPayload = {
 @Injectable()
 export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
 	constructor() {
-		console.log('This is process.env.accessToken_SECRET,', process.env.ACCESS_TOKEN_SECRET)
 		super({
 			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 			secretOrKey: process.env.ACCESS_TOKEN_SECRET,

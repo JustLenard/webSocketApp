@@ -8,8 +8,10 @@ import { typeOrm } from './config/TypeOrmConfig'
 import { AuthModule } from './modules/auth/auth.module'
 import { OpenAiModule } from './modules/open-ai/open-ai.module'
 import { UsersModule } from './modules/users/users.module'
-import { WebsocketEvents } from './websocket/websocket.event'
-import { WebsocketGateway } from './websocket/websocket.gateway'
+import { WebsocketEvents } from './modules/chat/chat.event'
+import { ChatGateway } from './modules/chat/chat.gateway'
+import { RoomService } from './modules/chat/service/room/room.service'
+import { ChatModule } from './modules/chat/chat.module'
 
 @Module({
 	imports: [
@@ -20,9 +22,10 @@ import { WebsocketGateway } from './websocket/websocket.gateway'
 		UsersModule,
 		AuthModule,
 		OpenAiModule,
+		ChatModule,
 	],
 	controllers: [AppController],
-	providers: [AppService, WebsocketGateway, WebsocketEvents],
+	providers: [AppService],
 })
 export class AppModule {
 	constructor(private dataSource: DataSource) {}
