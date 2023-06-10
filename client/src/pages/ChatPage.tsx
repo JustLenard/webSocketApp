@@ -7,7 +7,7 @@ import { useContext } from 'react'
 import AuthContext from '../auth/AuthProvider'
 import { SocketContext } from '../websocket/SocketProvider'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { Room } from '../types/room.type'
+import { IRoom } from '../types/room.type'
 
 type ChatForm = {
 	message: string
@@ -33,7 +33,7 @@ const ChatPage = () => {
 	}
 
 	const createRoom = () => {
-		const newRoom: Room = {
+		const newRoom: IRoom = {
 			name: 'First room',
 			users: [],
 		}
@@ -42,8 +42,10 @@ const ChatPage = () => {
 	}
 
 	return (
-		<div>
-			<div>{/* <LeftMenu /> */}</div>
+		<Grid container spacing={2} sx={{ flexGrow: 1 }}>
+			<Grid item>
+				<LeftMenu />
+			</Grid>
 			<div>
 				{/* <Header /> */}
 				<div>
@@ -63,7 +65,7 @@ const ChatPage = () => {
 			<Button onClick={createRoom}>Create Room</Button>
 
 			<Button onClick={logOut}>Logout</Button>
-		</div>
+		</Grid>
 	)
 }
 

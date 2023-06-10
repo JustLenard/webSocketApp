@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import * as argon2 from 'argon2'
 import { Tokens } from 'src/types/tokens.types'
 import { Repository } from 'typeorm'
-import { User } from '../users/entities/user.entity'
+import { UserEntity } from '../users/entities/user.entity'
 import { UsersService } from '../users/users.service'
 import { AuthDto } from './auth.dto'
 import { Response } from 'express'
@@ -13,7 +13,7 @@ export class AuthService {
 	constructor(
 		private usersService: UsersService,
 		private jwtService: JwtService,
-		@InjectRepository(User) private userRepostiry: Repository<User>,
+		@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>,
 	) {}
 
 	hashData(data: string) {
@@ -55,7 +55,7 @@ export class AuthService {
 
 		await this.userRepostiry
 			.createQueryBuilder()
-			.update(User)
+			.update(UserEntity)
 			.set({ refreshToken: hash })
 			.where('id = :id', { id: userId })
 			.execute()

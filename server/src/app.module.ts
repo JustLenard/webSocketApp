@@ -10,7 +10,7 @@ import { OpenAiModule } from './modules/open-ai/open-ai.module'
 import { UsersModule } from './modules/users/users.module'
 import { WebsocketEvents } from './modules/chat/chat.event'
 import { ChatGateway } from './modules/chat/chat.gateway'
-import { RoomService } from './modules/chat/service/room/room.service'
+import { RoomService } from './modules/chat/service/room.service'
 import { ChatModule } from './modules/chat/chat.module'
 
 @Module({

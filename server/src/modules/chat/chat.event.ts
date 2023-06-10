@@ -1,11 +1,16 @@
 import { Server, Socket } from 'socket.io'
 import { Injectable, Logger } from '@nestjs/common'
-import { User } from '../users/entities/user.entity'
+import { UserEntity } from '../users/entities/user.entity'
 import { AuthService } from '../auth/auth.service'
 import { UsersService } from '../users/users.service'
 import { JwtPayload } from 'src/types/jwtPayload.types'
-import { RoomService } from './service/room/room.service'
+import { RoomService } from './service/room.service'
 import { RoomEntity } from './entities/room.entity'
+import { SubscribeMessage } from '@nestjs/websockets'
+import { MessageService } from './service/message.service'
+import { JoinedRoomService } from './service/joinedRoom.service'
+import { JoinedRoomEntity } from './entities/joinedRoom.entity'
+import { JoinedRoomI, MessageI, RoomI } from 'src/types/entities.types'
 
 @Injectable()
 export class WebsocketEvents {
@@ -13,6 +18,8 @@ export class WebsocketEvents {
 		private authService: AuthService,
 		private roomService: RoomService,
 		private userService: UsersService,
+		private messageService: MessageService,
+		private joinedRoomService: JoinedRoomService,
 	) {}
 
 	private logger: Logger = new Logger('Chat')
@@ -25,7 +32,7 @@ export class WebsocketEvents {
 
 			console.log('This is decodedToken', decodedToken)
 			this.logger.log('Looking for user in db')
-			const user: User = await this.userService.findOne(decodedToken.sub)
+			const user: UserEntity = await this.userService.findOne(decodedToken.sub)
 
 			console.log('This is user', user)
 
@@ -56,7 +63,34 @@ export class WebsocketEvents {
 		// server.emit('message', payload);
 	}
 
-	async createRoom(client: Socket, room: RoomEntity) {
+	async createRoom(client: Socket, room: RoomI) {
 		return this.roomService.createRoom(room, client.data.user)
+	}
+
+	@SubscribeMessage('joinRoom')
+	async onJoinRoom(client: Socket, room: JoinedRoomI, server: Server) {
+		const messages = await this.messageService.findMessagesForRoom(room)
+		console.log('This is messages', messages)
+		// Save Connection to Room
+		await this.joinedRoomService.create({ socketId: client.id, user: client.data.user, room })
+		// Send last messages from Room to User
+		await server.to(client.id).emit('messages', messages)
+	}
+
+	@SubscribeMessage('leaveRoom')
+	async onLeaveRoom(socket: Socket) {
+		// remove connection from JoinedRooms
+		await this.joinedRoomService.deleteBySocketId(socket.id)
+	}
+
+	@SubscribeMessage('addMessage')
+	async onAddMessage(socket: Socket, message: MessageI, server: Server) {
+		const createdMessage: MessageI = await this.messageService.create({ ...message, user: socket.data.user })
+		const room: RoomEntity = await this.roomService.getRoom(createdMessage.room.id)
+		const joinedUsers: JoinedRoomEntity[] = await this.joinedRoomService.findByRoom(room)
+		// TODO: Send new Message to all joined Users of the room (currently online)
+		for (const user of joinedUsers) {
+			await server.to(user.socketId).emit('messageAdded', createdMessage)
+		}
 	}
 }

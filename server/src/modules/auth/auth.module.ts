@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { User } from '../users/entities/user.entity'
+import { UserEntity } from '../users/entities/user.entity'
 import { UsersModule } from '../users/users.module'
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
@@ -15,7 +15,7 @@ import { RtStrategy } from './strategies/rt.strategy'
 		ConfigModule.forRoot(),
 		PassportModule,
 		UsersModule,
-		TypeOrmModule.forFeature([User]),
+		TypeOrmModule.forFeature([UserEntity]),
 		JwtModule.register({}),
 	],
 	controllers: [AuthController],

@@ -1,10 +1,12 @@
 import { Global } from '@nestjs/common'
+import { JoinedRoomEntity } from 'src/modules/chat/entities/joinedRoom.entity'
+import { MessageEntity } from 'src/modules/chat/entities/message.entity'
 import { RoomEntity } from 'src/modules/chat/entities/room.entity'
-import { BaseEntity, Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
 @Global()
 @Entity('Users')
-export class User extends BaseEntity {
+export class UserEntity extends BaseEntity {
 	@PrimaryGeneratedColumn({
 		comment: 'User uuid',
 	})
@@ -29,4 +31,10 @@ export class User extends BaseEntity {
 		nullable: true,
 	})
 	refreshToken: string | null
+
+	@OneToMany(() => MessageEntity, (message) => message.user)
+	messages: MessageEntity[]
+
+	@OneToMany(() => JoinedRoomEntity, (joinedRoom) => joinedRoom.room)
+	joinedRooms: JoinedRoomEntity[]
 }

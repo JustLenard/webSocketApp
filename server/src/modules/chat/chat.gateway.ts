@@ -5,6 +5,8 @@ import { WebsocketEvents } from './chat.event'
 import { identity } from 'rxjs'
 import { AtGuard } from 'src/common/guards/at.guard'
 import { RoomEntity } from './entities/room.entity'
+import { MessageEntity } from './entities/message.entity'
+import { JoinedRoomI, MessageI, RoomI } from 'src/types/entities.types'
 
 @WebSocketGateway({ namespace: '/ws', cors: true })
 @Injectable()
@@ -37,19 +39,34 @@ export class ChatGateway {
 
 	handleConnection(client: Socket) {
 		client.send(this.messages)
-		this.events.handleConnection(client, this.server)
+		return this.events.handleConnection(client, this.server)
 	}
 
 	handleDisconnect(client: Socket) {
-		this.events.handleDisconnect(client)
+		return this.events.handleDisconnect(client)
 	}
 
 	handleMessage(client: Socket, payload: any) {
-		this.events.handleMessage(client, payload, this.server)
+		return this.events.handleMessage(client, payload, this.server)
 	}
 
 	@SubscribeMessage('createRoom')
-	createRoom(client: Socket, room: RoomEntity) {
-		this.events.createRoom(client, room)
+	createRoom(client: Socket, room: RoomI) {
+		return this.events.createRoom(client, room)
+	}
+
+	@SubscribeMessage('joinRoom')
+	async onJoinRoom(socket: Socket, room: JoinedRoomI) {
+		return this.events.onJoinRoom(socket, room, this.server)
+	}
+
+	@SubscribeMessage('leaveRoom')
+	async onLeaveRoom(socket: Socket) {
+		return this.events.onLeaveRoom(socket)
+	}
+
+	@SubscribeMessage('addMessage')
+	async onAddMessage(socket: Socket, message: MessageI) {
+		return this.events.onAddMessage(socket, message, this.server)
 	}
 }

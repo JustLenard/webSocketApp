@@ -1,6 +1,6 @@
 import { User } from './user.type'
 
-export interface Room {
+export interface IRoom {
 	id?: number
 	name: string
 	description?: string
