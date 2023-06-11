@@ -1,13 +1,34 @@
 import { Avatar, Card } from '@mui/material'
 import { Stack } from '@mui/system'
+import { IRoom } from '../types/room.type'
+import { useContext } from 'react'
+import { SocketContext } from '../websocket/SocketProvider'
 
 interface Props {
 	name: string
 }
 
-const RoomName: React.FC<Props> = ({ name }) => {
+const RoomName: React.FC<Props & IRoom> = ({ name, id }) => {
+	const { selectCurrentRoom, appSocket } = useContext(SocketContext)
+
+	const handleClick = () => {
+		console.log('This is id', id)
+
+		selectCurrentRoom(id)
+		// appSocket?.emit('joinRoom', {
+		// 	id: id,
+		// })
+	}
+
 	return (
-		<Stack display={'flex'} direction={'row'} border={'1px solid red'} padding={0.5} borderRadius={2}>
+		<Stack
+			onClick={handleClick}
+			display={'flex'}
+			direction={'row'}
+			border={'1px solid red'}
+			padding={0.5}
+			borderRadius={2}
+		>
 			<Avatar>H</Avatar>
 			<Stack display={'flex'} justifyContent={'center'} flexGrow={1} marginLeft={3}>
 				{name}

@@ -15,7 +15,7 @@ const LeftMenu = () => {
 	return (
 		<Stack spacing={1} padding={1}>
 			{rooms.map((room, i) => (
-				<RoomName name={room.name} key={room.id} />
+				<RoomName {...room} key={room.id} />
 			))}
 		</Stack>
 	)

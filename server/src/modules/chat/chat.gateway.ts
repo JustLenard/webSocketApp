@@ -67,6 +67,7 @@ export class ChatGateway {
 
 	@SubscribeMessage('addMessage')
 	async onAddMessage(socket: Socket, message: MessageI) {
+		console.log('trigger')
 		return this.events.onAddMessage(socket, message, this.server)
 	}
 }

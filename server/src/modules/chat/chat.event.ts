@@ -10,7 +10,7 @@ import { SubscribeMessage } from '@nestjs/websockets'
 import { MessageService } from './service/message.service'
 import { JoinedRoomService } from './service/joinedRoom.service'
 import { JoinedRoomEntity } from './entities/joinedRoom.entity'
-import { JoinedRoomI, MessageI, RoomI } from 'src/types/entities.types'
+import { FMessage, JoinedRoomI, MessageI, RoomI } from 'src/types/entities.types'
 
 @Injectable()
 export class WebsocketEvents {
@@ -67,7 +67,6 @@ export class WebsocketEvents {
 		return this.roomService.createRoom(room, client.data.user)
 	}
 
-	@SubscribeMessage('joinRoom')
 	async onJoinRoom(client: Socket, room: JoinedRoomI, server: Server) {
 		const messages = await this.messageService.findMessagesForRoom(room)
 		console.log('This is messages', messages)
@@ -77,16 +76,18 @@ export class WebsocketEvents {
 		await server.to(client.id).emit('messages', messages)
 	}
 
-	@SubscribeMessage('leaveRoom')
 	async onLeaveRoom(socket: Socket) {
 		// remove connection from JoinedRooms
 		await this.joinedRoomService.deleteBySocketId(socket.id)
 	}
 
-	@SubscribeMessage('addMessage')
-	async onAddMessage(socket: Socket, message: MessageI, server: Server) {
-		const createdMessage: MessageI = await this.messageService.create({ ...message, user: socket.data.user })
+	async onAddMessage(socket: Socket, message: FMessage, server: Server) {
+		console.log('creating message')
+		const createdMessage: MessageI = await this.messageService.create({ user: socket.data.user })
+		console.log('This is createdMessage', createdMessage)
 		const room: RoomEntity = await this.roomService.getRoom(createdMessage.room.id)
+
+		console.log('This is room', room)
 		const joinedUsers: JoinedRoomEntity[] = await this.joinedRoomService.findByRoom(room)
 		// TODO: Send new Message to all joined Users of the room (currently online)
 		for (const user of joinedUsers) {

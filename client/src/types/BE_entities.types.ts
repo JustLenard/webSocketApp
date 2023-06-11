@@ -17,13 +17,13 @@ export interface RoomI {
 export interface MessageI {
 	id?: number
 	text: string
-	room: RoomI
 	user: UserI
-	created_at?: Date
-	updated_at?: Date
+	room: RoomI
+	created_at: Date
+	updated_at: Date
 }
 
-export interface FMessage {
+export interface ISentMessage {
 	text: string
 	room: number
 }
