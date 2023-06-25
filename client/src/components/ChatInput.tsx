@@ -1,23 +1,40 @@
-import { Button, OutlinedInput } from '@mui/material'
-import { useState } from 'react'
-import { Form } from 'react-router-dom'
-import { socket } from '../websocket/SocketProvider'
+import { Button, FormControl, Input, OutlinedInput } from '@mui/material'
+import { useContext, useState } from 'react'
+import { SocketContext } from '../websocket/SocketProvider'
+import { SubmitHandler, useForm } from 'react-hook-form'
+
+type ChatForm = {
+	message: string
+}
 
 interface Props {}
 
 const ChatInput: React.FC<Props> = () => {
-	const [message, setMessage] = useState('')
+	const {
+		register,
+		handleSubmit,
+		watch,
+		formState: { errors },
+		resetField,
+	} = useForm<ChatForm>()
 
-	const handleSubmit = () => {
-		socket.emit('sendMessage', message, (data: string) => console.log('This is data', data))
-		setMessage('')
+	const { appSocket, sendMessage } = useContext(SocketContext)
+
+	const handleMessageSubmit: SubmitHandler<ChatForm> = (formData) => {
+		console.log('This is message', formData)
+
+		sendMessage(formData.message)
+
+		resetField('message')
 	}
 
 	return (
-		<Form onSubmit={handleSubmit}>
-			<OutlinedInput size="small" value={message} onChange={(e) => setMessage(e.target.value)} />
+		<form onSubmit={handleSubmit(handleMessageSubmit)}>
+			<FormControl>
+				<Input placeholder="Your message... " {...register('message')} />
+			</FormControl>
 			<Button type="submit">Submit</Button>
-		</Form>
+		</form>
 	)
 }
 

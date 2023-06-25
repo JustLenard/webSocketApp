@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, Input, OutlinedInput } from '@mui/material'
+import { Box, Button, FormControl, Grid, Input, OutlinedInput } from '@mui/material'
 import { useContext, useEffect } from 'react'
 import { Form } from 'react-router-dom'
 import { apiRequest } from '../utils/ApiRequest'
@@ -7,30 +7,12 @@ import AuthContext from '../auth/AuthProvider'
 import { SocketContext } from '../websocket/SocketProvider'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { IRoom } from '../types/room.type'
-
-type ChatForm = {
-	message: string
-}
+import MessageContainer from './MessageContainer'
 
 const ChatContainer = () => {
 	const { logOut } = useContext(AuthContext)
 
 	const { appSocket, sendMessage } = useContext(SocketContext)
-	const {
-		register,
-		handleSubmit,
-		watch,
-		formState: { errors },
-		resetField,
-	} = useForm<ChatForm>()
-
-	const handleMessageSubmit: SubmitHandler<ChatForm> = (formData) => {
-		console.log('This is message', formData)
-
-		sendMessage(formData.message)
-
-		resetField('message')
-	}
 
 	const createRoom = () => {
 		const newRoom: IRoom = {
@@ -43,16 +25,25 @@ const ChatContainer = () => {
 
 	return (
 		<>
-			<form onSubmit={handleSubmit(handleMessageSubmit)}>
-				<FormControl>
-					<Input placeholder="Your message... " {...register('message')} />
-				</FormControl>
-				<Button type="submit">Submit</Button>
-			</form>
+			<Grid container direction={'column'} height={'100%'}>
+				<Grid
+					item
+					xs
+					height={'100%'}
+					style={{
+						border: '1px solid red',
+					}}
+				>
+					<MessageContainer />
+				</Grid>
+				<Grid>
+					<ChatInput />
+				</Grid>
+			</Grid>
 
-			<Button onClick={createRoom}>Create Room</Button>
+			{/* <Button onClick={createRoom}>Create Room</Button>
 
-			<Button onClick={logOut}>Logout</Button>
+			<Button onClick={logOut}>Logout</Button> */}
 		</>
 	)
 }

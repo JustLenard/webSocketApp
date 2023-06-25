@@ -5,12 +5,14 @@ import AuthContext from '../auth/AuthProvider'
 import { IRoom } from '../types/room.type'
 import { ISentMessage, MessageI } from '../types/BE_entities.types'
 import AppLoading from '../components/AppLoading'
+import useRefreshToken from '../hooks/useRefresh'
 
 const websocketURL = import.meta.env.VITE_PUBLIC_URL + '/ws'
 
 interface IContext {
 	appSocket: Socket
 	rooms: null | IRoom[]
+	messages: MessageI[] | null
 	sendMessage: (message: string) => void
 	selectCurrentRoom: (roomId: number) => void
 }
@@ -38,13 +40,14 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	const [appSocket, setAppSocket] = useState<null | Socket>(null)
 	const [messages, setMessages] = useState<null | MessageI[]>(null)
 	const [rooms, setRooms] = useState<null | IRoom[]>(null)
-	const [currentRoom, setCurrentRoom] = useState<number | null>(null)
+	// const [currentRoom, setCurrentRoom] = useState<number | null>(null)
+	const [currentRoom, setCurrentRoom] = useState<number | null>(1)
 
 	const { login, logOut, loggedIn, accessToken } = useContext(AuthContext)
 
-	const createSocket = useCallback(() => {
-		if (!accessToken) return
+	const getAccesToken = useRefreshToken()
 
+	const createSocket = useCallback(() => {
 		const socket: Socket = io(`${websocketURL}`, {
 			reconnection: true, // enable automatic reconnect
 			reconnectionAttempts: 1, // maximum number of reconnection attempts
@@ -71,6 +74,11 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 			setMessages(messages)
 		})
 
+		socket.on('messageAdded', (newMessage: MessageI[]) => {
+			console.log('This is newMessage', newMessage)
+			// setMessages(messages)
+		})
+
 		socket.on('disconnect', () => {
 			console.log('Disconnected from WebSocket server')
 		})
@@ -90,19 +98,21 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	}, [logOut])
 
 	useEffect(() => {
-		if (loggedIn) {
+		if (loggedIn && accessToken) {
 			createSocket()
+		} else {
+			getAccesToken()
 		}
 	}, [createSocket, loggedIn])
 
-	if (!appSocket) return <AppLoading />
+	// if (!appSocket) return <AppLoading />
 
 	const sendMessage = (messageContent: string) => {
-		appSocket.emit('addMessage', {
+		console.log('This is currentRoom', currentRoom)
+		appSocket?.emit('addMessage', {
 			text: messageContent,
-			room: selectCurrentRoom,
+			room: currentRoom,
 		})
-		//
 	}
 
 	const selectCurrentRoom = (roomId: number) => {
@@ -112,8 +122,8 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	const contextValue = {
 		appSocket,
 		rooms,
-		sendMessage,
 		messages,
+		sendMessage,
 		selectCurrentRoom,
 	}
 

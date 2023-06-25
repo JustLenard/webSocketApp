@@ -15,7 +15,7 @@ interface ApiResponse<T> {
 export const apiRequest = async <T>(
 	endpoint: string,
 	method: ApiMethod = 'GET',
-	params: any = null
+	params: any = null,
 ): Promise<ApiResponse<T>> => {
 	const config: AxiosRequestConfig = {
 		method: method,

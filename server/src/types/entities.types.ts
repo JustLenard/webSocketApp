@@ -17,8 +17,11 @@ export interface RoomI {
 export interface MessageI {
 	id?: number
 	text: string
-	room: RoomI
-	user: UserI
+	// room: RoomI
+	room: number
+	// user: UserI
+	user: number
+
 	created_at?: Date
 	updated_at?: Date
 }

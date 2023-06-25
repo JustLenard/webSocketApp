@@ -15,9 +15,9 @@ const RoomName: React.FC<Props & IRoom> = ({ name, id }) => {
 		console.log('This is id', id)
 
 		selectCurrentRoom(id)
-		// appSocket?.emit('joinRoom', {
-		// 	id: id,
-		// })
+		appSocket?.emit('joinRoom', {
+			id,
+		})
 	}
 
 	return (

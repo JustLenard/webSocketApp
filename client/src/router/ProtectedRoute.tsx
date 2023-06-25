@@ -16,6 +16,7 @@ const ProtectedRoute: React.FC<Props> = ({ children }) => {
 	// If the user is not loged in, send him to log in page.
 	// Save the curent page route to memory for redirect after log in.
 	if (!loggedIn) {
+		console.log('Redirecting to login')
 		return <Navigate to={routes.login} state={{ path: location.pathname }} />
 	}
 	return children

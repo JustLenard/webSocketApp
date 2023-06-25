@@ -6,7 +6,7 @@ import AuthContext from '../auth/AuthProvider'
 
 const useAxiosPrivate = () => {
 	const refresh = useRefreshToken()
-	const { accessToken } = useContext(AuthContext)
+	const { accessToken, logOut } = useContext(AuthContext)
 
 	useEffect(() => {
 		const requestIntercept = axiosPrivate.interceptors.request.use(
@@ -16,13 +16,17 @@ const useAxiosPrivate = () => {
 				}
 				return config
 			},
-			(error) => Promise.reject(error),
+			(error) => {
+				console.log('This is error?.response?', error?.response)
+				return Promise.reject(error)
+			},
 		)
 
 		const responseIntercept = axiosPrivate.interceptors.response.use(
 			(response) => response,
 			async (error) => {
 				const prevRequest = error?.config
+
 				if (error?.response?.status === 403 && !prevRequest?.sent) {
 					prevRequest.sent = true
 					const newAccessToken = await refresh()

@@ -10,13 +10,17 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { IRoom } from '../types/room.type'
 
 const ChatPage = () => {
+	console.log('This is ChatPage')
 	return (
-		<Grid container spacing={2} sx={{ flexGrow: 1 }}>
-			<Grid item>
+		<Grid container spacing={2} sx={{ border: '1px solid blue', minHeight: '100vh' }}>
+			<Grid item xs={2}>
 				<LeftMenu />
 			</Grid>
-			<Grid item>
+			<Grid item xs>
 				<ChatContainer />
+			</Grid>
+			<Grid item xs={2}>
+				<RightMenu />
 			</Grid>
 		</Grid>
 	)

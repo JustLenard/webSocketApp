@@ -11,6 +11,7 @@ import { MessageService } from './service/message.service'
 import { JoinedRoomService } from './service/joinedRoom.service'
 import { JoinedRoomEntity } from './entities/joinedRoom.entity'
 import { FMessage, JoinedRoomI, MessageI, RoomI } from 'src/types/entities.types'
+import { MessageEntity } from './entities/message.entity'
 
 @Injectable()
 export class WebsocketEvents {
@@ -81,15 +82,19 @@ export class WebsocketEvents {
 		await this.joinedRoomService.deleteBySocketId(socket.id)
 	}
 
-	async onAddMessage(socket: Socket, message: FMessage, server: Server) {
+	async onAddMessage(socket: Socket, message: MessageI, server: Server) {
 		console.log('creating message')
-		const createdMessage: MessageI = await this.messageService.create({ user: socket.data.user })
-		console.log('This is createdMessage', createdMessage)
-		const room: RoomEntity = await this.roomService.getRoom(createdMessage.room.id)
+		const createdMessage: MessageI = await this.messageService.create({ user: socket.data.user, ...message })
 
+		// console.log('This is createdMessage', createdMessage)
+		const room: RoomEntity = await this.roomService.getRoom(createdMessage.room)
 		console.log('This is room', room)
+
+		// console.log('This is room', room)
 		const joinedUsers: JoinedRoomEntity[] = await this.joinedRoomService.findByRoom(room)
 		// TODO: Send new Message to all joined Users of the room (currently online)
+
+		console.log('This is joinedUsers', joinedUsers)
 		for (const user of joinedUsers) {
 			await server.to(user.socketId).emit('messageAdded', createdMessage)
 		}

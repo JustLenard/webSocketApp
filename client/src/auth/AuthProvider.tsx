@@ -2,6 +2,7 @@ import { ReactNode, createContext, useEffect, useState } from 'react'
 import useRefreshToken from '../hooks/useRefresh'
 import { useNavigate } from 'react-router-dom'
 import { routes } from '../router/Root'
+import AppLoading from '../components/AppLoading'
 
 interface IContext {
 	loggedIn: boolean
@@ -28,6 +29,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 	useEffect(() => {
 		if (loggedIn && accessToken === null) {
 			const getAccessToken = async () => {
+				console.log('Getting new acces token')
 				setLoading(true)
 				const newAccesToken = await refresh()
 
@@ -54,6 +56,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 		localStorage.setItem(loggedInKey, 'true')
 	}
 
+	console.log('This is accessToken', accessToken)
+	console.log('This is loggedIn', loggedIn)
+
 	const contextValue: IContext = {
 		accessToken,
 		loggedIn,
@@ -61,7 +66,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 		login,
 	}
 
-	if (loading) return <div>loading</div>
+	if (loading) return <AppLoading circle />
 
 	return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 }

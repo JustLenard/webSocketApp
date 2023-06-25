@@ -5,50 +5,27 @@ import Sheet from '@mui/joy/Sheet'
 import Stack from '@mui/joy/Stack'
 import { styled } from '@mui/joy/styles'
 import Typography from '@mui/joy/Typography'
+import { MessageI } from '../types/BE_entities.types'
 
-const Item = styled(Sheet)(({ theme }) => ({
-	...theme.typography.body2,
-	padding: theme.spacing(1),
-	textAlign: 'center',
-	borderRadius: 4,
-	color: theme.vars.palette.text.secondary,
-	maxWidth: 400,
-}))
+interface Props {
+	message: MessageI
+}
 
-const message = `Truncation should be conditionally applicable on this long line of text
- as this is a much longer line than what the container can support.`
-
-export default function ZeroWidthStack() {
+export const Message: React.FC<Props> = ({ message }) => {
 	return (
 		<Box sx={{ flexGrow: 1, overflow: 'hidden', px: 3 }}>
-			<Item
-				sx={{
-					my: 1,
-					mx: 'auto',
-					p: 2,
-				}}
-			>
-				<Stack spacing={2} direction="row" alignItems="center">
-					<Avatar>W</Avatar>
-					<Typography noWrap>{message}</Typography>
+			<Stack spacing={2} direction="row" alignItems="center">
+				<Avatar>{message.user.username[0]}</Avatar>
+				<Stack direction={'column'} spacing={0}>
+					<Typography color="info" noWrap>
+						{message.user.username}
+					</Typography>
+
+					<Typography noWrap>{message.text}</Typography>
 				</Stack>
-			</Item>
-			<Item
-				sx={{
-					my: 1,
-					mx: 'auto',
-					p: 2,
-				}}
-			>
-				<Stack spacing={2} direction="row" alignItems="center">
-					<Stack>
-						<Avatar>W</Avatar>
-					</Stack>
-					<Stack sx={{ minWidth: 0 }}>
-						<Typography noWrap>{message}</Typography>
-					</Stack>
-				</Stack>
-			</Item>
+			</Stack>
 		</Box>
 	)
 }
+
+export default Message
