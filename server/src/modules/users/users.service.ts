@@ -10,7 +10,9 @@ export class UsersService {
 	constructor(@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>) {}
 
 	findAll(): Promise<UserEntity[]> {
-		return this.userRepostiry.find()
+		const users = this.userRepostiry.find()
+		console.log('This is users', users)
+		return users
 	}
 
 	findOne(id: number) {

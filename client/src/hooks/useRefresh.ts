@@ -3,6 +3,7 @@ import { appAxios, axiosPrivate } from '../api/axios'
 import AuthContext, { AuthProvider } from '../auth/AuthProvider'
 import useAxiosPrivate from './useAxiosPrivate'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { routes } from '../router/Root'
 
 const useRefreshToken = () => {
 	const { login, logOut } = useContext(AuthContext)
@@ -24,7 +25,8 @@ const useRefreshToken = () => {
 
 			return response.data.accessToken
 		} catch (err) {
-			logOut()
+			// logOut()
+			// location.pathname !== routes.login && location.assign(routes.login)
 		}
 	}
 	return refresh
