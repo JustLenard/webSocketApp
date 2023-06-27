@@ -26,6 +26,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 
 	const refresh = useRefreshToken()
 
+	/**
+	 * Get access token if uses still has valid refresh token
+	 **/
 	useEffect(() => {
 		if (loggedIn && accessToken === null) {
 			const getAccessToken = async () => {

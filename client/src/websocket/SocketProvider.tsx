@@ -6,11 +6,12 @@ import { IRoom } from '../types/room.type'
 import { ISentMessage, MessageI } from '../types/BE_entities.types'
 import AppLoading from '../components/AppLoading'
 import useRefreshToken from '../hooks/useRefresh'
+import { useNavigate } from 'react-router-dom'
 
 const websocketURL = import.meta.env.VITE_PUBLIC_URL + '/ws'
 
 interface IContext {
-	appSocket: Socket
+	appSocket: Socket | null
 	rooms: null | IRoom[]
 	messages: MessageI[] | null
 	sendMessage: (message: string) => void
