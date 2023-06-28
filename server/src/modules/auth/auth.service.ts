@@ -8,12 +8,15 @@ import { UserEntity } from '../users/entities/user.entity'
 import { UsersService } from '../users/users.service'
 import { AuthDto } from './auth.dto'
 import { Response } from 'express'
+import { RoomService } from '../chat/service/room.service'
+import { RoomEntity } from '../chat/entities/room.entity'
 @Injectable()
 export class AuthService {
 	constructor(
 		private usersService: UsersService,
 		private jwtService: JwtService,
 		@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>,
+		@InjectRepository(RoomEntity) private roomRepository: Repository<RoomEntity>,
 	) {}
 
 	hashData(data: string) {
@@ -66,12 +69,27 @@ export class AuthService {
 
 		this.userRepostiry.create({})
 
+		const globalRoom = await this.roomRepository.findOne({
+			where: { name: 'Global' },
+		})
+
+		console.log('This is globalRoom', globalRoom)
+
 		const newUser = await this.userRepostiry
 			.create({
 				username: dto.username,
 				password: hash,
+				// rooms: [globalRoom],
+				messages: [
+					{
+						text: 'asdf',
+						id: 1243,
+					},
+				],
 			})
 			.save()
+
+		console.log('This is newUser', newUser)
 
 		const tokens = await this.getTokens(newUser.id, newUser.username)
 		await this.updateRtHash(newUser.id, tokens.refreshToken)

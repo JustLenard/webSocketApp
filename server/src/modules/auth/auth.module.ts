@@ -9,13 +9,15 @@ import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 import { AtStrategy } from './strategies/at.strategy'
 import { RtStrategy } from './strategies/rt.strategy'
+import { ChatModule } from '../chat/chat.module'
+import { RoomEntity } from '../chat/entities/room.entity'
 
 @Module({
 	imports: [
 		ConfigModule.forRoot(),
 		PassportModule,
 		UsersModule,
-		TypeOrmModule.forFeature([UserEntity]),
+		TypeOrmModule.forFeature([UserEntity, RoomEntity]),
 		JwtModule.register({}),
 	],
 	controllers: [AuthController],

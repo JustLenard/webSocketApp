@@ -4,19 +4,23 @@ import { Repository } from 'typeorm'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UserEntity } from './entities/user.entity'
+import { UserI } from 'src/types/entities.types'
 
 @Injectable()
 export class UsersService {
 	constructor(@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>) {}
 
-	findAll(): Promise<UserEntity[]> {
-		const users = this.userRepostiry.find()
+	async findAll(): Promise<UserI[]> {
+		const users = await this.userRepostiry.find()
 		console.log('This is users', users)
-		return users
+		return users.map((user) => ({
+			id: user.id,
+			username: user.username,
+		}))
 	}
 
-	findOne(id: number) {
-		return this.userRepostiry.findOneBy({ id })
+	async findOne(id: number) {
+		return await this.userRepostiry.findOneBy({ id })
 	}
 
 	async findByUsername(username: string) {

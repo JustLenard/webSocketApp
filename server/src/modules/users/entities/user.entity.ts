@@ -25,6 +25,7 @@ export class UserEntity extends BaseEntity {
 
 	@ManyToMany(() => RoomEntity, (room) => room.users)
 	rooms: RoomEntity[]
+	// rooms: number[]
 
 	@Column({
 		type: 'varchar',

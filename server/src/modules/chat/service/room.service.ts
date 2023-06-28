@@ -1,11 +1,23 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, OnModuleInit } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { RoomEntity } from '../entities/room.entity'
 import { Repository } from 'typeorm'
 import { RoomI, UserI } from 'src/types/entities.types'
 
 @Injectable()
-export class RoomService {
+export class RoomService implements OnModuleInit {
+	async onModuleInit() {
+		console.log(`The module has been initialized.`)
+		const globalRoom = await this.getRoomByName()
+
+		if (!globalRoom) {
+			console.log('creating global Room')
+			this.roomRepository.save({
+				name: 'Global',
+			})
+		}
+	}
+
 	constructor(
 		@InjectRepository(RoomEntity)
 		private readonly roomRepository: Repository<RoomEntity>,
@@ -24,6 +36,12 @@ export class RoomService {
 	async getRoom(roomId: number): Promise<RoomEntity> {
 		return this.roomRepository.findOne({
 			where: { id: roomId },
+		})
+	}
+
+	async getRoomByName(roomName = 'Global'): Promise<RoomEntity> {
+		return this.roomRepository.findOne({
+			where: { name: roomName },
 		})
 	}
 

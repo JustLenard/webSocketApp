@@ -1,20 +1,3 @@
-// import { Stack } from '@mui/material'
-// import MyProfile from './MyProfile'
-
-// interface Props {}
-
-// const AppNavbar: React.FC<Props> = () => {
-// 	return (
-// 		<Stack display={'flex'} flexDirection={'row'} justifyContent={'space-around'}>
-// 			<div>thing</div>
-// 			<div>thing</div>
-// 			<MyProfile />
-// 		</Stack>
-// 	)
-// }
-
-// export default AppNavbar
-
 import * as React from 'react'
 import { styled, alpha } from '@mui/material/styles'
 import AppBar from '@mui/material/AppBar'
