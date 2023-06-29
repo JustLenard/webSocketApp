@@ -5,10 +5,11 @@ import Avatar from '@mui/joy/Avatar'
 import { MouseEvent, useContext, useState } from 'react'
 import { Typography } from '@mui/material'
 import AuthContext from '../auth/AuthProvider'
+import { useAuth } from '../hooks/useAuth'
 
 const MyProfile = () => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-	const { logOut } = useContext(AuthContext)
+	const { logOut } = useAuth()
 	const open = Boolean(anchorEl)
 
 	const handleClick = (event: MouseEvent<HTMLButtonElement>) => {

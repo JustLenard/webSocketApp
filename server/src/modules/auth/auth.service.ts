@@ -79,7 +79,7 @@ export class AuthService {
 			.create({
 				username: dto.username,
 				password: hash,
-				// rooms: [globalRoom],
+				rooms: [globalRoom],
 				messages: [
 					{
 						text: 'asdf',

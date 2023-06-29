@@ -16,6 +16,7 @@ import MailIcon from '@mui/icons-material/Mail'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import MoreIcon from '@mui/icons-material/MoreVert'
 import AuthContext from '../auth/AuthProvider'
+import { useAuth } from '../hooks/useAuth'
 
 const Search = styled('div')(({ theme }) => ({
 	position: 'relative',
@@ -60,7 +61,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function PrimarySearchAppBar() {
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null)
-	const { logOut } = React.useContext(AuthContext)
+	const { logOut } = useAuth()
 
 	const isMenuOpen = Boolean(anchorEl)
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)

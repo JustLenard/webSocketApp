@@ -23,4 +23,9 @@ export class RoomEntity {
 
 	@OneToMany(() => JoinedRoomEntity, (joinedRoom) => joinedRoom.room)
 	joinedUsers: JoinedRoomEntity[]
+
+	@Column({
+		nullable: true,
+	})
+	isGroupChat: boolean
 }

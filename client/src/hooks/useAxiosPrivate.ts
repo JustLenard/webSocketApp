@@ -3,10 +3,11 @@ import { useContext, useEffect } from 'react'
 import { useAppDispatch } from './reduxHooks'
 import useRefreshToken from './useRefresh'
 import AuthContext from '../auth/AuthProvider'
+import { useAuth } from './useAuth'
 
 const useAxiosPrivate = () => {
 	const refresh = useRefreshToken()
-	const { accessToken, logOut } = useContext(AuthContext)
+	const { accessToken, logOut } = useAuth()
 
 	useEffect(() => {
 		const requestIntercept = axiosPrivate.interceptors.request.use(

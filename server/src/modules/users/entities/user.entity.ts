@@ -2,7 +2,7 @@ import { Global } from '@nestjs/common'
 import { JoinedRoomEntity } from 'src/modules/chat/entities/joinedRoom.entity'
 import { MessageEntity } from 'src/modules/chat/entities/message.entity'
 import { RoomEntity } from 'src/modules/chat/entities/room.entity'
-import { BaseEntity, Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
 @Global()
 @Entity('Users')
@@ -23,7 +23,13 @@ export class UserEntity extends BaseEntity {
 	})
 	password: string
 
+	@Column({
+		nullable: true,
+	})
+	isAdmin: boolean
+
 	@ManyToMany(() => RoomEntity, (room) => room.users)
+	@JoinTable()
 	rooms: RoomEntity[]
 	// rooms: number[]
 

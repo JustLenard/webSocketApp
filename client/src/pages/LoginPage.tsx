@@ -14,6 +14,7 @@ import AuthContext from '../auth/AuthProvider'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { appAxios, axiosPrivate } from '../api/axios'
 import { routes } from '../router/Root'
+import { useAuth } from '../hooks/useAuth'
 
 const publicUsername = import.meta.env.VITE_PUBLIC_USERNAME
 const publicPassword = import.meta.env.VITE_PUBLIC_PASSWORD
@@ -22,7 +23,7 @@ const LoginPage: React.FC = () => {
 	const dispatch = useAppDispatch()
 	const location = useLocation()
 	const navigate = useNavigate()
-	const { loggedIn, login } = useContext(AuthContext)
+	const { loggedIn, login } = useAuth()
 	const {
 		register,
 		handleSubmit,
