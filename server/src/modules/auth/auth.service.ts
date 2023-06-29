@@ -43,6 +43,7 @@ export class AuthService {
 				{
 					secret: process.env.REFRESH_TOKEN_SECRET,
 					expiresIn: 60 * 60 * 24 * 7,
+					// expiresIn: 5,
 				},
 			),
 		])

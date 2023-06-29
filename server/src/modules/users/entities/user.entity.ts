@@ -29,7 +29,6 @@ export class UserEntity extends BaseEntity {
 	isAdmin: boolean
 
 	@ManyToMany(() => RoomEntity, (room) => room.users)
-	@JoinTable()
 	rooms: RoomEntity[]
 	// rooms: number[]
 

@@ -42,11 +42,15 @@ export class WebsocketEvents {
 				return this.handleDisconnect(client)
 			} else {
 				client.data.user = user
+
 				this.logger.log('Getting all the rooms for the user')
 				const rooms = await this.roomService.getRoomsForUser(user.id)
 
 				console.log('This is rooms', rooms)
 
+				console.log('This is client', client.client)
+
+				// client.emit('rooms', rooms)
 				return server.to(client.id).emit('rooms', rooms)
 			}
 		} catch (err) {
