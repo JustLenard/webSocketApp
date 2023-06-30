@@ -14,6 +14,11 @@ export interface RoomI {
 	updated_at?: Date
 }
 
+export interface CreateRoomI {
+	name: string
+	users: number[]
+}
+
 export interface MessageI {
 	id?: number
 	text: string

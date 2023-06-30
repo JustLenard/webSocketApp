@@ -13,13 +13,9 @@ const useRefreshToken = () => {
 
 	const refresh = async () => {
 		try {
-			console.log('triggering refresh')
-
 			const response = await axiosPrivate.post('/auth/refresh', {
 				withCredentials: true,
 			})
-
-			console.log('This is refresh response', response)
 
 			// login(response.data.accessToken)
 

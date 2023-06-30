@@ -14,15 +14,6 @@ const ChatContainer = () => {
 
 	const { appSocket, sendMessage } = useContext(SocketContext)
 
-	const createRoom = () => {
-		const newRoom: IRoom = {
-			name: 'First room',
-			users: [],
-		}
-
-		appSocket.emit('createRoom', newRoom)
-	}
-
 	return (
 		<>
 			<Grid container direction={'column'} height={'100%'}>

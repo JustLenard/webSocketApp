@@ -12,8 +12,6 @@ const RoomName: React.FC<Props & IRoom> = ({ name, id }) => {
 	const { selectCurrentRoom, appSocket } = useContext(SocketContext)
 
 	const handleClick = () => {
-		console.log('This is id', id)
-
 		selectCurrentRoom(id)
 		appSocket?.emit('joinRoom', {
 			id,

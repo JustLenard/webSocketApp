@@ -8,8 +8,6 @@ import AppLoading from './AppLoading'
 const LeftMenu = () => {
 	const { rooms } = useContext(SocketContext)
 
-	console.log('This is rooms', rooms)
-
 	if (!rooms) return <AppLoading />
 
 	return (

@@ -64,34 +64,24 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 			},
 		})
 
-		socket.on('connect', () => {
-			console.log('Connected to WebSocket server on ' + websocketURL)
-		})
-
-		console.log('Connected to WebSocket server on ' + websocketURL)
+		socket.on('connect', () => {})
 
 		socket.on('messages', (messages: MessageI[]) => {
-			console.log('This is messages', messages)
 			setMessages(messages)
 		})
 
 		socket.on('messageAdded', (newMessage: MessageI[]) => {
-			console.log('This is newMessage', newMessage)
 			// setMessages(messages)
 		})
 
-		socket.on('disconnect', () => {
-			console.log('Disconnected from WebSocket server')
-		})
+		socket.on('disconnect', () => {})
 
 		/* Close socket connection when specific event is triggered  by back end*/
 		socket.on('closeSocket', () => {
 			socket.disconnect()
-			console.log(`Closing connection`)
 		})
 
 		socket.on('rooms', (rooms: IRoom[]) => {
-			console.log('This is rooms', rooms)
 			setRooms(rooms)
 		})
 
@@ -109,7 +99,6 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	// if (!appSocket) return <AppLoading />
 
 	const sendMessage = (messageContent: string) => {
-		console.log('This is currentRoom', currentRoom)
 		appSocket?.emit('addMessage', {
 			text: messageContent,
 			room: currentRoom,

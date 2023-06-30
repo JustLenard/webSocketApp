@@ -12,7 +12,6 @@ export class UsersService {
 
 	async findAll(): Promise<UserI[]> {
 		const users = await this.userRepostiry.find()
-		console.log('This is users', users)
 		return users.map((user) => ({
 			id: user.id,
 			username: user.username,
@@ -21,6 +20,14 @@ export class UsersService {
 
 	async findOne(id: number) {
 		return await this.userRepostiry.findOneBy({ id })
+	}
+
+	async whoAmI(id: number) {
+		const user = await this.userRepostiry.findOneBy({ id })
+		return {
+			id: user.id,
+			username: user.username,
+		}
 	}
 
 	async findByUsername(username: string) {

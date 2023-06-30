@@ -26,16 +26,12 @@ export class WebsocketEvents {
 	private logger: Logger = new Logger('Chat')
 
 	async handleConnection(client: Socket, server: Server) {
-		console.log(`Client ${client.id} connected`)
 		try {
 			const accesToken = client.handshake.headers.authorization.replace('Bearer', '').trim()
 			const decodedToken: JwtPayload = await this.authService.verifyJwt(accesToken)
-			console.log('This is decodedToken', decodedToken)
 
 			this.logger.log('Looking for user in db')
 			const user: UserEntity = await this.userService.findOne(decodedToken.sub)
-
-			console.log('This is user', user)
 
 			if (!user) {
 				this.logger.log('User does not exist')
@@ -45,6 +41,8 @@ export class WebsocketEvents {
 
 				this.logger.log('Getting all the rooms for the user')
 				const rooms = await this.roomService.getRoomsForUser(user.id)
+
+				console.log('This is rooms', rooms)
 
 				// client.emit('rooms', rooms)
 				return server.to(client.id).emit('rooms', rooms)
@@ -86,15 +84,11 @@ export class WebsocketEvents {
 		console.log('creating message')
 		const createdMessage: MessageI = await this.messageService.create({ user: socket.data.user, ...message })
 
-		// console.log('This is createdMessage', createdMessage)
 		const room: RoomEntity = await this.roomService.getRoom(createdMessage.room)
-		console.log('This is room', room)
 
-		// console.log('This is room', room)
 		const joinedUsers: JoinedRoomEntity[] = await this.joinedRoomService.findByRoom(room)
 		// TODO: Send new Message to all joined Users of the room (currently online)
 
-		console.log('This is joinedUsers', joinedUsers)
 		for (const user of joinedUsers) {
 			await server.to(user.socketId).emit('messageAdded', createdMessage)
 		}

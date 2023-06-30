@@ -3,10 +3,14 @@ import useRefreshToken from '../hooks/useRefresh'
 import { useNavigate } from 'react-router-dom'
 import { routes } from '../router/Root'
 import AppLoading from '../components/AppLoading'
+import { axiosPrivate } from '../api/axios'
+import { UserI } from '../types/BE_entities.types'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 interface IContext {
 	loggedIn: boolean
 	accessToken: string | null
+	user: UserI | null
 	logOut: () => void
 	login: (accToken: string) => void
 }
@@ -23,8 +27,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 	const [accessToken, setAccessTokens] = useState<string | null>(null)
 	const [loggedIn, setLoggedIn] = useState<boolean>(localStorage.getItem(loggedInKey) === 'true')
 	const [loading, setLoading] = useState(false)
+	const [user, setUser] = useState<UserI | null>(null)
 
 	const refresh = useRefreshToken()
+	const appAxios = useAxiosPrivate()
 
 	/**
 	 * Get access token if uses still has valid refresh token
@@ -32,7 +38,6 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 	useEffect(() => {
 		if (loggedIn && accessToken === null) {
 			const getAccessToken = async () => {
-				console.log('Getting new acces token')
 				setLoading(true)
 				const newAccesToken = await refresh()
 
@@ -44,6 +49,19 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 				setLoading(false)
 			}
 			getAccessToken()
+		}
+
+		if (accessToken && !user) {
+			const getMyInfo = async () => {
+				try {
+					const response = await appAxios.get('/users/me')
+
+					setUser(response.data)
+				} catch (err) {
+					console.log('This is err', err)
+				}
+			}
+			getMyInfo()
 		}
 	}, [accessToken, loggedIn])
 
@@ -59,12 +77,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 		localStorage.setItem(loggedInKey, 'true')
 	}
 
-	console.log('This is accessToken', accessToken)
-	console.log('This is loggedIn', loggedIn)
-
 	const contextValue: IContext = {
 		accessToken,
 		loggedIn,
+		user,
 		logOut,
 		login,
 	}

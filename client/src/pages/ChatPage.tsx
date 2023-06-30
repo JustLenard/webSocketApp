@@ -11,7 +11,6 @@ import { IRoom } from '../types/room.type'
 import AppNavbar from '../components/AppNavbar'
 
 const ChatPage = () => {
-	console.log('This is ChatPage')
 	return (
 		<Grid sx={{ border: '1px solid blue', minHeight: '100vh', height: '100vh' }}>
 			<Grid item pb={'1rem'}>

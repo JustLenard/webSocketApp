@@ -21,8 +21,6 @@ const ChatInput: React.FC<Props> = () => {
 	const { appSocket, sendMessage } = useContext(SocketContext)
 
 	const handleMessageSubmit: SubmitHandler<ChatForm> = (formData) => {
-		console.log('This is message', formData)
-
 		sendMessage(formData.message)
 
 		resetField('message')
