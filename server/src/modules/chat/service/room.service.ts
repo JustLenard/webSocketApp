@@ -23,6 +23,21 @@ export class RoomService implements OnModuleInit {
 		private readonly roomRepository: Repository<RoomEntity>,
 	) {}
 
+	async getRoomsForUser(userId: number) {
+		return this.roomRepository
+			.createQueryBuilder('room')
+			.leftJoin('room.users', 'users')
+			.where('users.id = :userId', { userId: userId })
+			.leftJoinAndSelect('room.users', 'all_users')
+			.getMany()
+	}
+
+	async getRoom(roomId: number): Promise<RoomEntity> {
+		return this.roomRepository.findOne({
+			where: { id: roomId },
+		})
+	}
+
 	async createRoom(room: RoomI, creator: UserI) {
 		console.log('This is creator', creator)
 
@@ -33,25 +48,10 @@ export class RoomService implements OnModuleInit {
 		return this.roomRepository.save(newRoom)
 	}
 
-	async getRoom(roomId: number): Promise<RoomEntity> {
-		return this.roomRepository.findOne({
-			where: { id: roomId },
-		})
-	}
-
 	async getRoomByName(roomName = 'Global'): Promise<RoomEntity> {
 		return this.roomRepository.findOne({
 			where: { name: roomName },
 		})
-	}
-
-	async getRoomsForUser(userId: number) {
-		return this.roomRepository
-			.createQueryBuilder('room')
-			.leftJoin('room.users', 'users')
-			.where('users.id = :userId', { userId: userId })
-			.leftJoinAndSelect('room.users', 'all_users')
-			.getMany()
 	}
 
 	async addCreatorToRoom(room: RoomI, creator: UserI) {

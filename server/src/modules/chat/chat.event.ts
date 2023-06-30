@@ -30,8 +30,8 @@ export class WebsocketEvents {
 		try {
 			const accesToken = client.handshake.headers.authorization.replace('Bearer', '').trim()
 			const decodedToken: JwtPayload = await this.authService.verifyJwt(accesToken)
-
 			console.log('This is decodedToken', decodedToken)
+
 			this.logger.log('Looking for user in db')
 			const user: UserEntity = await this.userService.findOne(decodedToken.sub)
 
@@ -45,10 +45,6 @@ export class WebsocketEvents {
 
 				this.logger.log('Getting all the rooms for the user')
 				const rooms = await this.roomService.getRoomsForUser(user.id)
-
-				console.log('This is rooms', rooms)
-
-				console.log('This is client', client.client)
 
 				// client.emit('rooms', rooms)
 				return server.to(client.id).emit('rooms', rooms)

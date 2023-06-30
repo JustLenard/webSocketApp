@@ -43,4 +43,10 @@ export interface UserI {
 	username?: string
 	email?: string
 	password?: string
+	refreshToken?: string
+}
+
+export type ShortUser = {
+	id: number
+	username: string
 }
