@@ -9,7 +9,7 @@ export interface RoomI {
 	id?: number
 	name?: string
 	description?: string
-	users?: UserI[]
+	users?: number[]
 	created_at?: Date
 	updated_at?: Date
 }
@@ -44,6 +44,7 @@ export interface UserI {
 	email?: string
 	password?: string
 	refreshToken?: string
+	rooms: number[]
 }
 
 export type ShortUser = {

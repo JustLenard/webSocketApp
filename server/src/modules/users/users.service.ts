@@ -4,13 +4,13 @@ import { Repository } from 'typeorm'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UserEntity } from './entities/user.entity'
-import { UserI } from 'src/types/entities.types'
+import { ShortUser, UserI } from 'src/types/entities.types'
 
 @Injectable()
 export class UsersService {
 	constructor(@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>) {}
 
-	async findAll(): Promise<UserI[]> {
+	async findAll(): Promise<ShortUser[]> {
 		const users = await this.userRepostiry.find()
 		return users.map((user) => ({
 			id: user.id,

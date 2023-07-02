@@ -78,7 +78,7 @@ export class AuthService {
 			.create({
 				username: dto.username,
 				password: hash,
-				rooms: [globalRoom],
+				rooms: [globalRoom.id],
 				messages: [
 					{
 						text: 'asdf',
@@ -136,11 +136,16 @@ export class AuthService {
 			},
 		})
 
+		// console.log('This is user', user)
+		// console.log('pas 0')
+		// console.log('This is user.refreshToken', user.refreshToken)
 		if (!user || !user.refreshToken) throw new ForbiddenException('Access Denied')
+		console.log('pas 1')
 
 		const rtMatches = await argon2.verify(user.refreshToken, rt)
 
 		if (!rtMatches) throw new ForbiddenException('Access Denied')
+		console.log('pas 2')
 
 		const tokens = await this.getTokens(user.id, user.username)
 		await this.updateRtHash(user.id, tokens.refreshToken)

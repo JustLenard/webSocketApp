@@ -7,6 +7,7 @@ import { AtGuard } from 'src/common/guards/at.guard'
 import { RoomEntity } from './entities/room.entity'
 import { MessageEntity } from './entities/message.entity'
 import { JoinedRoomI, MessageI, RoomI } from 'src/types/entities.types'
+import { socketEvents } from './socketEvents'
 
 @WebSocketGateway({ namespace: '/ws', cors: true })
 @Injectable()
@@ -50,7 +51,7 @@ export class ChatGateway {
 		return this.events.handleMessage(client, payload, this.server)
 	}
 
-	@SubscribeMessage('createRoom')
+	@SubscribeMessage(socketEvents.createRoom)
 	createRoom(client: Socket, room: RoomI) {
 		return this.events.createRoom(client, room)
 	}

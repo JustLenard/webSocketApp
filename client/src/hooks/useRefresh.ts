@@ -12,7 +12,9 @@ const useRefreshToken = () => {
 	// console.log('This is locatoin', locatoin)
 
 	const refresh = async () => {
+		// if (allowd)
 		try {
+			console.log('this shit')
 			const response = await axiosPrivate.post('/auth/refresh', {
 				withCredentials: true,
 			})

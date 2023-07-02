@@ -92,6 +92,9 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 		if (loggedIn && accessToken) {
 			createSocket()
 		} else {
+			/**
+			 * @todo figure this shit out
+			 **/
 			getAccesToken()
 		}
 	}, [createSocket, loggedIn])

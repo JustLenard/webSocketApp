@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { RoomEntity } from '../entities/room.entity'
-import { Repository } from 'typeorm'
+import { In, Repository } from 'typeorm'
 import { RoomI, UserI } from 'src/types/entities.types'
 
 @Injectable()
@@ -40,9 +40,9 @@ export class RoomService implements OnModuleInit {
 
 	async createRoom(room: RoomI, creator: UserI) {
 		console.log('This is creator', creator)
-
 		console.log('This is room', room)
-		const newRoom = await this.addCreatorToRoom(room, creator)
+
+		const newRoom = await this.addCreatorToRoom(room, creator.id)
 
 		console.log('This is newRoom', newRoom)
 		return this.roomRepository.save(newRoom)
@@ -54,9 +54,17 @@ export class RoomService implements OnModuleInit {
 		})
 	}
 
-	async addCreatorToRoom(room: RoomI, creator: UserI) {
+	async checkIfPrivateRoomExits(firstUserId: number, secondUserId: number) {
+		const rooms = await this.getRoomsForUser(firstUserId)
+
+		console.log('This is rooms', rooms)
+
+		const privateRooms = rooms.filter((room) => !room.isGroupChat)
+	}
+
+	async addCreatorToRoom(room: RoomI, userId: number) {
 		console.log('This is room.users', room.users)
-		room.users.push(creator)
+		room.users.push(userId)
 		return room
 	}
 }

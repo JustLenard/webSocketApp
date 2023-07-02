@@ -6,6 +6,7 @@ import AppLoading from '../components/AppLoading'
 import { axiosPrivate } from '../api/axios'
 import { UserI } from '../types/BE_entities.types'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import { isInsideOfApplication } from '../utils/allowedToTriggerRefresh'
 
 interface IContext {
 	loggedIn: boolean
@@ -30,28 +31,37 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 	const [user, setUser] = useState<UserI | null>(null)
 
 	const refresh = useRefreshToken()
+
+	console.log('This is refresh', refresh)
 	const appAxios = useAxiosPrivate()
 
 	/**
 	 * Get access token if uses still has valid refresh token
 	 **/
 	useEffect(() => {
-		if (loggedIn && accessToken === null) {
-			const getAccessToken = async () => {
-				setLoading(true)
-				const newAccesToken = await refresh()
+		console.log('This is isInsideOfApplication()', isInsideOfApplication())
 
-				if (newAccesToken) {
-					setAccessTokens(newAccesToken)
-					return setLoading(false)
-				}
-				logOut()
-				setLoading(false)
+		const getAccessToken = async () => {
+			setLoading(true)
+
+			console.log('bruh')
+			const newAccesToken = await refresh()
+
+			if (newAccesToken) {
+				setAccessTokens(newAccesToken)
+				return setLoading(false)
 			}
+			logOut()
+			setLoading(false)
+		}
+
+		if (loggedIn && accessToken === null && isInsideOfApplication()) {
+			console.log('trigger')
 			getAccessToken()
 		}
 
 		if (accessToken && !user) {
+			console.log('get user data')
 			const getMyInfo = async () => {
 				try {
 					const response = await appAxios.get('/users/me')

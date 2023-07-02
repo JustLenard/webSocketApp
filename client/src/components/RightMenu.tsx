@@ -7,6 +7,7 @@ import { Avatar } from '@mui/joy'
 import { AxiosError } from 'axios'
 import { useAuth } from '../hooks/useAuth'
 import { useSocket } from '../hooks/useSocket'
+import { socketEvents } from '../websocket/socketEvents'
 
 const RightMenu = () => {
 	const appAxios = useAxiosPrivate()
@@ -51,16 +52,18 @@ const ProfileItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 	const createRoom = () => {
 		if (!user || !appSocket) return
 
+		console.log('This is user', user)
+
 		const newRoom: CreateRoomI = {
 			name: username,
-			users: [id, user.id],
+			users: [id],
 		}
 
-		appSocket.emit('createRoom', newRoom)
+		appSocket.emit(socketEvents.createRoom, newRoom, (callBack: any) => console.log(callBack))
 	}
 
 	return (
-		<Stack display={'flex'} flexDirection={'row'} alignItems={'center'} my={'1rem'}>
+		<Stack display={'flex'} flexDirection={'row'} alignItems={'center'} my={'1rem'} onClick={createRoom}>
 			<Avatar size="sm">{username[0].toUpperCase()}</Avatar>
 
 			<Typography pl={'1rem'}>{username}</Typography>

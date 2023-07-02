@@ -1,7 +1,7 @@
 import { Box, Button, FormControl, Grid, Input, OutlinedInput } from '@mui/material'
 import { useContext, useEffect } from 'react'
 import { Form } from 'react-router-dom'
-import { apiRequest } from '../utils/ApiRequest'
+import { apiRequest } from '../utils/apiRequest'
 import ChatInput from './ChatInput'
 import AuthContext from '../auth/AuthProvider'
 import { SocketContext } from '../websocket/SocketProvider'

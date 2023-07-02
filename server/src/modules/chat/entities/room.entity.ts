@@ -16,7 +16,7 @@ export class RoomEntity {
 
 	@ManyToMany(() => UserEntity)
 	@JoinTable()
-	users: UserEntity[]
+	users: number[]
 
 	@OneToMany(() => MessageEntity, (message) => message.room)
 	messages: MessageEntity[]
