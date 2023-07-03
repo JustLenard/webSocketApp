@@ -12,6 +12,7 @@ import { JoinedRoomService } from './service/joinedRoom.service'
 import { JoinedRoomEntity } from './entities/joinedRoom.entity'
 import { FMessage, JoinedRoomI, MessageI, RoomI } from 'src/types/entities.types'
 import { MessageEntity } from './entities/message.entity'
+import { PostRoomI } from 'src/types/frontEnd.types'
 
 @Injectable()
 export class WebsocketEvents {
@@ -42,8 +43,6 @@ export class WebsocketEvents {
 				this.logger.log('Getting all the rooms for the user')
 				const rooms = await this.roomService.getRoomsForUser(user.id)
 
-				console.log('This is rooms', rooms)
-
 				// client.emit('rooms', rooms)
 				return server.to(client.id).emit('rooms', rooms)
 			}
@@ -62,8 +61,12 @@ export class WebsocketEvents {
 		// server.emit('message', payload);
 	}
 
-	async createRoom(client: Socket, room: RoomI) {
+	async createRoom(client: Socket, room: PostRoomI) {
 		return this.roomService.createRoom(room, client.data.user)
+	}
+
+	async checkIfPrivateChatExits(firstUserId: number, secondUserId: number) {
+		return this.roomService.checkIfPrivateChatExits(firstUserId, secondUserId)
 	}
 
 	async onJoinRoom(client: Socket, room: JoinedRoomI, server: Server) {

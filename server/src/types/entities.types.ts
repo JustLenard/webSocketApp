@@ -1,17 +1,22 @@
-export interface JoinedRoomI {
+import { UserEntity } from 'src/modules/users/entities/user.entity'
+
+export interface UserI {
 	id?: number
-	socketId: string
-	user: UserI
-	room: RoomI
+	username?: string
+	email?: string
+	password?: string
+	refreshToken?: string
+	rooms: RoomI[]
 }
 
 export interface RoomI {
 	id?: number
 	name?: string
 	description?: string
-	users?: number[]
+	users?: UserI[]
 	created_at?: Date
 	updated_at?: Date
+	isGroupChat?: boolean
 }
 
 export interface MessageI {
@@ -36,15 +41,6 @@ export interface JoinedRoomI {
 	socketId: string
 	user: UserI
 	room: RoomI
-}
-
-export interface UserI {
-	id?: number
-	username?: string
-	email?: string
-	password?: string
-	refreshToken?: string
-	rooms: number[]
 }
 
 export type ShortUser = {

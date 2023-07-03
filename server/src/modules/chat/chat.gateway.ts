@@ -8,6 +8,7 @@ import { RoomEntity } from './entities/room.entity'
 import { MessageEntity } from './entities/message.entity'
 import { JoinedRoomI, MessageI, RoomI } from 'src/types/entities.types'
 import { socketEvents } from './socketEvents'
+import { PostRoomI } from 'src/types/frontEnd.types'
 
 @WebSocketGateway({ namespace: '/ws', cors: true })
 @Injectable()
@@ -52,8 +53,13 @@ export class ChatGateway {
 	}
 
 	@SubscribeMessage(socketEvents.createRoom)
-	createRoom(client: Socket, room: RoomI) {
+	createRoom(client: Socket, room: PostRoomI) {
 		return this.events.createRoom(client, room)
+	}
+
+	@SubscribeMessage(socketEvents.checkIfPrivateChatExists)
+	checkIfPrivateChatExits(client: Socket, secondUserId: number) {
+		return this.events.checkIfPrivateChatExits(client.data.user.id, secondUserId)
 	}
 
 	@SubscribeMessage('joinRoom')

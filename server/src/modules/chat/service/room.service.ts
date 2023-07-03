@@ -1,8 +1,10 @@
-import { Injectable, OnModuleInit } from '@nestjs/common'
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { RoomEntity } from '../entities/room.entity'
 import { In, Repository } from 'typeorm'
 import { RoomI, UserI } from 'src/types/entities.types'
+import { UserEntity } from 'src/modules/users/entities/user.entity'
+import { PostRoomI } from 'src/types/frontEnd.types'
 
 @Injectable()
 export class RoomService implements OnModuleInit {
@@ -10,18 +12,37 @@ export class RoomService implements OnModuleInit {
 		console.log(`The module has been initialized.`)
 		const globalRoom = await this.getRoomByName()
 
+		const admin = await this.userRepository.findOne({
+			where: {
+				username: 'len',
+			},
+			// relations: ['rooms'],
+		})
+
 		if (!globalRoom) {
 			console.log('creating global Room')
-			this.roomRepository.save({
+
+			const globalRoom: RoomI = {
 				name: 'Global',
-			})
+				users: [admin],
+				isGroupChat: true,
+			}
+
+			console.log('This is globalRoom', globalRoom)
+
+			this.roomRepository.save(globalRoom)
 		}
 	}
 
 	constructor(
 		@InjectRepository(RoomEntity)
 		private readonly roomRepository: Repository<RoomEntity>,
+
+		@InjectRepository(UserEntity)
+		private readonly userRepository: Repository<UserEntity>,
 	) {}
+
+	private logger: Logger = new Logger('Room Service')
 
 	async getRoomsForUser(userId: number) {
 		return this.roomRepository
@@ -38,13 +59,21 @@ export class RoomService implements OnModuleInit {
 		})
 	}
 
-	async createRoom(room: RoomI, creator: UserI) {
-		console.log('This is creator', creator)
+	async createRoom(room: PostRoomI, creator: UserI) {
+		this.logger.debug('creating room')
+
 		console.log('This is room', room)
 
-		const newRoom = await this.addCreatorToRoom(room, creator.id)
+		const privateChat = await this.checkIfPrivateChatExits(creator.id, room.users[0])
+		if (privateChat) {
+			this.logger.warn('Room already exists. Aborting')
+			return privateChat
+		}
 
-		console.log('This is newRoom', newRoom)
+		const newRoom = await this.addUsersToRoom({ ...room, users: [creator] }, room.users)
+
+		console.log('reached end')
+
 		return this.roomRepository.save(newRoom)
 	}
 
@@ -54,17 +83,25 @@ export class RoomService implements OnModuleInit {
 		})
 	}
 
-	async checkIfPrivateRoomExits(firstUserId: number, secondUserId: number) {
+	async checkIfPrivateChatExits(firstUserId: number, secondUserId: number): Promise<RoomEntity | undefined> {
+		console.log('This is firstUserId', firstUserId)
+		console.log('This is secondUserId', secondUserId)
 		const rooms = await this.getRoomsForUser(firstUserId)
 
-		console.log('This is rooms', rooms)
+		const privateRoom = rooms.find((room) => !room.isGroupChat && this.userIsPartOfRoom(room, secondUserId))
 
-		const privateRooms = rooms.filter((room) => !room.isGroupChat)
+		return privateRoom
 	}
 
-	async addCreatorToRoom(room: RoomI, userId: number) {
-		console.log('This is room.users', room.users)
-		room.users.push(userId)
+	async userIsPartOfRoom(room: RoomI, userId: number) {
+		return room.users.find((user) => user.id === userId)
+	}
+
+	async addUsersToRoom(room: RoomI, userIds: number[]) {
+		const users = await this.userRepository.findBy({ id: In(userIds) })
+
+		room.users = [...room.users, ...users]
+
 		return room
 	}
 }

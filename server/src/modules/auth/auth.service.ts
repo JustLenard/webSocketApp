@@ -74,19 +74,17 @@ export class AuthService {
 			where: { name: 'Global' },
 		})
 
+		console.log('This is globalRoom', globalRoom)
+
 		const newUser = await this.userRepostiry
 			.create({
 				username: dto.username,
 				password: hash,
-				rooms: [globalRoom.id],
-				messages: [
-					{
-						text: 'asdf',
-						id: 1243,
-					},
-				],
+				// rooms: [globalRoom],
 			})
 			.save()
+
+		console.log('This is newUser', newUser)
 
 		const tokens = await this.getTokens(newUser.id, newUser.username)
 		await this.updateRtHash(newUser.id, tokens.refreshToken)

@@ -29,7 +29,7 @@ export class UserEntity extends BaseEntity {
 	isAdmin: boolean
 
 	@ManyToMany(() => RoomEntity, (room) => room.users)
-	rooms: number[]
+	rooms: RoomEntity[]
 
 	@Column({
 		type: 'varchar',
