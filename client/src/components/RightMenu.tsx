@@ -8,6 +8,7 @@ import { AxiosError } from 'axios'
 import { useAuth } from '../hooks/useAuth'
 import { useSocket } from '../hooks/useSocket'
 import { socketEvents } from '../websocket/socketEvents'
+import { useUser } from '../hooks/useUser'
 
 const RightMenu = () => {
 	const appAxios = useAxiosPrivate()
@@ -29,7 +30,7 @@ const RightMenu = () => {
 			}
 			getUsers()
 		}
-	}, [])
+	}, [accessToken])
 
 	return (
 		<Grid border={'2px solid blue'}>
@@ -46,7 +47,7 @@ interface ProfileItemProps {
 }
 
 const ProfileItem: React.FC<ProfileItemProps> = ({ id, username }) => {
-	const { user } = useAuth()
+	const { user } = useUser()
 	const { appSocket } = useSocket()
 
 	const createRoom = () => {

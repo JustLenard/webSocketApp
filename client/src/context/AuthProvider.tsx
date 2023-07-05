@@ -22,7 +22,7 @@ const loggedInKey = import.meta.env.VITE_LOGGED_IN
 export const AuthProvider: React.FC<Props> = ({ children }) => {
 	const [accessToken, setAccessTokens] = useState<string | null>(null)
 	const [loggedIn, setLoggedIn] = useState<boolean>(localStorage.getItem(loggedInKey) === 'true')
-	const [loading, setLoading] = useState(true)
+	const [loading, setLoading] = useState(false)
 
 	console.log('This is accessToken', accessToken)
 	console.log('This is loggedIn', loggedIn)
