@@ -2,7 +2,7 @@ import { Avatar, Card } from '@mui/material'
 import { Stack } from '@mui/system'
 import { IRoom } from '../types/room.type'
 import { useContext } from 'react'
-import { SocketContext } from '../websocket/SocketProvider'
+import { SocketContext } from '../context/SocketProvider'
 
 interface Props {
 	name: string

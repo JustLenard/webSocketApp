@@ -9,7 +9,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { apiRequest } from '../utils/apiRequest'
 import { useContext } from 'react'
-import AuthContext from '../auth/AuthProvider'
+import AuthContext from '../context/AuthProvider'
 import { axiosPrivate } from '../api/axios'
 import { routes } from '../router/Root'
 

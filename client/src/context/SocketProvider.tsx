@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Socket, io } from 'socket.io-client'
 import { getCookie, removeCookie } from 'typescript-cookie'
-import AuthContext from '../auth/AuthProvider'
+import AuthContext from './AuthProvider'
 import { IRoom } from '../types/room.type'
 import { ISentMessage, MessageI } from '../types/BE_entities.types'
 import AppLoading from '../components/AppLoading'
@@ -90,12 +90,16 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 
 	useEffect(() => {
 		if (loggedIn && accessToken) {
+			console.log('Creating socket connection')
 			createSocket()
 		} else {
 			/**
 			 * @todo figure this shit out
 			 **/
-			getAccesToken()
+			// getAccesToken()
+		}
+		return () => {
+			appSocket?.disconnect()
 		}
 	}, [createSocket, loggedIn])
 

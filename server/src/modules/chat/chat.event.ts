@@ -26,6 +26,8 @@ export class WebsocketEvents {
 
 	private logger: Logger = new Logger('Chat')
 
+	connections = []
+
 	async handleConnection(client: Socket, server: Server) {
 		try {
 			const accesToken = client.handshake.headers.authorization.replace('Bearer', '').trim()
@@ -40,7 +42,19 @@ export class WebsocketEvents {
 			} else {
 				client.data.user = user
 
-				this.logger.log('Getting all the rooms for the user')
+				this.logger.log('Getting all the rooms for the usefr')
+
+				console.log('This is server', server)
+				const f = server.sockets
+
+				// this.connections.some(con => con.id === user.id)
+				this.connections.push({
+					userId: user.id,
+					socketId: client.id,
+				})
+
+				console.log('This is connections', this.connections)
+
 				const rooms = await this.roomService.getRoomsForUser(user.id)
 
 				// client.emit('rooms', rooms)

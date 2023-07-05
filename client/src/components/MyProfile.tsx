@@ -4,7 +4,7 @@ import MenuItem from '@mui/joy/MenuItem'
 import Avatar from '@mui/joy/Avatar'
 import { MouseEvent, useContext, useState } from 'react'
 import { Typography } from '@mui/material'
-import AuthContext from '../auth/AuthProvider'
+import AuthContext from '../context/AuthProvider'
 import { useAuth } from '../hooks/useAuth'
 
 const MyProfile = () => {

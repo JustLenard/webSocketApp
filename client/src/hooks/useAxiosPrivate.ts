@@ -2,7 +2,7 @@ import { axiosPrivate } from '../api/axios'
 import { useContext, useEffect } from 'react'
 import { useAppDispatch } from './reduxHooks'
 import useRefreshToken from './useRefresh'
-import AuthContext from '../auth/AuthProvider'
+import AuthContext from '../context/AuthProvider'
 import { useAuth } from './useAuth'
 
 const useAxiosPrivate = () => {

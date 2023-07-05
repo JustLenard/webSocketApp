@@ -2,7 +2,7 @@ import { Navigate, useLocation } from 'react-router-dom'
 import { useAppSelector } from '../hooks/reduxHooks'
 import { routes } from './Root'
 import { useContext } from 'react'
-import AuthContext from '../auth/AuthProvider'
+import AuthContext from '../context/AuthProvider'
 import { useAuth } from '../hooks/useAuth'
 
 interface Props {

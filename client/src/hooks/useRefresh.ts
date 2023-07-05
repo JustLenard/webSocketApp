@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { appAxios, axiosPrivate } from '../api/axios'
-import AuthContext, { AuthProvider } from '../auth/AuthProvider'
+import AuthContext, { AuthProvider } from '../context/AuthProvider'
 import useAxiosPrivate from './useAxiosPrivate'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { routes } from '../router/Root'

@@ -1,7 +1,7 @@
 import { Stack } from '@mui/system'
 import RoomName from './RoomName'
 import { useContext } from 'react'
-import { SocketContext } from '../websocket/SocketProvider'
+import { SocketContext } from '../context/SocketProvider'
 import { Skeleton } from '@mui/material'
 import AppLoading from './AppLoading'
 
