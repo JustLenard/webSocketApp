@@ -51,20 +51,33 @@ const ProfileItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 	const { appSocket } = useSocket()
 
 	const createRoom = () => {
+		// console.log('This is user', user)
+		// console.log('This is appSocket', appSocket)
 		if (!user || !appSocket) return
-
-		console.log('This is user', user)
 
 		const newRoom: CreateRoomI = {
 			name: username,
 			users: [id],
 		}
 
-		appSocket.emit(socketEvents.createRoom, newRoom, (callBack: any) => console.log(callBack))
+		// console.log('This is newRoom', newRoom)
+
+		appSocket.emit(socketEvents.checkIfPrivateChatExists, id, (callBack: any) =>
+			console.log('This is callBack', callBack),
+		)
 	}
 
 	return (
-		<Stack display={'flex'} flexDirection={'row'} alignItems={'center'} my={'1rem'} onClick={createRoom}>
+		<Stack
+			display={'flex'}
+			flexDirection={'row'}
+			alignItems={'center'}
+			my={'1rem'}
+			onClick={createRoom}
+			sx={{
+				cursor: 'pointer',
+			}}
+		>
 			<Avatar size="sm">{username[0].toUpperCase()}</Avatar>
 
 			<Typography pl={'1rem'}>{username}</Typography>

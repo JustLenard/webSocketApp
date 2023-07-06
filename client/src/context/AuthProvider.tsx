@@ -24,9 +24,9 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 	const [loggedIn, setLoggedIn] = useState<boolean>(localStorage.getItem(loggedInKey) === 'true')
 	const [loading, setLoading] = useState(false)
 
-	console.log('This is accessToken', accessToken)
-	console.log('This is loggedIn', loggedIn)
-	console.log('This is loading', loading)
+	// console.log('This is accessToken', accessToken)
+	// console.log('This is loggedIn', loggedIn)
+	// console.log('This is loading', loading)
 
 	const refresh = useRefreshToken()
 

@@ -53,6 +53,42 @@ export class RoomService implements OnModuleInit {
 			.getMany()
 	}
 
+	// async getRoomsForUser(userId: number) {
+	// 	return this.roomRepository
+	// 		.createQueryBuilder('room')
+	// 		.leftJoin('room.users', 'users')
+	// 		.where('users.id = :userId', { userId: userId })
+	// 		.getMany()
+	// }
+
+	async privateChatExists(firstUserId: number, secondUserId: number): Promise<null | RoomEntity> {
+		return this.roomRepository
+			.createQueryBuilder('room')
+			.leftJoin('room.users', 'users')
+			.leftJoin('room.users', 'all_users')
+			.where('users.id = :userId', { userId: firstUserId })
+			.andWhere('room.isGroupChat = :isGroupChat', { isGroupChat: false })
+			.andWhere('all_users.id = :secondUserId', { secondUserId: secondUserId })
+			.getOne()
+	}
+
+	// async getRoomsForUser(userId: number) {
+	// 	return (
+	// 		this.roomRepository
+	// 			.createQueryBuilder('room')
+	// 			.leftJoin('room.users', 'users')
+	// 			.where('users.id = :userId', { userId: userId })
+	// 			.leftJoin('room.users', 'all_users')
+	// 			.select(['all_users.id', 'room.name', 'room.id'])
+	// 			// .leftJoinAndMapOne('all_users.id',, 'what')
+
+	// 			// .select(['all_uesrs.id'])
+	// 			// .select(['room.id', 'room.name'])
+	// 			// .getMany()
+	// 			.getRawMany()
+	// 	)
+	// }
+
 	async getRoom(roomId: number): Promise<RoomEntity> {
 		return this.roomRepository.findOne({
 			where: { id: roomId },
@@ -83,14 +119,13 @@ export class RoomService implements OnModuleInit {
 		})
 	}
 
-	async checkIfPrivateChatExits(firstUserId: number, secondUserId: number): Promise<RoomEntity | undefined> {
-		console.log('This is firstUserId', firstUserId)
-		console.log('This is secondUserId', secondUserId)
-		const rooms = await this.getRoomsForUser(firstUserId)
+	async checkIfPrivateChatExits(firstUserId: number, secondUserId: number): Promise<RoomEntity | boolean> {
+		// console.log('This is firstUserId', firstUserId)
+		// console.log('This is secondUserId', secondUserId)
 
-		const privateRoom = rooms.find((room) => !room.isGroupChat && this.userIsPartOfRoom(room, secondUserId))
+		const result = await this.privateChatExists(firstUserId, secondUserId)
 
-		return privateRoom
+		return result ? result : false
 	}
 
 	async userIsPartOfRoom(room: RoomI, userId: number) {

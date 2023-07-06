@@ -44,7 +44,7 @@ export class WebsocketEvents {
 
 				this.logger.log('Getting all the rooms for the usefr')
 
-				console.log('This is server', server)
+				// console.log('This is server', server)
 				const f = server.sockets
 
 				// this.connections.some(con => con.id === user.id)
@@ -56,6 +56,8 @@ export class WebsocketEvents {
 				console.log('This is connections', this.connections)
 
 				const rooms = await this.roomService.getRoomsForUser(user.id)
+
+				console.log('This is rooms', rooms)
 
 				// client.emit('rooms', rooms)
 				return server.to(client.id).emit('rooms', rooms)

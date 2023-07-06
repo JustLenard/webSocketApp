@@ -54,7 +54,7 @@ const UserProvider: React.FC<Props> = ({ children }) => {
 			setLoading(false)
 		}
 		if (accessToken) getMyInfo()
-	}, [])
+	}, [accessToken])
 
 	const contextValue = {
 		user,
