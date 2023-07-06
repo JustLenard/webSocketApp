@@ -100,16 +100,21 @@ export class WebsocketEvents {
 	}
 
 	async onAddMessage(socket: Socket, message: MessageI, server: Server) {
-		console.log('creating message')
+		console.log('This is message', message)
+
 		const createdMessage: MessageI = await this.messageService.create({ user: socket.data.user, ...message })
 
-		const room: RoomEntity = await this.roomService.getRoom(createdMessage.room)
+		console.log('This is createdMessage', createdMessage)
+
+		const room: RoomEntity = await this.roomService.getRoomById(createdMessage.room)
+
+		console.log('This is room', room)
 
 		const joinedUsers: JoinedRoomEntity[] = await this.joinedRoomService.findByRoom(room)
 		// TODO: Send new Message to all joined Users of the room (currently online)
 
-		for (const user of joinedUsers) {
-			await server.to(user.socketId).emit('messageAdded', createdMessage)
-		}
+		// for (const user of joinedUsers) {
+		// 	await server.to(user.socketId).emit('messageAdded', createdMessage)
+		// }
 	}
 }

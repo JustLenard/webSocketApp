@@ -6,16 +6,16 @@ export interface JoinedRoomI {
 }
 
 export interface RoomI {
-	id?: number
-	name?: string
+	id: number
+	name: string
+	isGroupChat: boolean
 	description?: string
 	users?: UserI[]
-	created_at?: Date
-	updated_at?: Date
 }
 
-export interface CreateRoomI {
+export interface PostRoomI {
 	name: string
+	description?: string
 	users: number[]
 }
 

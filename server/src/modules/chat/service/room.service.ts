@@ -89,7 +89,7 @@ export class RoomService implements OnModuleInit {
 	// 	)
 	// }
 
-	async getRoom(roomId: number): Promise<RoomEntity> {
+	async getRoomById(roomId: number): Promise<RoomEntity> {
 		return this.roomRepository.findOne({
 			where: { id: roomId },
 		})
@@ -119,13 +119,13 @@ export class RoomService implements OnModuleInit {
 		})
 	}
 
-	async checkIfPrivateChatExits(firstUserId: number, secondUserId: number): Promise<RoomEntity | boolean> {
+	async checkIfPrivateChatExits(firstUserId: number, secondUserId: number): Promise<number | boolean> {
 		// console.log('This is firstUserId', firstUserId)
 		// console.log('This is secondUserId', secondUserId)
 
 		const result = await this.privateChatExists(firstUserId, secondUserId)
 
-		return result ? result : false
+		return result ? result.id : false
 	}
 
 	async userIsPartOfRoom(room: RoomI, userId: number) {

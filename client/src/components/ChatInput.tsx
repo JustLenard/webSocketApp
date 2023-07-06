@@ -2,6 +2,7 @@ import { Button, FormControl, Input, OutlinedInput } from '@mui/material'
 import { useContext, useState } from 'react'
 import { SocketContext } from '../context/SocketProvider'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { useSocket } from '../hooks/useSocket'
 
 type ChatForm = {
 	message: string
@@ -18,7 +19,7 @@ const ChatInput: React.FC<Props> = () => {
 		resetField,
 	} = useForm<ChatForm>()
 
-	const { appSocket, sendMessage } = useContext(SocketContext)
+	const { appSocket, sendMessage } = useSocket()
 
 	const handleMessageSubmit: SubmitHandler<ChatForm> = (formData) => {
 		sendMessage(formData.message)

@@ -1,26 +1,24 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Socket, io } from 'socket.io-client'
-import { getCookie, removeCookie } from 'typescript-cookie'
-import AuthContext from './AuthProvider'
-import { IRoom } from '../types/room.type'
-import { ISentMessage, MessageI } from '../types/BE_entities.types'
-import AppLoading from '../components/AppLoading'
 import useRefreshToken from '../hooks/useRefresh'
-import { useNavigate } from 'react-router-dom'
+import { PostRoomI, MessageI, RoomI } from '../types/BE_entities.types'
+import { IRoom } from '../types/room.type'
+import AuthContext from './AuthProvider'
+import { socketEvents } from '../websocket/socketEvents'
 
 const websocketURL = import.meta.env.VITE_PUBLIC_URL + '/ws'
 
 interface IContext {
 	appSocket: Socket | null
-	rooms: null | IRoom[]
+	rooms: RoomI[]
 	messages: MessageI[] | null
 	sendMessage: (message: string) => void
-	selectCurrentRoom: (roomId: number) => void
+	changeCurrentRoom: (roomId: number) => void
+	currentRoom: null | RoomI
+	createNewRoom: (newRoom: PostRoomI) => void
 }
 
-export const SocketContext = React.createContext<IContext>({
-	rooms: null,
-} as IContext)
+export const SocketContext = React.createContext<IContext>({} as IContext)
 
 interface Props {
 	children: React.ReactNode
@@ -40,9 +38,11 @@ export interface UserData {
 const SocketProvider: React.FC<Props> = ({ children }) => {
 	const [appSocket, setAppSocket] = useState<null | Socket>(null)
 	const [messages, setMessages] = useState<null | MessageI[]>(null)
-	const [rooms, setRooms] = useState<null | IRoom[]>(null)
-	// const [currentRoom, setCurrentRoom] = useState<number | null>(null)
-	const [currentRoom, setCurrentRoom] = useState<number | null>(1)
+	const [rooms, setRooms] = useState<RoomI[]>([])
+
+	const [currentRoom, setCurrentRoom] = useState<RoomI | null>(null)
+
+	console.log('This is currentRoom', currentRoom)
 
 	const { login, logOut, loggedIn, accessToken } = useContext(AuthContext)
 
@@ -81,8 +81,13 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 			socket.disconnect()
 		})
 
-		socket.on('rooms', (rooms: IRoom[]) => {
+		socket.on('rooms', (rooms: RoomI[]) => {
 			setRooms(rooms)
+
+			/**
+			 * @todo delete this
+			 **/
+			setCurrentRoom(rooms[0])
 		})
 
 		setAppSocket(socket)
@@ -106,22 +111,36 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	// if (!appSocket) return <AppLoading />
 
 	const sendMessage = (messageContent: string) => {
-		appSocket?.emit('addMessage', {
+		if (!currentRoom) return console.log('Room not selected')
+		appSocket?.emit(socketEvents.addMessage, {
 			text: messageContent,
-			room: currentRoom,
+			room: currentRoom.id,
 		})
 	}
 
-	const selectCurrentRoom = (roomId: number) => {
-		setCurrentRoom(roomId)
+	const changeCurrentRoom = (roomId: number) => {
+		const selectedRoom = rooms?.find((room) => room.id === roomId)
+
+		if (selectedRoom) return setCurrentRoom(selectedRoom)
+	}
+
+	const createNewRoom = (newRoom: PostRoomI) => {
+		appSocket?.emit(socketEvents.createRoom, newRoom, (callback: RoomI) => {
+			const newRooms = [...rooms]
+			newRooms.unshift(callback)
+			setRooms(newRooms)
+			setCurrentRoom(callback)
+		})
 	}
 
 	const contextValue = {
 		appSocket,
 		rooms,
 		messages,
+		currentRoom,
+		createNewRoom,
 		sendMessage,
-		selectCurrentRoom,
+		changeCurrentRoom,
 	}
 
 	return <SocketContext.Provider value={contextValue}>{children}</SocketContext.Provider>

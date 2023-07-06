@@ -1,41 +1,57 @@
-import { Box, Button, FormControl, Grid, Input, OutlinedInput } from '@mui/material'
-import { useContext, useEffect } from 'react'
-import { Form } from 'react-router-dom'
-import { apiRequest } from '../utils/apiRequest'
+import { CircularProgress, Grid, Stack } from '@mui/material'
+import { useSocket } from '../hooks/useSocket'
 import ChatInput from './ChatInput'
-import AuthContext from '../context/AuthProvider'
-import { SocketContext } from '../context/SocketProvider'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { IRoom } from '../types/room.type'
 import MessageContainer from './MessageContainer'
 
 const ChatContainer = () => {
-	const { logOut } = useContext(AuthContext)
+	const { currentRoom } = useSocket()
 
-	const { appSocket, sendMessage } = useContext(SocketContext)
+	if (!currentRoom)
+		return (
+			<CircularProgress
+				sx={{
+					alignSelf: 'center',
+					textAlign: 'center',
+					margin: '0 auto',
+				}}
+			/>
+		)
 
 	return (
-		<>
-			<Grid container direction={'column'} height={'100%'}>
-				<Grid
-					item
-					xs
-					height={'100%'}
-					style={{
-						border: '1px solid red',
-					}}
-				>
-					<MessageContainer />
-				</Grid>
-				<Grid>
-					<ChatInput />
-				</Grid>
+		<Grid container direction={'column'} height={'100%'}>
+			<Grid
+				item
+				xs
+				style={{
+					flex: 0,
+					background: 'gray',
+					padding: '1rem',
+				}}
+			>
+				<Stack display={'flex'} justifyContent={'space-between'} direction={'row'}>
+					{currentRoom.name}
+
+					<div>
+						{currentRoom.users?.map((user) => (
+							<div key={user.id}>{user.username}</div>
+						))}
+					</div>
+				</Stack>
 			</Grid>
-
-			{/* <Button onClick={createRoom}>Create Room</Button>
-
-			<Button onClick={logOut}>Logout</Button> */}
-		</>
+			<Grid
+				item
+				xs
+				height={'100%'}
+				style={{
+					border: '1px solid red',
+				}}
+			>
+				<MessageContainer />
+			</Grid>
+			<Grid>
+				<ChatInput />
+			</Grid>
+		</Grid>
 	)
 }
 

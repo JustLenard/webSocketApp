@@ -3,13 +3,14 @@ import { Stack } from '@mui/system'
 import { IRoom } from '../types/room.type'
 import { useContext } from 'react'
 import { SocketContext } from '../context/SocketProvider'
+import { RoomI } from '../types/BE_entities.types'
 
 interface Props {
 	name: string
 }
 
-const RoomName: React.FC<Props & IRoom> = ({ name, id }) => {
-	const { selectCurrentRoom, appSocket } = useContext(SocketContext)
+const RoomName: React.FC<Props & RoomI> = ({ name, id }) => {
+	const { changeCurrentRoom: selectCurrentRoom, appSocket } = useContext(SocketContext)
 
 	const handleClick = () => {
 		selectCurrentRoom(id)

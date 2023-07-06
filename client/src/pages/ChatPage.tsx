@@ -24,7 +24,13 @@ const ChatPage = () => {
 				<Grid item xs={2}>
 					<LeftMenu />
 				</Grid>
-				<Grid item xs>
+				<Grid
+					item
+					xs
+					sx={{
+						display: 'inline-flex',
+					}}
+				>
 					<ChatContainer />
 				</Grid>
 				<Grid item xs={2}>

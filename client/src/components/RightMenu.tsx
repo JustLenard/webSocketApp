@@ -2,7 +2,7 @@ import { Card, Grid, Stack, Typography } from '@mui/material'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { axiosPrivate } from '../api/axios'
 import { useEffect, useState } from 'react'
-import { CreateRoomI, RoomI, UserI } from '../types/BE_entities.types'
+import { PostRoomI, RoomI, UserI } from '../types/BE_entities.types'
 import { Avatar } from '@mui/joy'
 import { AxiosError } from 'axios'
 import { useAuth } from '../hooks/useAuth'
@@ -48,23 +48,31 @@ interface ProfileItemProps {
 
 const ProfileItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 	const { user } = useUser()
-	const { appSocket } = useSocket()
+	const { appSocket, changeCurrentRoom, createNewRoom } = useSocket()
 
-	const createRoom = () => {
+	const checkIfPrivateChatExists = () => {
 		// console.log('This is user', user)
 		// console.log('This is appSocket', appSocket)
 		if (!user || !appSocket) return
 
-		const newRoom: CreateRoomI = {
+		const newRoom: PostRoomI = {
 			name: username,
 			users: [id],
 		}
 
 		// console.log('This is newRoom', newRoom)
 
-		appSocket.emit(socketEvents.checkIfPrivateChatExists, id, (callBack: any) =>
-			console.log('This is callBack', callBack),
-		)
+		appSocket.emit(socketEvents.checkIfPrivateChatExists, id, (callBack: boolean | number) => {
+			console.log('This is callBack', callBack)
+
+			if (typeof callBack === 'number') {
+				changeCurrentRoom(callBack)
+			}
+
+			if (typeof callBack === 'boolean') {
+				createNewRoom(newRoom)
+			}
+		})
 	}
 
 	return (
@@ -73,7 +81,7 @@ const ProfileItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 			flexDirection={'row'}
 			alignItems={'center'}
 			my={'1rem'}
-			onClick={createRoom}
+			onClick={checkIfPrivateChatExists}
 			sx={{
 				cursor: 'pointer',
 			}}
