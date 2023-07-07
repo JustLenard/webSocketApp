@@ -38,6 +38,14 @@ export class UsersService {
 		return `This action updates a #${id} user`
 	}
 
+	async updateUserSocketId(userId: number, newSocketId: string) {
+		return this.userRepostiry.update(userId, { socketId: newSocketId })
+	}
+
+	async removeUserSocketId(userId: number) {
+		return this.userRepostiry.update(userId, { socketId: null })
+	}
+
 	remove(id: number) {
 		return `This action removes a #${id} user`
 	}

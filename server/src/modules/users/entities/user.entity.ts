@@ -23,10 +23,13 @@ export class UserEntity extends BaseEntity {
 	})
 	password: string
 
+	@Column()
+	isAdmin: boolean
+
 	@Column({
 		nullable: true,
 	})
-	isAdmin: boolean
+	socketId: string
 
 	@ManyToMany(() => RoomEntity, (room) => room.users)
 	rooms: RoomEntity[]

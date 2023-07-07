@@ -13,6 +13,7 @@ import { JoinedRoomEntity } from './entities/joinedRoom.entity'
 import { FMessage, JoinedRoomI, MessageI, RoomI } from 'src/types/entities.types'
 import { MessageEntity } from './entities/message.entity'
 import { PostRoomI } from 'src/types/frontEnd.types'
+import { socketEvents } from './socketEvents'
 
 @Injectable()
 export class WebsocketEvents {
@@ -36,10 +37,18 @@ export class WebsocketEvents {
 			this.logger.log('Looking for user in db')
 			const user: UserEntity = await this.userService.findOne(decodedToken.sub)
 
+			// user.socketId = client.id
+			// user.save()
+
 			if (!user) {
 				this.logger.log('User does not exist')
+				await this.userService.removeUserSocketId(user.id)
 				return this.handleDisconnect(client)
 			} else {
+				const res = await this.userService.updateUserSocketId(user.id, client.id)
+
+				console.log('This is res', res)
+
 				client.data.user = user
 
 				this.logger.log('Getting all the rooms for the usefr')
@@ -57,8 +66,6 @@ export class WebsocketEvents {
 
 				const rooms = await this.roomService.getRoomsForUser(user.id)
 
-				console.log('This is rooms', rooms)
-
 				// client.emit('rooms', rooms)
 				return server.to(client.id).emit('rooms', rooms)
 			}
@@ -69,6 +76,7 @@ export class WebsocketEvents {
 	}
 
 	handleDisconnect(client: Socket) {
+		this.userService.removeUserSocketId(client.data.user.id)
 		console.log(`Client ${client.id} disconnected`)
 	}
 
@@ -110,11 +118,10 @@ export class WebsocketEvents {
 
 		console.log('This is room', room)
 
-		const joinedUsers: JoinedRoomEntity[] = await this.joinedRoomService.findByRoom(room)
-		// TODO: Send new Message to all joined Users of the room (currently online)
+		for (const user of room.users) {
+			server.to(user.socketId).emit(socketEvents.messageAdded, createdMessage)
+		}
 
-		// for (const user of joinedUsers) {
-		// 	await server.to(user.socketId).emit('messageAdded', createdMessage)
-		// }
+		return createdMessage
 	}
 }

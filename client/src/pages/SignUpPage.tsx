@@ -12,6 +12,8 @@ import { useContext } from 'react'
 import AuthContext from '../context/AuthProvider'
 import { axiosPrivate } from '../api/axios'
 import { routes } from '../router/Root'
+import { isAxiosError } from 'axios'
+import { useAuth } from '../hooks/useAuth'
 
 interface SignUpForm {
 	username: string
@@ -25,20 +27,29 @@ const SignUpPage: React.FC = () => {
 		handleSubmit,
 		watch,
 		formState: { errors },
+		setError,
 	} = useForm<SignUpForm>()
 
 	const navigate = useNavigate()
 
-	const { accessToken, login } = useContext(AuthContext)
+	const { login } = useAuth()
 
 	const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
-		const response = await axiosPrivate.post('/auth/signup', {
-			username: data.username,
-			password: data.password,
-		})
-
-		login(response.data.accessToken)
-		navigate(routes.chat)
+		try {
+			const response = await axiosPrivate.post('/auth/signup', {
+				username: data.username,
+				password: data.password,
+			})
+			login(response.data.accessToken)
+			navigate(routes.chat)
+		} catch (err) {
+			if (isAxiosError(err)) {
+				console.log('This is err.response.data', err.response?.data.message)
+				setError('root', {
+					message: err.response?.data.message,
+				})
+			}
+		}
 	}
 
 	return (

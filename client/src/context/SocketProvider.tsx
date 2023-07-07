@@ -5,13 +5,14 @@ import { PostRoomI, MessageI, RoomI } from '../types/BE_entities.types'
 import { IRoom } from '../types/room.type'
 import AuthContext from './AuthProvider'
 import { socketEvents } from '../websocket/socketEvents'
+import { Message } from 'react-hook-form'
 
 const websocketURL = import.meta.env.VITE_PUBLIC_URL + '/ws'
 
 interface IContext {
 	appSocket: Socket | null
 	rooms: RoomI[]
-	messages: MessageI[] | null
+	messages: MessageI[]
 	sendMessage: (message: string) => void
 	changeCurrentRoom: (roomId: number) => void
 	currentRoom: null | RoomI
@@ -37,7 +38,7 @@ export interface UserData {
  */
 const SocketProvider: React.FC<Props> = ({ children }) => {
 	const [appSocket, setAppSocket] = useState<null | Socket>(null)
-	const [messages, setMessages] = useState<null | MessageI[]>(null)
+	const [messages, setMessages] = useState<MessageI[]>([])
 	const [rooms, setRooms] = useState<RoomI[]>([])
 
 	const [currentRoom, setCurrentRoom] = useState<RoomI | null>(null)
@@ -90,6 +91,10 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 			setCurrentRoom(rooms[0])
 		})
 
+		socket.on(socketEvents.messageAdded, (message: MessageI) => {
+			setMessages((prev) => [...prev, message])
+		})
+
 		setAppSocket(socket)
 	}, [logOut])
 
@@ -112,10 +117,17 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 
 	const sendMessage = (messageContent: string) => {
 		if (!currentRoom) return console.log('Room not selected')
-		appSocket?.emit(socketEvents.addMessage, {
-			text: messageContent,
-			room: currentRoom.id,
-		})
+		appSocket?.emit(
+			socketEvents.addMessage,
+			{
+				text: messageContent,
+				room: currentRoom.id,
+			},
+			// (callback: MessageI) => {
+			// 	setMessages((prev) => [...prev, callback])
+			// 	console.log('This is callback', callback)
+			// },
+		)
 	}
 
 	const changeCurrentRoom = (roomId: number) => {

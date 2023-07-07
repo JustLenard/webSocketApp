@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common'
+import { BadRequestException, ConflictException, ForbiddenException, Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as argon2 from 'argon2'
@@ -18,6 +18,9 @@ export class AuthService {
 		@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>,
 		@InjectRepository(RoomEntity) private roomRepository: Repository<RoomEntity>,
 	) {}
+
+	alphabet = [...Array(26)].map((_, i) => (i + 10).toString(36))
+	numbers = [...Array(10)].map((_, i) => i.toString())
 
 	hashData(data: string) {
 		return argon2.hash(data)
@@ -66,6 +69,21 @@ export class AuthService {
 	}
 
 	async signupLocal(dto: AuthDto): Promise<Tokens> {
+		/**
+		 * Enforce unique username
+		 **/
+		if (await this.userRepostiry.findOneBy({ username: dto.username }))
+			throw new ConflictException('Username Taken')
+
+		/**
+		 * Enforce strong password
+		 **/
+		const passIsOk = this.passwordIsOk(dto.password)
+		if (!passIsOk)
+			throw new BadRequestException(
+				'Password should have at least 6 characters and contain at least one letter and number',
+			)
+
 		const hash = await this.hashData(dto.password)
 
 		this.userRepostiry.create({})
@@ -80,6 +98,7 @@ export class AuthService {
 			.create({
 				username: dto.username,
 				password: hash,
+				isAdmin: false,
 				// rooms: [globalRoom],
 			})
 			.save()
@@ -183,5 +202,25 @@ export class AuthService {
 		return this.jwtService.verifyAsync(jwt, {
 			secret: process.env.ACCESS_TOKEN_SECRET,
 		})
+	}
+
+	passwordIsOk(pass: string): boolean {
+		let lengthCheck = false
+		let numberCheck = false
+		let letterCheck = false
+
+		lengthCheck = pass.length > 5
+
+		for (const letter in pass.split('')) {
+			if (this.numbers.includes(letter)) {
+				numberCheck = true
+			}
+
+			if (this.alphabet.includes(letter)) {
+				letterCheck = true
+			}
+		}
+
+		return lengthCheck && numberCheck && letterCheck
 	}
 }

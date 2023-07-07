@@ -65,10 +65,9 @@ export class RoomService implements OnModuleInit {
 		return this.roomRepository
 			.createQueryBuilder('room')
 			.leftJoin('room.users', 'users')
-			.leftJoin('room.users', 'all_users')
 			.where('users.id = :userId', { userId: firstUserId })
 			.andWhere('room.isGroupChat = :isGroupChat', { isGroupChat: false })
-			.andWhere('all_users.id = :secondUserId', { secondUserId: secondUserId })
+			.andWhere('users.id = :secondUserId', { secondUserId: secondUserId })
 			.getOne()
 	}
 
@@ -90,9 +89,15 @@ export class RoomService implements OnModuleInit {
 	// }
 
 	async getRoomById(roomId: number): Promise<RoomEntity> {
-		return this.roomRepository.findOne({
-			where: { id: roomId },
-		})
+		// return this.roomRepository.findOne({
+		// 	where: { id: roomId },
+		// })
+
+		return this.roomRepository
+			.createQueryBuilder('room')
+			.leftJoinAndSelect('room.users', 'users')
+			.where('room.id = :id', { id: roomId })
+			.getOne()
 	}
 
 	async createRoom(room: PostRoomI, creator: UserI) {
