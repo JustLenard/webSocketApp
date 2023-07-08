@@ -5,7 +5,7 @@ import Input from '@mui/joy/Input'
 import Sheet from '@mui/joy/Sheet'
 import Typography from '@mui/joy/Typography'
 import { CssVarsProvider } from '@mui/joy/styles'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
@@ -15,12 +15,15 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { appAxios, axiosPrivate } from '../api/axios'
 import { routes } from '../router/Root'
 import { useAuth } from '../hooks/useAuth'
+import { renderErrors } from './SignUpPage'
+import { isAxiosError } from 'axios'
+import { Stack } from '@mui/material'
 
 const publicUsername = import.meta.env.VITE_PUBLIC_USERNAME
 const publicPassword = import.meta.env.VITE_PUBLIC_PASSWORD
 
 const LoginPage: React.FC = () => {
-	const dispatch = useAppDispatch()
+	const [manualErrors, setManualErrors] = useState<string | null | string[]>(null)
 	const location = useLocation()
 	const navigate = useNavigate()
 	const { loggedIn, login } = useAuth()
@@ -39,9 +42,14 @@ const LoginPage: React.FC = () => {
 	}, [navigate, location.state, loggedIn])
 
 	const onSubmit: SubmitHandler<LogInCredentials> = async (credentials) => {
-		const response = await axiosPrivate.post('/auth/signin', credentials)
-
-		login(response.data.accessToken)
+		try {
+			const response = await axiosPrivate.post('/auth/signin', credentials)
+			login(response.data.accessToken)
+		} catch (err) {
+			if (isAxiosError(err)) {
+				setManualErrors(err.response?.data.message)
+			}
+		}
 	}
 
 	return (
@@ -68,6 +76,9 @@ const LoginPage: React.FC = () => {
 						</Typography>
 						<Typography level="body2">Sign in to continue.</Typography>
 					</div>
+
+					{manualErrors && renderErrors(manualErrors)}
+
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<FormControl>
 							<FormLabel>Username</FormLabel>
@@ -87,12 +98,14 @@ const LoginPage: React.FC = () => {
 								{...register('password', { required: true })}
 							/>
 						</FormControl>
-						<Button type="submit" sx={{ mt: 1 /* margin top */ }}>
-							Log in
-						</Button>
-						<Button type="submit" sx={{ mt: 1 /* margin top */ }}>
-							Random Account
-						</Button>
+						<Stack display={'flex'}>
+							<Button type="submit" sx={{ mt: 1 /* margin top */ }}>
+								Log in
+							</Button>
+							<Button type="submit" sx={{ mt: 1 /* margin top */ }}>
+								Log in as guest
+							</Button>
+						</Stack>
 					</form>
 					<Typography
 						endDecorator={<Link to={'/sign-up'}>Sign up</Link>}

@@ -1,13 +1,14 @@
-import { IsNotEmpty, IsString, Min } from 'class-validator'
+import { IsNotEmpty, IsString, Min, MinLength } from 'class-validator'
 
 export class AuthDto {
 	@IsNotEmpty()
 	@IsString()
-	@Min(3)
+	@MinLength(3, { message: 'Username should have at least 3 characters' })
+	// @Min(3, { message: 'Username should have at least 3 characters' })
 	username: string
 
 	@IsNotEmpty()
 	@IsString()
-	@Min(6)
+	@MinLength(6, { message: 'Password should be at least 6 characters long' })
 	password: string
 }

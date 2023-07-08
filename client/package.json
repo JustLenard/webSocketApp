@@ -11,6 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@fontsource/roboto": "^5.0.3",
+    "@hookform/resolvers": "^3.1.1",
     "@mui/icons-material": "^5.11.16",
     "@mui/joy": "^5.0.0-alpha.70",
     "@mui/lab": "^5.0.0-alpha.121",
@@ -23,7 +24,8 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.8.1",
     "socket.io-client": "^4.6.1",
-    "typescript-cookie": "^1.0.5"
+    "typescript-cookie": "^1.0.5",
+    "yup": "^1.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.27",

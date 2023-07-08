@@ -8,31 +8,34 @@ import { CssVarsProvider } from '@mui/joy/styles'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { apiRequest } from '../utils/apiRequest'
-import { useContext } from 'react'
+import { ReactNode, useContext, useEffect, useState } from 'react'
 import AuthContext from '../context/AuthProvider'
 import { axiosPrivate } from '../api/axios'
 import { routes } from '../router/Root'
 import { isAxiosError } from 'axios'
 import { useAuth } from '../hooks/useAuth'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { ObjectSchema, number, object, ref, string } from 'yup'
 
 interface SignUpForm {
 	username: string
 	password: string
-	repeatPassword: string
+	cpassword: string
 }
 
 const SignUpPage: React.FC = () => {
 	const {
 		register,
 		handleSubmit,
-		watch,
 		formState: { errors },
-		setError,
-	} = useForm<SignUpForm>()
+	} = useForm<SignUpForm>({
+		mode: 'onTouched',
+		resolver: yupResolver(formSchema),
+	})
 
 	const navigate = useNavigate()
-
 	const { login } = useAuth()
+	const [manualErrors, setManualErrors] = useState<string | null | string[]>(null)
 
 	const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
 		try {
@@ -44,10 +47,7 @@ const SignUpPage: React.FC = () => {
 			navigate(routes.chat)
 		} catch (err) {
 			if (isAxiosError(err)) {
-				console.log('This is err.response.data', err.response?.data.message)
-				setError('root', {
-					message: err.response?.data.message,
-				})
+				setManualErrors(err.response?.data.message)
 			}
 		}
 	}
@@ -75,20 +75,24 @@ const SignUpPage: React.FC = () => {
 							<b>Sign Up!</b>
 						</Typography>
 					</div>
+
+					{manualErrors && renderErrors(manualErrors)}
+
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<FormControl>
 							<FormLabel>Username</FormLabel>
-							<Input type="text" placeholder="Connor" {...register('username', { required: true })} />
+							<Input type="text" placeholder="Connor" {...register('username')} />
+							{errors.username && <ErrorText>{errors.username.message}</ErrorText>}
 						</FormControl>
 						<FormControl>
 							<FormLabel>Password</FormLabel>
 							<Input
 								type="password"
 								placeholder="password"
-								{...register('password', { required: true, maxLength: 5 })}
+								{...register('password')}
 								autoComplete="off"
 							/>
-							{errors.password && <span>This field is required</span>}
+							{errors.password && <ErrorText>{errors.password.message}</ErrorText>}
 						</FormControl>
 
 						<FormControl>
@@ -97,11 +101,13 @@ const SignUpPage: React.FC = () => {
 								autoComplete="off"
 								type="password"
 								placeholder="password"
-								{...register('repeatPassword', { required: true })}
+								{...register('cpassword')}
 							/>
+
+							{errors.cpassword && <ErrorText>{errors.cpassword.message}</ErrorText>}
 						</FormControl>
 
-						<Button sx={{ mt: 1 /* margin top */ }} type="submit">
+						<Button sx={{ mt: 1 /* margin top */ }} type="submit" fullWidth>
 							Sign Up
 						</Button>
 					</form>
@@ -115,6 +121,56 @@ const SignUpPage: React.FC = () => {
 				</Sheet>
 			</main>
 		</CssVarsProvider>
+	)
+}
+
+const formSchema: ObjectSchema<SignUpForm> = object({
+	username: string().min(3, 'Username should be at least 3 characters long').defined(),
+	password: string()
+		.required('Password is required')
+		.min(6, 'Password length should be at least 6 characters')
+		.max(12, 'Password cannot exceed more than 12 characters')
+		.matches(
+			/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/,
+			'Password should be at least 6 characters long and have a minimum of one letter and number',
+		),
+
+	cpassword: string()
+		.required('Confirm Password is required')
+		.min(6, 'Password length should be at least 6 characters')
+		.max(12, 'Password cannot exceed more than 12 characters')
+		.oneOf([ref('password')], "Passwords don't match"),
+})
+
+const ErrorText: React.FC<{ children: ReactNode }> = ({ children }) => (
+	<Typography color="danger" fontSize="sm" my={'.5rem'}>
+		{children}
+	</Typography>
+)
+
+export const renderErrors = (errors: string | string[] | undefined) => {
+	if (typeof errors === 'undefined')
+		return (
+			<Typography color={'danger'} fontSize="sm" variant="soft">
+				Something went wrong. Please try again later.
+			</Typography>
+		)
+
+	if (typeof errors === 'string')
+		return (
+			<Typography color={'danger'} fontSize="sm" variant="soft">
+				{errors}
+			</Typography>
+		)
+
+	return (
+		<div>
+			{errors.map((error) => (
+				<Typography color={'danger'} fontSize="sm" variant="soft" key={error}>
+					{error}
+				</Typography>
+			))}
+		</div>
 	)
 }
 

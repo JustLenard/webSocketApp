@@ -10,6 +10,7 @@ import { AuthDto } from './auth.dto'
 import { Response } from 'express'
 import { RoomService } from '../chat/service/room.service'
 import { RoomEntity } from '../chat/entities/room.entity'
+
 @Injectable()
 export class AuthService {
 	constructor(
@@ -73,7 +74,7 @@ export class AuthService {
 		 * Enforce unique username
 		 **/
 		if (await this.userRepostiry.findOneBy({ username: dto.username }))
-			throw new ConflictException('Username Taken')
+			throw new ConflictException('Username is already taken')
 
 		/**
 		 * Enforce strong password
@@ -115,20 +116,14 @@ export class AuthService {
 		const user = await this.userRepostiry.findOne({
 			where: { username: dto.username },
 		})
-		if (!user) throw new ForbiddenException('Access Denied')
+		if (!user) throw new ForbiddenException('Username and password mismatch')
 
 		const passwordMatches = await argon2.verify(user.password, dto.password)
 
-		if (!passwordMatches) throw new ForbiddenException('Access Denied')
+		if (!passwordMatches) throw new ForbiddenException('Username and password mismatch')
 
 		const tokens = await this.getTokens(user.id, user.username)
 		await this.updateRtHash(user.id, tokens.refreshToken)
-
-		// res.cookie('refreshToken', tokens.refreshToken, {
-		// 	httpOnly: true,
-		// 	secure: false,
-		// 	domain: 'localhost',
-		// })
 
 		this.setCookie(res, tokens.refreshToken)
 
@@ -211,16 +206,17 @@ export class AuthService {
 
 		lengthCheck = pass.length > 5
 
-		for (const letter in pass.split('')) {
-			if (this.numbers.includes(letter)) {
-				numberCheck = true
-			}
+		pass.toLowerCase()
+			.split('')
+			.forEach((letter) => {
+				if (this.numbers.includes(letter)) {
+					numberCheck = true
+				}
 
-			if (this.alphabet.includes(letter)) {
-				letterCheck = true
-			}
-		}
-
+				if (this.alphabet.includes(letter)) {
+					letterCheck = true
+				}
+			})
 		return lengthCheck && numberCheck && letterCheck
 	}
 }
