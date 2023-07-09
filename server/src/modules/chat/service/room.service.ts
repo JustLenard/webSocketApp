@@ -25,7 +25,6 @@ export class RoomService implements OnModuleInit {
 			const globalRoom: RoomI = {
 				name: 'Global',
 				users: [admin],
-				isGroupChat: true,
 			}
 
 			console.log('This is globalRoom', globalRoom)

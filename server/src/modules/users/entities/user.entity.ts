@@ -28,10 +28,6 @@ export class UserEntity extends BaseEntity {
 	})
 	password: string
 
-	// @Column()
-	// accountType: 'default' | 'admin' | 'guest'
-	// isAdmin: boolean
-
 	@Column({ type: 'enum', enum: AccountType, default: AccountType.default })
 	accountType: AccountType
 

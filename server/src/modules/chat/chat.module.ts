@@ -3,9 +3,9 @@ import { AuthModule } from '../auth/auth.module'
 import { UsersModule } from '../users/users.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { RoomEntity } from './entities/room.entity'
-import { ChatGateway } from './chat.gateway'
+import { ChatGateway } from './socket/chat.gateway'
 import { RoomService } from './service/room.service'
-import { WebsocketEvents } from './chat.event'
+import { WebsocketEvents } from './socket/chat.event'
 import { MessageService } from './service/message.service'
 import { JoinedRoomService } from './service/joinedRoom.service'
 import { MessageEntity } from './entities/message.entity'
@@ -21,5 +21,6 @@ import { UserEntity } from '../users/entities/user.entity'
 		TypeOrmModule.forFeature([RoomEntity, MessageEntity, JoinedRoomEntity, UserEntity]),
 	],
 	providers: [RoomService, WebsocketEvents, ChatGateway, MessageService, JoinedRoomService, MessageService],
+	exports: [RoomService],
 })
 export class ChatModule {}

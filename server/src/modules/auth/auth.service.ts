@@ -3,18 +3,45 @@ import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as argon2 from 'argon2'
 import { Tokens } from 'src/types/tokens.types'
-import { Repository } from 'typeorm'
+import { In, Repository } from 'typeorm'
 import { UserEntity } from '../users/entities/user.entity'
 import { UsersService } from '../users/users.service'
 import { AuthDto } from './auth.dto'
 import { Response } from 'express'
 import { RoomService } from '../chat/service/room.service'
 import { RoomEntity } from '../chat/entities/room.entity'
+import { RoomI } from 'src/types/entities.types'
+import { MessageEntity } from '../chat/entities/message.entity'
 
 @Injectable()
 export class AuthService {
+	async onModuleInit() {
+		// const newUser = await this.userRepostiry
+		// 	.create({
+		// 		username: dto.username,
+		// 		password: hash,
+		// 		// rooms: [globalRoom],
+		// 	})
+		// 	.save()
+		// const globalRoom = await this.roomRepository.findOne({
+		// 	where: { name: 'Global' },
+		// 	relations: ['users'], // Make sure the users relation is eagerly loaded
+		// })
+		// const user = await this.userRepostiry.findOneBy({ id: '2faa6629-590e-4f6e-aed5-a164606040df' })
+		// globalRoom.users.push(user)
+		// globalRoom.messages.push({
+		// 	// id: 5,
+		// 	text: 'text',
+		// 	user: user,
+		// } as MessageEntity)
+		// // this.roomRepository.update({ id: globalRoom.id }, globalRoom)
+		// this.roomRepository.save(globalRoom)
+		// console.log('This is globalRoom', globalRoom)
+	}
+
 	constructor(
 		private usersService: UsersService,
+
 		private jwtService: JwtService,
 		@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>,
 		@InjectRepository(RoomEntity) private roomRepository: Repository<RoomEntity>,
@@ -87,14 +114,6 @@ export class AuthService {
 
 		const hash = await this.hashData(dto.password)
 
-		this.userRepostiry.create({})
-
-		const globalRoom = await this.roomRepository.findOne({
-			where: { name: 'Global' },
-		})
-
-		console.log('This is globalRoom', globalRoom)
-
 		const newUser = await this.userRepostiry
 			.create({
 				username: dto.username,
@@ -103,7 +122,16 @@ export class AuthService {
 			})
 			.save()
 
-		console.log('This is newUser', newUser)
+		const globalRoom = await this.roomRepository.findOne({
+			where: { name: 'Global' },
+			relations: ['users'], // Make sure the users relation is eagerly loaded
+		})
+
+		globalRoom.users.push(newUser)
+
+		await this.roomRepository.save(globalRoom)
+
+		console.log('This is globalRoom', globalRoom)
 
 		const tokens = await this.getTokens(newUser.id, newUser.username)
 		await this.updateRtHash(newUser.id, tokens.refreshToken)
@@ -218,4 +246,12 @@ export class AuthService {
 			})
 		return lengthCheck && numberCheck && letterCheck
 	}
+
+	// async addUsersToRoom(room: RoomI, userIds: string[]) {
+	// 	const users = await this.userRepository.findBy({ id: In(userIds) })
+
+	// 	room.users = [...room.users, ...users]
+
+	// 	return room
+	// }
 }

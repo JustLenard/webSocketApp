@@ -3,13 +3,13 @@ import { Server, Socket } from 'socket.io'
 import { JoinedRoomI, MessageI } from 'src/types/entities.types'
 import { PostRoomI } from 'src/types/frontEnd.types'
 import { JwtPayload } from 'src/types/jwtPayload.types'
-import { AuthService } from '../auth/auth.service'
-import { UserEntity } from '../users/entities/user.entity'
-import { UsersService } from '../users/users.service'
-import { RoomEntity } from './entities/room.entity'
-import { JoinedRoomService } from './service/joinedRoom.service'
-import { MessageService } from './service/message.service'
-import { RoomService } from './service/room.service'
+import { AuthService } from '../../auth/auth.service'
+import { UserEntity } from '../../users/entities/user.entity'
+import { UsersService } from '../../users/users.service'
+import { RoomEntity } from '../entities/room.entity'
+import { JoinedRoomService } from '../service/joinedRoom.service'
+import { MessageService } from '../service/message.service'
+import { RoomService } from '../service/room.service'
 import { socketEvents } from './socketEvents'
 
 @Injectable()
@@ -59,7 +59,7 @@ export class WebsocketEvents {
 					socketId: client.id,
 				})
 
-				console.log('This is connections', this.connections)
+				// console.log('This is connections', this.connections)
 
 				const rooms = await this.roomService.getRoomsForUser(user.id)
 

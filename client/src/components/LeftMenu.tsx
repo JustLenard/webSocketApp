@@ -3,12 +3,12 @@ import RoomName from './RoomName'
 import { useContext } from 'react'
 import { SocketContext } from '../context/SocketProvider'
 import { Skeleton } from '@mui/material'
-import AppLoading from './AppLoading'
+import AppSpinner from './AppLoading'
 
 const LeftMenu = () => {
 	const { rooms } = useContext(SocketContext)
 
-	if (!rooms) return <AppLoading />
+	// if (!rooms) return <AppLoading />
 
 	return (
 		<Stack spacing={1} padding={1}>

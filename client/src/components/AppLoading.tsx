@@ -4,10 +4,23 @@ import { CircularProgress, Skeleton, Stack } from '@mui/material'
 interface Props {
 	amount?: number
 	circle?: boolean
+	contained?: boolean
 }
 
-const AppLoading: React.FC<Props> = ({ amount = 2, circle = true }) => {
-	const renderSkeletonr = (amount: number) => {
+const AppSpinner: React.FC<Props> = ({ contained = false, amount = 2, circle = true }) => {
+	if (contained) {
+		return (
+			<CircularProgress
+				sx={{
+					alignSelf: 'center',
+					textAlign: 'center',
+					margin: '0 auto',
+				}}
+			/>
+		)
+	}
+
+	const renderSkeleton = (amount: number) => {
 		for (let i = 0; i < amount; i++) {
 			return <div>laoding</div>
 		}
@@ -59,4 +72,4 @@ const SpinnerContainer = styled.div`
 		center / contain no-repeat; */
 `
 
-export default AppLoading
+export default AppSpinner

@@ -1,21 +1,13 @@
-import { CircularProgress, Grid, Stack } from '@mui/material'
+import { Grid, Stack } from '@mui/material'
 import { useSocket } from '../hooks/useSocket'
+import AppSpinner from './AppLoading'
 import ChatInput from './ChatInput'
 import MessageContainer from './MessageContainer'
 
 const ChatContainer = () => {
 	const { currentRoom } = useSocket()
 
-	if (!currentRoom)
-		return (
-			<CircularProgress
-				sx={{
-					alignSelf: 'center',
-					textAlign: 'center',
-					margin: '0 auto',
-				}}
-			/>
-		)
+	if (!currentRoom) return <AppSpinner contained />
 
 	return (
 		<Grid container direction={'column'} height={'100%'}>

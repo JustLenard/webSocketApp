@@ -11,6 +11,7 @@ import { AtStrategy } from './strategies/at.strategy'
 import { RtStrategy } from './strategies/rt.strategy'
 import { ChatModule } from '../chat/chat.module'
 import { RoomEntity } from '../chat/entities/room.entity'
+import { RoomService } from '../chat/service/room.service'
 
 @Module({
 	imports: [

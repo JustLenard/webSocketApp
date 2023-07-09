@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useEffect, useState } from 'react'
-import AppLoading from '../components/AppLoading'
+import AppSpinner from '../components/AppLoading'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useRefreshToken from '../hooks/useRefresh'
 import { isInsideOfApplication } from '../utils/allowedToTriggerRefresh'
@@ -88,7 +88,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 		login,
 	}
 
-	if (loading) return <AppLoading />
+	// if (loading) return <AppLoading />
 
 	return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 }
