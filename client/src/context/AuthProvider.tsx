@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useEffect, useState } from 'react'
-import AppSpinner from '../components/AppLoading'
+import AppSpinner from '../components/AppSpinner'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useRefreshToken from '../hooks/useRefresh'
 import { isInsideOfApplication } from '../utils/allowedToTriggerRefresh'
@@ -20,7 +20,7 @@ interface Props {
 const loggedInKey = import.meta.env.VITE_LOGGED_IN
 
 export const AuthProvider: React.FC<Props> = ({ children }) => {
-	const [accessToken, setAccessTokens] = useState<string | null>(null)
+	const [accessToken, setAccessToken] = useState<string | null>(null)
 	const [loggedIn, setLoggedIn] = useState<boolean>(localStorage.getItem(loggedInKey) === 'true')
 	const [loading, setLoading] = useState(false)
 
@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 			const newAccesToken = await refresh()
 
 			if (newAccesToken) {
-				setAccessTokens(newAccesToken)
+				setAccessToken(newAccesToken)
 
 				return newAccesToken
 			}
@@ -60,23 +60,17 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 		}
 
 		initialLaoad()
-		// getMyInfo()
-
-		// if (loggedIn && accessToken === null && isInsideOfApplication()) {
-		// 	console.log('trigger')
-		// 	const accesToken = getAccessToken()
-
-		// }
 	}, [])
 
 	const logOut = () => {
-		setAccessTokens(null)
+		setAccessToken(null)
 		setLoggedIn(false)
 		localStorage.removeItem(loggedInKey)
 	}
 
 	const login = (accessToken: string) => {
-		setAccessTokens(accessToken)
+		console.log('This is accessToken in login', accessToken)
+		setAccessToken(accessToken)
 		setLoggedIn(true)
 		localStorage.setItem(loggedInKey, 'true')
 	}
@@ -88,7 +82,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 		login,
 	}
 
-	// if (loading) return <AppLoading />
+	// if (loading) return <AppSpinner />
 
 	return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 }

@@ -1,14 +1,7 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { Socket, io } from 'socket.io-client'
-import { getCookie, removeCookie } from 'typescript-cookie'
-import AuthContext from './AuthProvider'
-import { IRoom } from '../types/room.type'
-import { ISentMessage, MessageI, UserI } from '../types/BE_entities.types'
-import AppSpinner from '../components/AppLoading'
-import useRefreshToken from '../hooks/useRefresh'
-import { useNavigate } from 'react-router-dom'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import React, { useEffect, useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import { UserI } from '../types/BE_entities.types'
 
 interface IContext {
 	user: UserI | null

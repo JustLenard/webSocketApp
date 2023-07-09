@@ -26,7 +26,14 @@ const useAxiosPrivate = () => {
 			async (error) => {
 				const prevRequest = error?.config
 
+				console.log('This is prevRequest', prevRequest)
+				console.log('This is prevRequest.sent', prevRequest.sent)
+				console.log('This is prevRequest.method', prevRequest.method)
+
 				if (error?.response?.status === 403 && !prevRequest?.sent) {
+					console.log('This is prevRequest.sent', prevRequest.sent)
+					// const modifiedRequest = { ...prevRequest } // Create a new object based on prevRequest
+					// modifiedRequest.sent = true // Update the sent property
 					prevRequest.sent = true
 					const newAccessToken = await refresh()
 					prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`

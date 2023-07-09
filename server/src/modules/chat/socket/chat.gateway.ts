@@ -62,9 +62,9 @@ export class ChatGateway {
 		return this.events.checkIfPrivateChatExits(client.data.user.id, secondUserId)
 	}
 
-	@SubscribeMessage('joinRoom')
-	async onJoinRoom(socket: Socket, room: JoinedRoomI) {
-		return this.events.onJoinRoom(socket, room, this.server)
+	@SubscribeMessage(socketEvents.getMessagesForRoom)
+	async onJoinRoom(socket: Socket, roomId: number) {
+		return this.events.onJoinRoom(socket, roomId, this.server)
 	}
 
 	@SubscribeMessage('leaveRoom')

@@ -11,6 +11,5 @@ export const socketEvents = {
 	createRoom: 'createRoom',
 	checkIfPrivateChatExists: 'checkIfPrivateChatExists',
 	addMessage: 'addMessage',
-
-	connect: 'connect',
+	getMessagesForRoom: 'getMessagesForRoom',
 }

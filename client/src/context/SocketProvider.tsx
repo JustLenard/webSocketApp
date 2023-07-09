@@ -6,6 +6,7 @@ import { IRoom } from '../types/room.type'
 import AuthContext from './AuthProvider'
 import { socketEvents } from '../websocket/socketEvents'
 import { Message } from 'react-hook-form'
+import { GLOBAL_ROOM_NAME } from '../utils/constants'
 
 const websocketURL = import.meta.env.VITE_PUBLIC_URL + '/ws'
 
@@ -47,7 +48,7 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 
 	const { login, logOut, loggedIn, accessToken } = useContext(AuthContext)
 
-	const getAccesToken = useRefreshToken()
+	// const getAccesToken = useRefreshToken()
 
 	const createSocket = useCallback(() => {
 		const socket: Socket = io(`${websocketURL}`, {
@@ -85,10 +86,16 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 		socket.on('rooms', (rooms: RoomI[]) => {
 			setRooms(rooms)
 
-			/**
-			 * @todo delete this
-			 **/
-			setCurrentRoom(rooms[0])
+			const globalRoom = getGlobalRoom(rooms)
+
+			if (!globalRoom) return
+
+			// setCurrentRoom(globalRoom)
+			// changeCurrentRoom(globalRoom.id)
+			setCurrentRoom(globalRoom)
+			const message = getMessagesForRoom(globalRoom.id)
+
+			console.log('This is message', message)
 		})
 
 		socket.on(socketEvents.messageAdded, (message: MessageI) => {
@@ -99,6 +106,8 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	}, [logOut])
 
 	useEffect(() => {
+		console.log('This is accessToken', accessToken)
+		console.log('This is loggedIn', loggedIn)
 		if (loggedIn && accessToken) {
 			console.log('Creating socket connection')
 			createSocket()
@@ -111,7 +120,7 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 		return () => {
 			appSocket?.disconnect()
 		}
-	}, [createSocket, loggedIn])
+	}, [createSocket, loggedIn, accessToken])
 
 	// if (!appSocket) return <AppLoading />
 
@@ -131,9 +140,19 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	}
 
 	const changeCurrentRoom = (roomId: number) => {
-		const selectedRoom = rooms?.find((room) => room.id === roomId)
+		const selectedRoom = rooms.find((room) => room.id === roomId)
 
-		if (selectedRoom) return setCurrentRoom(selectedRoom)
+		if (selectedRoom) {
+			getMessagesForRoom(selectedRoom.id)
+			setCurrentRoom(selectedRoom)
+		}
+	}
+
+	const getMessagesForRoom = (roomId: number) => {
+		appSocket?.emit(socketEvents.getMessagesForRoom, roomId, (callback: MessageI[]) => {
+			setMessages(callback)
+			console.log('This is callback', callback)
+		})
 	}
 
 	const createNewRoom = (newRoom: PostRoomI) => {
@@ -156,6 +175,10 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	}
 
 	return <SocketContext.Provider value={contextValue}>{children}</SocketContext.Provider>
+}
+
+const getGlobalRoom = (rooms: RoomI[]) => {
+	return rooms.find((room) => room.id === 1 && room.name === GLOBAL_ROOM_NAME && room.isGroupChat) ?? null
 }
 
 export default SocketProvider

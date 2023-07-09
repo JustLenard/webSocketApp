@@ -90,13 +90,20 @@ export class WebsocketEvents {
 		return this.roomService.checkIfPrivateChatExits(firstUserId, secondUserId)
 	}
 
-	async onJoinRoom(client: Socket, room: JoinedRoomI, server: Server) {
-		const messages = await this.messageService.findMessagesForRoom(room)
+	// async onJoinRoom(client: Socket, room: JoinedRoomI, server: Server) {
+	// 	const messages = await this.messageService.findMessagesForRoom(room)
+	// 	console.log('This is messages', messages)
+	// 	// Save Connection to Room
+	// 	// await this.joinedRoomService.create({ socketId: client.id, user: client.data.user, room })
+	// 	// Send last messages from Room to User
+	// 	await server.to(client.id).emit('messages', messages)
+	// }
+
+	async onJoinRoom(client: Socket, roomId: number, server: Server) {
+		console.log('This is roomId', roomId)
+		const messages = await this.messageService.findMessagesForRoom(roomId)
 		console.log('This is messages', messages)
-		// Save Connection to Room
-		await this.joinedRoomService.create({ socketId: client.id, user: client.data.user, room })
-		// Send last messages from Room to User
-		await server.to(client.id).emit('messages', messages)
+		server.to(client.id).emit(socketEvents.messages, messages)
 	}
 
 	async onLeaveRoom(socket: Socket) {

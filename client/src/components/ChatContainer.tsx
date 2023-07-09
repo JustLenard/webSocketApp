@@ -1,13 +1,13 @@
 import { Grid, Stack } from '@mui/material'
 import { useSocket } from '../hooks/useSocket'
-import AppSpinner from './AppLoading'
+import AppSpinner from './AppSpinner'
 import ChatInput from './ChatInput'
 import MessageContainer from './MessageContainer'
 
 const ChatContainer = () => {
 	const { currentRoom } = useSocket()
 
-	if (!currentRoom) return <AppSpinner contained />
+	if (!currentRoom) return <AppSpinner contained text="Chat container" />
 
 	return (
 		<Grid container direction={'column'} height={'100%'}>

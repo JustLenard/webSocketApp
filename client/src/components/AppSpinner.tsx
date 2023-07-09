@@ -5,18 +5,22 @@ interface Props {
 	amount?: number
 	circle?: boolean
 	contained?: boolean
+	text?: string
 }
 
-const AppSpinner: React.FC<Props> = ({ contained = false, amount = 2, circle = true }) => {
+const AppSpinner: React.FC<Props> = ({ text, contained = false, amount = 2, circle = true }) => {
 	if (contained) {
 		return (
-			<CircularProgress
-				sx={{
-					alignSelf: 'center',
-					textAlign: 'center',
-					margin: '0 auto',
-				}}
-			/>
+			<>
+				{text}
+				<CircularProgress
+					sx={{
+						alignSelf: 'center',
+						textAlign: 'center',
+						margin: '0 auto',
+					}}
+				/>
+			</>
 		)
 	}
 
@@ -30,6 +34,7 @@ const AppSpinner: React.FC<Props> = ({ contained = false, amount = 2, circle = t
 		<Stack direction={'column'} gap={2}>
 			{circle ? (
 				<SpinnerContainer>
+					{text}
 					<CircularProgress />
 				</SpinnerContainer>
 			) : (
@@ -38,6 +43,7 @@ const AppSpinner: React.FC<Props> = ({ contained = false, amount = 2, circle = t
 					.map((f, i) => {
 						return (
 							<Stack direction={'row'} gap={2} key={i}>
+								{text}
 								<Skeleton variant="circular" width={40} height={40} />
 								<Skeleton variant="rounded" width={210} height={40} />
 							</Stack>
