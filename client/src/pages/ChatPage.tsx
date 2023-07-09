@@ -1,14 +1,8 @@
-import { Button, FormControl, FormLabel, Grid, Input, Stack } from '@mui/material'
+import { Grid } from '@mui/material'
+import AppNavbar from '../components/AppNavbar'
 import ChatContainer from '../components/ChatContainer'
-import Header from '../components/Header'
 import LeftMenu from '../components/LeftMenu'
 import RightMenu from '../components/RightMenu'
-import { useContext } from 'react'
-import AuthContext from '../context/AuthProvider'
-import { SocketContext } from '../context/SocketProvider'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { IRoom } from '../types/room.type'
-import AppNavbar from '../components/AppNavbar'
 
 const ChatPage = () => {
 	return (

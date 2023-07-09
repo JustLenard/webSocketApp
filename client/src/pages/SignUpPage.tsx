@@ -1,3 +1,4 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import Button from '@mui/joy/Button'
 import FormControl from '@mui/joy/FormControl'
 import FormLabel from '@mui/joy/FormLabel'
@@ -5,23 +6,16 @@ import Input from '@mui/joy/Input'
 import Sheet from '@mui/joy/Sheet'
 import Typography from '@mui/joy/Typography'
 import { CssVarsProvider } from '@mui/joy/styles'
+import { isAxiosError } from 'axios'
+import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
-import { apiRequest } from '../utils/apiRequest'
-import { ReactNode, useContext, useEffect, useState } from 'react'
-import AuthContext from '../context/AuthProvider'
 import { axiosPrivate } from '../api/axios'
-import { routes } from '../router/Root'
-import { isAxiosError } from 'axios'
+import { ErrorText } from '../components/ErrorText'
 import { useAuth } from '../hooks/useAuth'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { ObjectSchema, number, object, ref, string } from 'yup'
-
-interface SignUpForm {
-	username: string
-	password: string
-	cpassword: string
-}
+import { appRoutes } from '../router/Root'
+import { SignUpForm } from '../types/types'
+import { SignUpFormSchema } from '../yup/signUpSchema'
 
 const SignUpPage: React.FC = () => {
 	const {
@@ -30,7 +24,7 @@ const SignUpPage: React.FC = () => {
 		formState: { errors },
 	} = useForm<SignUpForm>({
 		mode: 'onTouched',
-		resolver: yupResolver(formSchema),
+		resolver: yupResolver(SignUpFormSchema),
 	})
 
 	const navigate = useNavigate()
@@ -44,7 +38,7 @@ const SignUpPage: React.FC = () => {
 				password: data.password,
 			})
 			login(response.data.accessToken)
-			navigate(routes.chat)
+			navigate(appRoutes.chat)
 		} catch (err) {
 			if (isAxiosError(err)) {
 				setManualErrors(err.response?.data.message)
@@ -123,30 +117,6 @@ const SignUpPage: React.FC = () => {
 		</CssVarsProvider>
 	)
 }
-
-const formSchema: ObjectSchema<SignUpForm> = object({
-	username: string().min(3, 'Username should be at least 3 characters long').defined(),
-	password: string()
-		.required('Password is required')
-		.min(6, 'Password length should be at least 6 characters')
-		.max(12, 'Password cannot exceed more than 12 characters')
-		.matches(
-			/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/,
-			'Password should be at least 6 characters long and have a minimum of one letter and number',
-		),
-
-	cpassword: string()
-		.required('Confirm Password is required')
-		.min(6, 'Password length should be at least 6 characters')
-		.max(12, 'Password cannot exceed more than 12 characters')
-		.oneOf([ref('password')], "Passwords don't match"),
-})
-
-const ErrorText: React.FC<{ children: ReactNode }> = ({ children }) => (
-	<Typography color="danger" fontSize="sm" my={'.5rem'}>
-		{children}
-	</Typography>
-)
 
 export const renderErrors = (errors: string | string[] | undefined) => {
 	if (typeof errors === 'undefined')

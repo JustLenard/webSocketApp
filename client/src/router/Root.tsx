@@ -5,7 +5,7 @@ import SignUpPage from '../pages/SignUpPage'
 import ProtectedRoute from './ProtectedRoute'
 
 // Define routes for the project
-export const routes = {
+export const appRoutes = {
 	login: '/login',
 	signUp: '/sign-up',
 	chat: '/chat',
@@ -14,15 +14,15 @@ export const routes = {
 // Create browser router
 const router = createBrowserRouter([
 	{
-		path: routes.login,
+		path: appRoutes.login,
 		element: <LoginPage />,
 	},
 	{
-		path: routes.signUp,
+		path: appRoutes.signUp,
 		element: <SignUpPage />,
 	},
 	{
-		path: routes.chat,
+		path: appRoutes.chat,
 		element: (
 			<ProtectedRoute>
 				<ChatPage />
