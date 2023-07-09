@@ -58,7 +58,7 @@ export class ChatGateway {
 	}
 
 	@SubscribeMessage(socketEvents.checkIfPrivateChatExists)
-	checkIfPrivateChatExits(client: Socket, secondUserId: number) {
+	checkIfPrivateChatExits(client: Socket, secondUserId: string) {
 		return this.events.checkIfPrivateChatExits(client.data.user.id, secondUserId)
 	}
 

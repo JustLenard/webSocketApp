@@ -1,18 +1,15 @@
-import { Server, Socket } from 'socket.io'
 import { Injectable, Logger } from '@nestjs/common'
-import { UserEntity } from '../users/entities/user.entity'
-import { AuthService } from '../auth/auth.service'
-import { UsersService } from '../users/users.service'
-import { JwtPayload } from 'src/types/jwtPayload.types'
-import { RoomService } from './service/room.service'
-import { RoomEntity } from './entities/room.entity'
-import { SubscribeMessage } from '@nestjs/websockets'
-import { MessageService } from './service/message.service'
-import { JoinedRoomService } from './service/joinedRoom.service'
-import { JoinedRoomEntity } from './entities/joinedRoom.entity'
-import { FMessage, JoinedRoomI, MessageI, RoomI } from 'src/types/entities.types'
-import { MessageEntity } from './entities/message.entity'
+import { Server, Socket } from 'socket.io'
+import { JoinedRoomI, MessageI } from 'src/types/entities.types'
 import { PostRoomI } from 'src/types/frontEnd.types'
+import { JwtPayload } from 'src/types/jwtPayload.types'
+import { AuthService } from '../auth/auth.service'
+import { UserEntity } from '../users/entities/user.entity'
+import { UsersService } from '../users/users.service'
+import { RoomEntity } from './entities/room.entity'
+import { JoinedRoomService } from './service/joinedRoom.service'
+import { MessageService } from './service/message.service'
+import { RoomService } from './service/room.service'
 import { socketEvents } from './socketEvents'
 
 @Injectable()
@@ -89,7 +86,7 @@ export class WebsocketEvents {
 		return this.roomService.createRoom(room, client.data.user)
 	}
 
-	async checkIfPrivateChatExits(firstUserId: number, secondUserId: number) {
+	async checkIfPrivateChatExits(firstUserId: string, secondUserId: string) {
 		return this.roomService.checkIfPrivateChatExits(firstUserId, secondUserId)
 	}
 

@@ -17,13 +17,13 @@ export class JoinedRoomService {
 		return this.joinedRoomRepository.save(joinedRoom)
 	}
 
-	async findByUser(user: UserEntity): Promise<JoinedRoomEntity[]> {
-		return this.joinedRoomRepository.find({
-			where: {
-				id: user.id,
-			},
-		})
-	}
+	// async findByUser(user: UserEntity): Promise<JoinedRoomEntity[]> {
+	// 	return this.joinedRoomRepository.find({
+	// 		where: {
+	// 			id: user.id,
+	// 		},
+	// 	})
+	// }
 
 	async findByRoom(room: RoomEntity): Promise<JoinedRoomEntity[]> {
 		return this.joinedRoomRepository.find({

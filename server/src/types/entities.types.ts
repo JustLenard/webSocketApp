@@ -1,12 +1,13 @@
-import { UserEntity } from 'src/modules/users/entities/user.entity'
+import { AccountType, UserEntity } from 'src/modules/users/entities/user.entity'
 
 export interface UserI {
-	id?: number
+	id?: string
 	username?: string
 	email?: string
 	password?: string
 	refreshToken?: string
 	rooms: RoomI[]
+	accountType: AccountType
 }
 
 export interface RoomI {
@@ -44,6 +45,6 @@ export interface JoinedRoomI {
 }
 
 export type ShortUser = {
-	id: number
+	id: string
 	username: string
 }

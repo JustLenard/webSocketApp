@@ -4,13 +4,18 @@ import { MessageEntity } from 'src/modules/chat/entities/message.entity'
 import { RoomEntity } from 'src/modules/chat/entities/room.entity'
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
+export enum AccountType {
+	default = 'default',
+	admin = 'admin',
+	guest = 'guest',
+	bot = 'bot',
+}
+
 @Global()
 @Entity('Users')
 export class UserEntity extends BaseEntity {
-	@PrimaryGeneratedColumn({
-		comment: 'User uuid',
-	})
-	id: number
+	@PrimaryGeneratedColumn('uuid')
+	id: string
 
 	@Column({
 		type: 'varchar',
@@ -23,8 +28,12 @@ export class UserEntity extends BaseEntity {
 	})
 	password: string
 
-	@Column()
-	isAdmin: boolean
+	// @Column()
+	// accountType: 'default' | 'admin' | 'guest'
+	// isAdmin: boolean
+
+	@Column({ type: 'enum', enum: AccountType, default: AccountType.default })
+	accountType: AccountType
 
 	@Column({
 		nullable: true,

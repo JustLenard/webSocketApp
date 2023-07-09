@@ -44,7 +44,7 @@ export class RoomService implements OnModuleInit {
 
 	private logger: Logger = new Logger('Room Service')
 
-	async getRoomsForUser(userId: number) {
+	async getRoomsForUser(userId: string) {
 		return this.roomRepository
 			.createQueryBuilder('room')
 			.leftJoin('room.users', 'users')
@@ -61,7 +61,7 @@ export class RoomService implements OnModuleInit {
 	// 		.getMany()
 	// }
 
-	async privateChatExists(firstUserId: number, secondUserId: number): Promise<null | RoomEntity> {
+	async privateChatExists(firstUserId: string, secondUserId: string): Promise<null | RoomEntity> {
 		return this.roomRepository
 			.createQueryBuilder('room')
 			.leftJoin('room.users', 'users')
@@ -124,7 +124,7 @@ export class RoomService implements OnModuleInit {
 		})
 	}
 
-	async checkIfPrivateChatExits(firstUserId: number, secondUserId: number): Promise<number | boolean> {
+	async checkIfPrivateChatExits(firstUserId: string, secondUserId: string): Promise<number | boolean> {
 		// console.log('This is firstUserId', firstUserId)
 		// console.log('This is secondUserId', secondUserId)
 
@@ -133,11 +133,11 @@ export class RoomService implements OnModuleInit {
 		return result ? result.id : false
 	}
 
-	async userIsPartOfRoom(room: RoomI, userId: number) {
+	async userIsPartOfRoom(room: RoomI, userId: string) {
 		return room.users.find((user) => user.id === userId)
 	}
 
-	async addUsersToRoom(room: RoomI, userIds: number[]) {
+	async addUsersToRoom(room: RoomI, userIds: string[]) {
 		const users = await this.userRepository.findBy({ id: In(userIds) })
 
 		room.users = [...room.users, ...users]

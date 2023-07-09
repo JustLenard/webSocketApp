@@ -18,11 +18,11 @@ export class UsersService {
 		}))
 	}
 
-	async findOne(id: number) {
+	async findOne(id: string) {
 		return await this.userRepostiry.findOneBy({ id })
 	}
 
-	async whoAmI(id: number) {
+	async whoAmI(id: string) {
 		const user = await this.userRepostiry.findOneBy({ id })
 		return {
 			id: user.id,
@@ -34,34 +34,21 @@ export class UsersService {
 		return this.userRepostiry.findOneBy({ username })
 	}
 
-	update(id: number, updateUserDto: UpdateUserDto) {
+	update(id: string, updateUserDto: UpdateUserDto) {
 		return `This action updates a #${id} user`
 	}
 
-	async updateUserSocketId(userId: number, newSocketId: string) {
+	async updateUserSocketId(userId: string, newSocketId: string) {
 		return this.userRepostiry.update(userId, { socketId: newSocketId })
 	}
 
-	async removeUserSocketId(userId: number) {
+	async removeUserSocketId(userId: string) {
 		return this.userRepostiry.update(userId, { socketId: null })
 	}
 
-	remove(id: number) {
+	remove(id: string) {
 		return `This action removes a #${id} user`
 	}
-
-	private readonly users = [
-		{
-			userId: 1,
-			username: 'john',
-			password: 'changeme',
-		},
-		{
-			userId: 2,
-			username: 'maria',
-			password: 'guess',
-		},
-	]
 
 	async findUser(username: string): Promise<UserEntity | undefined> {
 		// return this.users.find((user) => user.username === username);

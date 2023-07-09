@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 't
 import { UserEntity } from '../../users/entities/user.entity'
 import { RoomEntity } from './room.entity'
 
-@Entity()
+@Entity('JoinedRooms')
 export class JoinedRoomEntity {
 	@PrimaryGeneratedColumn()
 	id: number
@@ -11,7 +11,7 @@ export class JoinedRoomEntity {
 	socketId: string
 
 	@ManyToOne(() => UserEntity, (user) => user.joinedRooms)
-	@JoinColumn()
+	@JoinColumn({ name: 'JoinedRoom-Users' })
 	user: UserEntity
 
 	@ManyToOne(() => RoomEntity, (room) => room.joinedUsers)

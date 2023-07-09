@@ -41,6 +41,6 @@ export interface JoinedRoomI {
 }
 
 export interface UserI {
-	id: number
+	id: string
 	username: string
 }

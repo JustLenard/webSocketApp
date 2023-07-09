@@ -11,7 +11,7 @@ import {
 import { UserEntity } from 'src/modules/users/entities/user.entity'
 import { RoomEntity } from './room.entity'
 
-@Entity()
+@Entity('Messages')
 export class MessageEntity {
 	@PrimaryGeneratedColumn()
 	id: number

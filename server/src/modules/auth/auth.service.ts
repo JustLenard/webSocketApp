@@ -27,7 +27,7 @@ export class AuthService {
 		return argon2.hash(data)
 	}
 
-	async getTokens(userId: number, username: string): Promise<Tokens> {
+	async getTokens(userId: string, username: string): Promise<Tokens> {
 		const [at, rt] = await Promise.all([
 			this.jwtService.signAsync(
 				{
@@ -58,7 +58,7 @@ export class AuthService {
 		}
 	}
 
-	async updateRtHash(userId: number, rt: string) {
+	async updateRtHash(userId: string, rt: string) {
 		const hash = await this.hashData(rt)
 
 		await this.userRepostiry
@@ -99,7 +99,6 @@ export class AuthService {
 			.create({
 				username: dto.username,
 				password: hash,
-				isAdmin: false,
 				// rooms: [globalRoom],
 			})
 			.save()
@@ -130,7 +129,7 @@ export class AuthService {
 		return tokens
 	}
 
-	async logout(userId: number) {
+	async logout(userId: string) {
 		await this.userRepostiry.update(
 			{
 				id: userId,
@@ -141,7 +140,7 @@ export class AuthService {
 		)
 	}
 
-	async refresh(userId: number, rt: string, res: Response) {
+	async refresh(userId: string, rt: string, res: Response) {
 		const user = await this.userRepostiry.findOne({
 			where: {
 				id: userId,
