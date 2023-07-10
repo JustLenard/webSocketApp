@@ -16,7 +16,7 @@ export interface RoomI {
 export interface PostRoomI {
 	name: string
 	description?: string
-	users: number[]
+	users: string[]
 }
 
 export interface MessageI {

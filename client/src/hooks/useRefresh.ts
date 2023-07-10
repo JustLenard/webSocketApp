@@ -1,22 +1,13 @@
-import { useContext } from 'react'
-import { appAxios, axiosPrivate } from '../api/axios'
-import AuthContext, { AuthProvider } from '../context/AuthProvider'
-import useAxiosPrivate from './useAxiosPrivate'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { appRoutes } from '../router/Root'
+import { appAxios } from '../api/axios'
 import { useAuth } from './useAuth'
 
 const useRefreshToken = () => {
 	const { login, logOut } = useAuth()
-	// const navigate = useNavigate()
-	// const locatoin = useLocation()
-	// console.log('This is locatoin', locatoin)
 
 	const refresh = async () => {
-		// if (allowd)
 		try {
 			console.log('this shit')
-			const response = await axiosPrivate.post('/auth/refresh', {
+			const response = await appAxios.post('/auth/refresh', {
 				withCredentials: true,
 			})
 

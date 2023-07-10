@@ -1,8 +1,8 @@
 import { Grid } from '@mui/material'
-import AppNavbar from '../components/AppNavbar'
-import ChatContainer from '../components/ChatContainer'
-import LeftMenu from '../components/LeftMenu'
-import RightMenu from '../components/RightMenu'
+import AppNavbar from '../components/header/AppNavbar'
+import ChatContainer from '../components/chat/ChatContainer'
+import LeftMenu from '../components/leftMenu/LeftMenu'
+import RightMenu from '../components/rightMenu/RightMenu'
 
 const ChatPage = () => {
 	return (

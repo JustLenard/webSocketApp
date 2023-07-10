@@ -12,9 +12,10 @@ import { MessageEntity } from './entities/message.entity'
 import { JoinedRoomEntity } from './entities/joinedRoom.entity'
 import { RoomControler } from './controllers/room.controller'
 import { UserEntity } from '../users/entities/user.entity'
+import { MessageController } from './controllers/message.controller'
 
 @Module({
-	controllers: [RoomControler],
+	controllers: [RoomControler, MessageController],
 	imports: [
 		AuthModule,
 		UsersModule,

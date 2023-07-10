@@ -10,7 +10,7 @@ import { isAxiosError } from 'axios'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
-import { axiosPrivate } from '../api/axios'
+import { appAxios } from '../api/axios'
 import { ErrorText } from '../components/ErrorText'
 import { useAuth } from '../hooks/useAuth'
 import { appRoutes } from '../router/Root'
@@ -33,7 +33,7 @@ const SignUpPage: React.FC = () => {
 
 	const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
 		try {
-			const response = await axiosPrivate.post('/auth/signup', {
+			const response = await appAxios.post('/auth/signup', {
 				username: data.username,
 				password: data.password,
 			})

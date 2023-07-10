@@ -1,9 +1,9 @@
 import { Avatar, Card } from '@mui/material'
 import { Stack } from '@mui/system'
-import { IRoom } from '../types/room.type'
+import { IRoom } from '../../types/room.type'
 import { useContext } from 'react'
-import { SocketContext } from '../context/SocketProvider'
-import { RoomI } from '../types/BE_entities.types'
+import { SocketContext } from '../../context/SocketProvider'
+import { RoomI } from '../../types/BE_entities.types'
 
 interface Props {
 	name: string

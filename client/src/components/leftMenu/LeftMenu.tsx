@@ -1,9 +1,9 @@
 import { Stack } from '@mui/system'
 import RoomName from './RoomName'
 import { useContext } from 'react'
-import { SocketContext } from '../context/SocketProvider'
+import { SocketContext } from '../../context/SocketProvider'
 import { Skeleton } from '@mui/material'
-import AppSpinner from './AppSpinner'
+import AppSpinner from '../AppSpinner'
 
 const LeftMenu = () => {
 	const { rooms } = useContext(SocketContext)

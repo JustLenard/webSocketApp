@@ -1,8 +1,8 @@
 import { Grid, Stack } from '@mui/material'
-import { useSocket } from '../hooks/useSocket'
-import AppSpinner from './AppSpinner'
+import { useSocket } from '../../hooks/useSocket'
+import AppSpinner from '../AppSpinner'
 import ChatInput from './ChatInput'
-import MessageContainer from './MessageContainer'
+import MessagesContainer from './MessagesContainer'
 
 const ChatContainer = () => {
 	const { currentRoom } = useSocket()
@@ -38,7 +38,7 @@ const ChatContainer = () => {
 					border: '1px solid red',
 				}}
 			>
-				<MessageContainer />
+				<MessagesContainer />
 			</Grid>
 			<Grid>
 				<ChatInput />

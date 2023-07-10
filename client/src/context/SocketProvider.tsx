@@ -7,6 +7,8 @@ import AuthContext from './AuthProvider'
 import { socketEvents } from '../websocket/socketEvents'
 import { Message } from 'react-hook-form'
 import { GLOBAL_ROOM_NAME } from '../utils/constants'
+import { useAuth } from '../hooks/useAuth'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 const websocketURL = import.meta.env.VITE_PUBLIC_URL + '/ws'
 
@@ -41,13 +43,12 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	const [appSocket, setAppSocket] = useState<null | Socket>(null)
 	const [messages, setMessages] = useState<MessageI[]>([])
 	const [rooms, setRooms] = useState<RoomI[]>([])
-
 	const [currentRoom, setCurrentRoom] = useState<RoomI | null>(null)
 
+	const { login, logOut, loggedIn, accessToken } = useAuth()
+	const privateAxios = useAxiosPrivate()
+
 	console.log('This is currentRoom', currentRoom)
-
-	const { login, logOut, loggedIn, accessToken } = useContext(AuthContext)
-
 	// const getAccesToken = useRefreshToken()
 
 	const createSocket = useCallback(() => {
@@ -90,12 +91,12 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 
 			if (!globalRoom) return
 
-			// setCurrentRoom(globalRoom)
-			// changeCurrentRoom(globalRoom.id)
 			setCurrentRoom(globalRoom)
-			const message = getMessagesForRoom(globalRoom.id)
 
-			console.log('This is message', message)
+			// changeCurrentRoom(globalRoom.id)
+			// setCurrentRoom(globalRoom)
+			// const message = getMessagesForRoom(globalRoom.id)
+			// console.log('This is message', message)
 		})
 
 		socket.on(socketEvents.messageAdded, (message: MessageI) => {
@@ -143,16 +144,8 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 		const selectedRoom = rooms.find((room) => room.id === roomId)
 
 		if (selectedRoom) {
-			getMessagesForRoom(selectedRoom.id)
 			setCurrentRoom(selectedRoom)
 		}
-	}
-
-	const getMessagesForRoom = (roomId: number) => {
-		appSocket?.emit(socketEvents.getMessagesForRoom, roomId, (callback: MessageI[]) => {
-			setMessages(callback)
-			console.log('This is callback', callback)
-		})
 	}
 
 	const createNewRoom = (newRoom: PostRoomI) => {

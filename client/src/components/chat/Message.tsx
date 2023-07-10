@@ -5,7 +5,7 @@ import Sheet from '@mui/joy/Sheet'
 import Stack from '@mui/joy/Stack'
 import { styled } from '@mui/joy/styles'
 import Typography from '@mui/joy/Typography'
-import { MessageI } from '../types/BE_entities.types'
+import { MessageI } from '../../types/BE_entities.types'
 
 interface Props {
 	message: MessageI

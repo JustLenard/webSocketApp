@@ -114,7 +114,7 @@ export class WebsocketEvents {
 	async onAddMessage(socket: Socket, message: MessageI, server: Server) {
 		console.log('This is message', message)
 
-		const createdMessage: MessageI = await this.messageService.create({ user: socket.data.user, ...message })
+		const createdMessage: MessageI = await this.messageService.createMessage({ user: socket.data.user, ...message })
 
 		console.log('This is createdMessage', createdMessage)
 

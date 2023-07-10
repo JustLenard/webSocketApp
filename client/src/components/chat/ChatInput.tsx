@@ -1,8 +1,8 @@
 import { Button, FormControl, Input, OutlinedInput } from '@mui/material'
 import { useContext, useState } from 'react'
-import { SocketContext } from '../context/SocketProvider'
+import { SocketContext } from '../../context/SocketProvider'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { useSocket } from '../hooks/useSocket'
+import { useSocket } from '../../hooks/useSocket'
 
 type ChatForm = {
 	message: string

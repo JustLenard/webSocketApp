@@ -1,14 +1,8 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Patch, Post, Res, UseGuards } from '@nestjs/common'
-import { GetCurrentUser } from 'src/common/decorators/getCurrentUser.decorator'
-import { GetCurrentUserId } from 'src/common/decorators/getCurrentUserId.decorator'
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common'
 import { AtGuard } from 'src/common/guards/at.guard'
-import { Response } from 'express'
-import { RtGuard } from 'src/common/guards/rt.guard'
-import { Tokens } from 'src/types/tokens.types'
 import { RoomDto } from '../dto/room.dto'
-import { RoomService } from '../service/room.service'
-import { RoomI } from 'src/types/entities.types'
 import { RoomEntity } from '../entities/room.entity'
+import { RoomService } from '../service/room.service'
 
 @Controller('/api/rooms')
 export class RoomControler {

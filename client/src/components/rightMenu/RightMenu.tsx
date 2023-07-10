@@ -1,14 +1,14 @@
 import { Card, Grid, Stack, Typography } from '@mui/material'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { axiosPrivate } from '../api/axios'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import { appAxios } from '../../api/axios'
 import { useEffect, useState } from 'react'
-import { PostRoomI, RoomI, UserI } from '../types/BE_entities.types'
+import { PostRoomI, RoomI, UserI } from '../../types/BE_entities.types'
 import { Avatar } from '@mui/joy'
 import { AxiosError } from 'axios'
-import { useAuth } from '../hooks/useAuth'
-import { useSocket } from '../hooks/useSocket'
-import { socketEvents } from '../websocket/socketEvents'
-import { useUser } from '../hooks/useUser'
+import { useAuth } from '../../hooks/useAuth'
+import { useSocket } from '../../hooks/useSocket'
+import { socketEvents } from '../../websocket/socketEvents'
+import { useUser } from '../../hooks/useUser'
 
 const RightMenu = () => {
 	const appAxios = useAxiosPrivate()
@@ -42,7 +42,7 @@ const RightMenu = () => {
 }
 
 interface ProfileItemProps {
-	id: number
+	id: string
 	username: string
 }
 
