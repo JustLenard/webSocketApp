@@ -25,6 +25,7 @@ export class RoomService implements OnModuleInit {
 			const globalRoom: RoomI = {
 				name: 'Global',
 				users: [admin],
+				isGroupChat: true,
 			}
 
 			console.log('This is globalRoom', globalRoom)
@@ -44,12 +45,14 @@ export class RoomService implements OnModuleInit {
 	private logger: Logger = new Logger('Room Service')
 
 	async getRoomsForUser(userId: string) {
-		return this.roomRepository
-			.createQueryBuilder('room')
-			.leftJoin('room.users', 'users')
-			.where('users.id = :userId', { userId: userId })
-			.leftJoinAndSelect('room.users', 'all_users')
-			.getMany()
+		return (
+			this.roomRepository
+				.createQueryBuilder('room')
+				.leftJoin('room.users', 'users')
+				.where('users.id = :userId', { userId: userId })
+				// .leftJoinAndSelect('room.users', 'all_users')
+				.getMany()
+		)
 	}
 
 	// async getRoomsForUser(userId: number) {
@@ -59,14 +62,14 @@ export class RoomService implements OnModuleInit {
 	// 		.where('users.id = :userId', { userId: userId })
 	// 		.getMany()
 	// }
-
 	async privateChatExists(firstUserId: string, secondUserId: string): Promise<null | RoomEntity> {
 		return this.roomRepository
 			.createQueryBuilder('room')
 			.leftJoin('room.users', 'users')
+			.leftJoin('room.users', 'all_users')
 			.where('users.id = :userId', { userId: firstUserId })
 			.andWhere('room.isGroupChat = :isGroupChat', { isGroupChat: false })
-			.andWhere('users.id = :secondUserId', { secondUserId: secondUserId })
+			.andWhere('all_users.id = :secondUserId', { secondUserId: secondUserId })
 			.getOne()
 	}
 
@@ -105,6 +108,7 @@ export class RoomService implements OnModuleInit {
 		console.log('This is room', room)
 
 		const privateChat = await this.checkIfPrivateChatExits(creator.id, room.users[0])
+		console.log('This is privateChat', privateChat)
 		if (privateChat) {
 			this.logger.warn('Room already exists. Aborting')
 			return privateChat
@@ -114,7 +118,7 @@ export class RoomService implements OnModuleInit {
 
 		console.log('reached end')
 
-		return this.roomRepository.save(newRoom)
+		// return this.roomRepository.save(newRoom)
 	}
 
 	async getRoomByName(roomName = 'Global'): Promise<RoomEntity> {
@@ -124,10 +128,11 @@ export class RoomService implements OnModuleInit {
 	}
 
 	async checkIfPrivateChatExits(firstUserId: string, secondUserId: string): Promise<number | boolean> {
-		// console.log('This is firstUserId', firstUserId)
-		// console.log('This is secondUserId', secondUserId)
+		console.log('This is firstUserId', firstUserId)
+		console.log('This is secondUserId', secondUserId)
 
 		const result = await this.privateChatExists(firstUserId, secondUserId)
+		console.log('This is result', result)
 
 		return result ? result.id : false
 	}

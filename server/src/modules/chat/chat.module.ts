@@ -13,6 +13,7 @@ import { JoinedRoomEntity } from './entities/joinedRoom.entity'
 import { RoomControler } from './controllers/room.controller'
 import { UserEntity } from '../users/entities/user.entity'
 import { MessageController } from './controllers/message.controller'
+import { NotificaitonsService } from './service/notificaitons.service'
 
 @Module({
 	controllers: [RoomControler, MessageController],
@@ -21,7 +22,15 @@ import { MessageController } from './controllers/message.controller'
 		UsersModule,
 		TypeOrmModule.forFeature([RoomEntity, MessageEntity, JoinedRoomEntity, UserEntity]),
 	],
-	providers: [RoomService, WebsocketEvents, ChatGateway, MessageService, JoinedRoomService, MessageService],
+	providers: [
+		RoomService,
+		WebsocketEvents,
+		ChatGateway,
+		MessageService,
+		JoinedRoomService,
+		MessageService,
+		NotificaitonsService,
+	],
 	exports: [RoomService],
 })
 export class ChatModule {}

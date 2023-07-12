@@ -1,3 +1,4 @@
+import { MessageEntity } from 'src/modules/chat/entities/message.entity'
 import { AccountType, UserEntity } from 'src/modules/users/entities/user.entity'
 
 export interface UserI {
@@ -17,7 +18,7 @@ export interface RoomI {
 	users?: UserI[]
 	created_at?: Date
 	updated_at?: Date
-	isGroupChat?: boolean
+	isGroupChat: boolean
 }
 
 export interface MessageI {
@@ -26,8 +27,19 @@ export interface MessageI {
 	// room: RoomI
 	room: number
 	// user: UserI
-	user: number
+	user: string
 
+	created_at?: Date
+	updated_at?: Date
+}
+
+export interface NotificationI {
+	id?: number
+	message: MessageI
+	roomId: number
+	createdFor: UserI[]
+	creatorId: string
+	readBy: string[]
 	created_at?: Date
 	updated_at?: Date
 }

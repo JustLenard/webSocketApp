@@ -9,29 +9,29 @@ interface Props {}
 
 const MessagesContainer: React.FC<Props> = () => {
 	const privateAxios = useAxiosPrivate()
-	const { appSocket, currentRoom } = useSocket()
-	const [messages, setMessages] = useState<null | MessageI[]>(null)
+	const { messages, appSocket, currentRoom } = useSocket()
+	// const [messages, setMessages] = useState<null | MessageI[]>(null)
 
-	const getMessagesForRoom = async (roomId: number) => {
-		// appSocket?.emit(socketEvents.getMessagesForRoom, roomId, (callback: MessageI[]) => {
-		// 	setMessages(callback)
-		// 	console.log('This is callback', callback)
-		// })
+	// const getMessagesForRoom = async (roomId: number) => {
+	// 	// appSocket?.emit(socketEvents.getMessagesForRoom, roomId, (callback: MessageI[]) => {
+	// 	// 	setMessages(callback)
+	// 	// 	console.log('This is callback', callback)
+	// 	// })
 
-		try {
-			const response = await privateAxios.get(`/messages/${roomId}`)
+	// 	try {
+	// 		const response = await privateAxios.get(`/messages/${roomId}`)
 
-			setMessages(response.data)
-		} catch (err) {
-			console.log('This is err', err.response)
-		}
-	}
+	// 		setMessages(response.data)
+	// 	} catch (err) {
+	// 		console.log('This is err', err.response)
+	// 	}
+	// }
 
-	useEffect(() => {
-		if (currentRoom) {
-			getMessagesForRoom(currentRoom.id)
-		}
-	}, [currentRoom])
+	// useEffect(() => {
+	// 	if (currentRoom) {
+	// 		getMessagesForRoom(currentRoom.id)
+	// 	}
+	// }, [currentRoom])
 
 	return <div>{messages && messages.map((mesasge) => <Message key={mesasge.id} message={mesasge} />)}</div>
 }

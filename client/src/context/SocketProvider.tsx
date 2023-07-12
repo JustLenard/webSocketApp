@@ -52,6 +52,7 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	// const getAccesToken = useRefreshToken()
 
 	const createSocket = useCallback(() => {
+		console.log('creating new socket')
 		const socket: Socket = io(`${websocketURL}`, {
 			reconnection: true, // enable automatic reconnect
 			reconnectionAttempts: 1, // maximum number of reconnection attempts
@@ -122,6 +123,27 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 			appSocket?.disconnect()
 		}
 	}, [createSocket, loggedIn, accessToken])
+
+	/**
+	 * Get messages for the selected room
+	 **/
+	useEffect(() => {
+		const getMessagesForRoom = async (roomId: number) => {
+			// appSocket?.emit(socketEvents.getMessagesForRoom, roomId, (callback: MessageI[]) => {
+			// 	setMessages(callback)
+			// 	console.log('This is callback', callback)
+			// })
+
+			try {
+				const response = await privateAxios.get(`/messages/${roomId}`)
+
+				setMessages(response.data)
+			} catch (err) {
+				// console.log('This is err', err.response)
+			}
+		}
+		currentRoom && getMessagesForRoom(currentRoom.id)
+	}, [currentRoom])
 
 	// if (!appSocket) return <AppLoading />
 

@@ -12,7 +12,10 @@ export class MessageService {
 		private readonly messageRepository: Repository<MessageI>,
 	) {}
 
-	async createMessage(message: MessageDto): Promise<MessageI> {
+	/**
+	 * @todo fix type on this
+	 **/
+	async createMessage(message: MessageDto | MessageI): Promise<MessageI> {
 		return this.messageRepository.save(this.messageRepository.create(message))
 	}
 

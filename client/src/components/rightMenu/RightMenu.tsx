@@ -58,6 +58,7 @@ const ProfileItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 		const newRoom: PostRoomI = {
 			name: username,
 			users: [id],
+			isGroupChat: false,
 		}
 
 		// console.log('This is newRoom', newRoom)

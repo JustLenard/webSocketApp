@@ -8,7 +8,7 @@ export class RoomEntity {
 	@PrimaryGeneratedColumn()
 	id: number
 
-	@Column()
+	@Column({ nullable: true })
 	name: string
 
 	@Column({ nullable: true })
@@ -24,8 +24,6 @@ export class RoomEntity {
 	@OneToMany(() => JoinedRoomEntity, (joinedRoom) => joinedRoom.room)
 	joinedUsers: JoinedRoomEntity[]
 
-	@Column({
-		nullable: true,
-	})
+	@Column()
 	isGroupChat: boolean
 }

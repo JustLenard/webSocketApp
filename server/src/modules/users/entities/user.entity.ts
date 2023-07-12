@@ -1,6 +1,7 @@
 import { Global } from '@nestjs/common'
 import { JoinedRoomEntity } from 'src/modules/chat/entities/joinedRoom.entity'
 import { MessageEntity } from 'src/modules/chat/entities/message.entity'
+import { NotificationsEntity } from 'src/modules/chat/entities/notifications.entity'
 import { RoomEntity } from 'src/modules/chat/entities/room.entity'
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
@@ -50,4 +51,7 @@ export class UserEntity extends BaseEntity {
 
 	@OneToMany(() => JoinedRoomEntity, (joinedRoom) => joinedRoom.room)
 	joinedRooms: JoinedRoomEntity[]
+
+	@ManyToMany(() => NotificationsEntity, (notif) => notif.createdFor)
+	notifications: NotificationsEntity
 }
