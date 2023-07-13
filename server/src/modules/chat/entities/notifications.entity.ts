@@ -1,37 +1,39 @@
 import { UserEntity } from 'src/modules/users/entities/user.entity'
 import {
-	Column,
 	CreateDateColumn,
 	Entity,
 	JoinColumn,
-	OneToMany,
+	ManyToMany,
+	ManyToOne,
 	OneToOne,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm'
 import { MessageEntity } from './message.entity'
+import { RoomEntity } from './room.entity'
 
 @Entity('Notifications')
 export class NotificationsEntity {
 	@PrimaryGeneratedColumn()
 	id: number
 
-	@Column()
-	creatorId: string
+	@ManyToOne(() => UserEntity, (user) => user.createNotifications)
+	creator: UserEntity
 
 	@OneToOne(() => MessageEntity)
 	@JoinColumn()
 	message: MessageEntity
 
-	@OneToMany(() => UserEntity, (user) => user.notifications)
-	@JoinColumn()
+	@ManyToMany(() => UserEntity, (user) => user.notifications)
+	// @JoinColumn()
 	createdFor: UserEntity[]
 
-	@Column('simple-array')
-	readBy: string[]
+	@ManyToMany(() => UserEntity, (user) => user.readNotifications)
+	readBy: UserEntity[]
 
-	@Column()
-	roomId: number
+	@ManyToOne(() => RoomEntity, (room) => room.notifications)
+	// @JoinColumn()
+	room: RoomEntity
 
 	@CreateDateColumn()
 	created_at: Date

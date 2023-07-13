@@ -15,23 +15,18 @@ export class NotificaitonsService implements OnModuleInit {
 		const len = await this.userRepository.findOneBy({ username: 'len' })
 		const len2 = await this.userRepository.findOneBy({ username: 'len2' })
 
-		const message = await this.messageRepository.findOneBy({ id: 1 })
+		// const message = await this.messageRepository.findOneBy({ id: 1 })
 
-		const newNotifications: NotificationI = {
-			createdFor: [len],
-			creatorId: len2.id,
-			roomId: 1,
-			readBy: [],
-			message: {
-				room: message.room.id,
-				text: message.text,
-				user: message.user.id,
-			},
-		}
+		// const newNotifications: NotificationI = {
+		// 	createdFor: [len],
+		// 	creatorId: len2.id,
+		// 	roomId: 1,
+		// 	readBy: [],
+		// }
 
-		console.log('This isnewNotifications', newNotifications)
+		// console.log('This isnewNotifications', newNotifications)
 
-		this.notificationsRepository.save(newNotifications)
+		// this.notificationsRepository.save(newNotifications)
 	}
 
 	constructor(
@@ -47,6 +42,17 @@ export class NotificaitonsService implements OnModuleInit {
 		@InjectRepository(NotificationsEntity)
 		private readonly notificationsRepository: Repository<NotificationsEntity>,
 	) {}
+
+	async createNotification(creator: UserEntity, createdFor: UserEntity[], room: RoomEntity, message: MessageEntity) {
+		const newNotif = this.notificationsRepository.create({
+			creator,
+			createdFor,
+			room,
+			message,
+		})
+
+		return this.notificationsRepository.save(newNotif)
+	}
 
 	private logger: Logger = new Logger('Room Service')
 }

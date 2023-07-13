@@ -9,6 +9,7 @@ import { Message } from 'react-hook-form'
 import { GLOBAL_ROOM_NAME } from '../utils/constants'
 import { useAuth } from '../hooks/useAuth'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import { handleError } from '../utils/handleAxiosErrors'
 
 const websocketURL = import.meta.env.VITE_PUBLIC_URL + '/ws'
 
@@ -71,6 +72,7 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 		socket.on('connect', () => {})
 
 		socket.on('messages', (messages: MessageI[]) => {
+			console.log('This is messages', messages)
 			setMessages(messages)
 		})
 
@@ -136,7 +138,7 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 
 			try {
 				const response = await privateAxios.get(`/messages/${roomId}`)
-
+				console.log('This is response.data', response.data)
 				setMessages(response.data)
 			} catch (err) {
 				// console.log('This is err', err.response)
@@ -147,19 +149,18 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 
 	// if (!appSocket) return <AppLoading />
 
-	const sendMessage = (messageContent: string) => {
+	const sendMessage = async (messageContent: string) => {
 		if (!currentRoom) return console.log('Room not selected')
-		appSocket?.emit(
-			socketEvents.addMessage,
-			{
+		try {
+			const response = await privateAxios.post('/messages', {
+				roomId: currentRoom.id,
 				text: messageContent,
-				room: currentRoom.id,
-			},
-			// (callback: MessageI) => {
-			// 	setMessages((prev) => [...prev, callback])
-			// 	console.log('This is callback', callback)
-			// },
-		)
+			})
+
+			setMessages((prev) => [...prev, response.data])
+		} catch (err) {
+			handleError(err)
+		}
 	}
 
 	const changeCurrentRoom = (roomId: number) => {

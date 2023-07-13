@@ -14,18 +14,19 @@ import { RoomControler } from './controllers/room.controller'
 import { UserEntity } from '../users/entities/user.entity'
 import { MessageController } from './controllers/message.controller'
 import { NotificaitonsService } from './service/notificaitons.service'
+import { NotificationsEntity } from './entities/notifications.entity'
 
 @Module({
 	controllers: [RoomControler, MessageController],
 	imports: [
 		AuthModule,
 		UsersModule,
-		TypeOrmModule.forFeature([RoomEntity, MessageEntity, JoinedRoomEntity, UserEntity]),
+		TypeOrmModule.forFeature([RoomEntity, MessageEntity, JoinedRoomEntity, UserEntity, NotificationsEntity]),
 	],
 	providers: [
 		RoomService,
 		WebsocketEvents,
-		ChatGateway,
+		// ChatGateway,
 		MessageService,
 		JoinedRoomService,
 		MessageService,

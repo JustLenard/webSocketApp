@@ -90,7 +90,7 @@ export class RoomService implements OnModuleInit {
 	// 	)
 	// }
 
-	async getRoomById(roomId: number): Promise<RoomEntity> {
+	async findRoomById(roomId: number): Promise<RoomEntity> {
 		// return this.roomRepository.findOne({
 		// 	where: { id: roomId },
 		// })

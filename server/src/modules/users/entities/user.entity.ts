@@ -53,5 +53,11 @@ export class UserEntity extends BaseEntity {
 	joinedRooms: JoinedRoomEntity[]
 
 	@ManyToMany(() => NotificationsEntity, (notif) => notif.createdFor)
-	notifications: NotificationsEntity
+	notifications: NotificationsEntity[]
+
+	@ManyToMany(() => NotificationsEntity, (notif) => notif.readBy)
+	readNotifications: NotificationsEntity[]
+
+	@OneToMany(() => NotificationsEntity, (notif) => notif.creator)
+	createNotifications: NotificationsEntity[]
 }

@@ -1,24 +1,15 @@
-import { Injectable, Logger } from '@nestjs/common'
-import { Server, Socket } from 'socket.io'
-import { JoinedRoomI, MessageI } from 'src/types/entities.types'
-import { PostRoomI } from 'src/types/frontEnd.types'
-import { JwtPayload } from 'src/types/jwtPayload.types'
-import { AuthService } from '../../auth/auth.service'
-import { UserEntity } from '../../users/entities/user.entity'
-import { UsersService } from '../../users/users.service'
-import { RoomEntity } from '../entities/room.entity'
-import { JoinedRoomService } from '../service/joinedRoom.service'
-import { MessageService } from '../service/message.service'
-import { RoomService } from '../service/room.service'
-import { socketEvents } from '../../socket/socketEvents'
-import { InjectRepository } from '@nestjs/typeorm'
-import { MessageEntity } from '../entities/message.entity'
-import { NotificationsEntity } from '../entities/notifications.entity'
-import { Repository } from 'typeorm'
-import { MessageDto } from '../dto/message.dto'
+import { Injectable } from '@nestjs/common'
+import { Server } from 'socket.io'
+import { AuthService } from '../auth/auth.service'
+import { RoomService } from '../chat/service/room.service'
+import { UsersService } from '../users/users.service'
+import { MessageService } from '../chat/service/message.service'
+import { JoinedRoomService } from '../chat/service/joinedRoom.service'
 
 @Injectable()
-export class WebsocketEvents {
+export class SocketService {
+	public socket: Server = null
+
 	constructor(
 		private authService: AuthService,
 		private roomService: RoomService,

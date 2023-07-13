@@ -3,6 +3,7 @@ import { AtGuard } from 'src/common/guards/at.guard'
 import { MessageI } from 'src/types/entities.types'
 import { MessageDto } from '../dto/message.dto'
 import { MessageService } from '../service/message.service'
+import { GetCurrentUserId } from 'src/common/decorators/getCurrentUserId.decorator'
 
 @Controller('/api/messages')
 export class MessageController {
@@ -18,7 +19,7 @@ export class MessageController {
 	@UseGuards(AtGuard)
 	@Post('/')
 	@HttpCode(HttpStatus.CREATED)
-	createMessage(@Body() dto: MessageDto): Promise<MessageI> {
-		return this.messageService.createMessage(dto)
+	createMessage(@Body() dto: MessageDto, @GetCurrentUserId() userId: string): Promise<MessageI> {
+		return this.messageService.createMessage(dto, userId)
 	}
 }

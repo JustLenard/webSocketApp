@@ -7,7 +7,7 @@ import { AtGuard } from 'src/common/guards/at.guard'
 import { RoomEntity } from '../entities/room.entity'
 import { MessageEntity } from '../entities/message.entity'
 import { JoinedRoomI, MessageI, RoomI } from 'src/types/entities.types'
-import { socketEvents } from './socketEvents'
+import { socketEvents } from '../../socket/socketEvents'
 import { PostRoomI } from 'src/types/frontEnd.types'
 
 @WebSocketGateway({ namespace: '/ws', cors: true })
@@ -48,10 +48,6 @@ export class ChatGateway {
 		return this.events.handleDisconnect(client)
 	}
 
-	handleMessage(client: Socket, payload: any) {
-		return this.events.handleMessage(client, payload, this.server)
-	}
-
 	@SubscribeMessage(socketEvents.createRoom)
 	createRoom(client: Socket, room: PostRoomI) {
 		return this.events.createRoom(client, room)
@@ -72,8 +68,9 @@ export class ChatGateway {
 		return this.events.onLeaveRoom(socket)
 	}
 
-	@SubscribeMessage(socketEvents.addMessage)
-	async onAddMessage(socket: Socket, message: MessageI) {
-		return this.events.onAddMessage(socket, message, this.server)
-	}
+	// async sendMesage(room: RoomEntity, message: MessageEntity) {
+	// 	for (const user of room.users) {
+	// 		server.to(user.socketId).emit(socketEvents.messageAdded, newMessage)
+	// 	}
+	// }
 }

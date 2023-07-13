@@ -18,7 +18,7 @@ export class UsersService {
 		}))
 	}
 
-	async findOne(id: string) {
+	async findById(id: string) {
 		return await this.userRepostiry.findOneBy({ id })
 	}
 
@@ -48,11 +48,5 @@ export class UsersService {
 
 	remove(id: string) {
 		return `This action removes a #${id} user`
-	}
-
-	async findUser(username: string): Promise<UserEntity | undefined> {
-		// return this.users.find((user) => user.username === username);
-		// return this.userRepostiry.findBy();
-		return
 	}
 }
