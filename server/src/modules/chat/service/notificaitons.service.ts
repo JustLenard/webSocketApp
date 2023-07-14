@@ -1,11 +1,11 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { UserEntity } from 'src/modules/users/entities/user.entity'
-import { NotificationI, RoomI } from 'src/types/entities.types'
+import { NotificationI, RoomI } from 'src/utils/types/entities.types'
 import { Repository } from 'typeorm'
-import { RoomEntity } from '../entities/room.entity'
-import { NotificationsEntity } from '../entities/notifications.entity'
-import { MessageEntity } from '../entities/message.entity'
+import { RoomEntity } from '../../../utils/entities/room.entity'
+import { MessageEntity } from '../../../utils/entities/message.entity'
+import { UserEntity } from 'src/utils/entities/user.entity'
+import { NotificationsEntity } from 'src/utils/entities/notifications.entity'
 
 @Injectable()
 export class NotificaitonsService implements OnModuleInit {

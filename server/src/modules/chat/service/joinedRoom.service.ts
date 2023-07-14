@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { UserEntity } from 'src/modules/users/entities/user.entity'
 import { Repository } from 'typeorm'
-import { JoinedRoomEntity } from '../entities/joinedRoom.entity'
-import { RoomEntity } from '../entities/room.entity'
-import { JoinedRoomI } from 'src/types/entities.types'
+import { RoomEntity } from '../../../utils/entities/room.entity'
+import { JoinedRoomI } from 'src/utils/types/entities.types'
+import { JoinedRoomEntity } from 'src/utils/entities/joinedRoom.entity'
 
 @Injectable()
 export class JoinedRoomService {

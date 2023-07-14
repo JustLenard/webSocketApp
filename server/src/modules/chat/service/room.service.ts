@@ -1,10 +1,10 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { RoomEntity } from '../entities/room.entity'
+import { RoomEntity } from '../../../utils/entities/room.entity'
 import { In, Repository } from 'typeorm'
-import { RoomI, UserI } from 'src/types/entities.types'
-import { UserEntity } from 'src/modules/users/entities/user.entity'
-import { PostRoomI } from 'src/types/frontEnd.types'
+import { RoomI, UserI } from 'src/utils/types/entities.types'
+import { PostRoomI } from 'src/utils/types/frontEnd.types'
+import { UserEntity } from 'src/utils/entities/user.entity'
 
 @Injectable()
 export class RoomService implements OnModuleInit {

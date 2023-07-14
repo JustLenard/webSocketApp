@@ -1,24 +1,15 @@
-// import { Injectable, Logger } from '@nestjs/common'
-// import { Server, Socket } from 'socket.io'
-// import { JoinedRoomI, MessageI } from 'src/utils/types/entities.types'
-// import { PostRoomI } from 'src/utils/types/frontEnd.types'
-// import { JwtPayload } from 'src/utils/types/jwtPayload.types'
+// import { Injectable } from '@nestjs/common'
+// import { Server } from 'socket.io'
 // import { AuthService } from '../../auth/auth.service'
-// import { UserEntity } from '../../users/entities/user.entity'
-// import { UsersService } from '../../users/users.service'
-// import { RoomEntity } from '../entities/room.entity'
-// import { JoinedRoomService } from '../service/joinedRoom.service'
-// import { MessageService } from '../service/message.service'
 // import { RoomService } from '../service/room.service'
-// import { socketEvents } from '../../socket/socketEvents'
-// import { InjectRepository } from '@nestjs/typeorm'
-// import { MessageEntity } from '../entities/message.entity'
-// import { NotificationsEntity } from '../entities/notifications.entity'
-// import { Repository } from 'typeorm'
-// import { MessageDto } from '../dto/message.dto'
+// import { UsersService } from '../../users/users.service'
+// import { MessageService } from '../service/message.service'
+// import { JoinedRoomService } from '../service/joinedRoom.service'
 
 // @Injectable()
-// export class WebsocketEvents {
+// export class SocketService {
+// 	public socket: Server = null
+
 // 	constructor(
 // 		private authService: AuthService,
 // 		private roomService: RoomService,
@@ -49,8 +40,8 @@
 // 				this.logger.log('User does not exist')
 // 				await this.userService.removeUserSocketId(user.id)
 // 				return this.handleDisconnect(client)
-// 				const res = await this.userService.updateUserSocketId(user.id, client.id)
 // 			} else {
+// 				const res = await this.userService.updateUserSocketId(user.id, client.id)
 
 // 				console.log('This is res', res)
 

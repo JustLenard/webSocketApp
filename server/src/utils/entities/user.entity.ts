@@ -1,9 +1,9 @@
 import { Global } from '@nestjs/common'
-import { JoinedRoomEntity } from 'src/modules/chat/entities/joinedRoom.entity'
-import { MessageEntity } from 'src/modules/chat/entities/message.entity'
-import { NotificationsEntity } from 'src/modules/chat/entities/notifications.entity'
-import { RoomEntity } from 'src/modules/chat/entities/room.entity'
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { RoomEntity } from './room.entity'
+import { MessageEntity } from './message.entity'
+import { JoinedRoomEntity } from './joinedRoom.entity'
+import { NotificationsEntity } from './notifications.entity'
 
 export enum AccountType {
 	default = 'default',

@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common'
 import { AtGuard } from 'src/common/guards/at.guard'
 import { RoomDto } from '../dto/room.dto'
-import { RoomEntity } from '../entities/room.entity'
+import { RoomEntity } from '../../../utils/entities/room.entity'
 import { RoomService } from '../service/room.service'
 
 @Controller('/api/rooms')

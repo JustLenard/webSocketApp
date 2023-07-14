@@ -1,4 +1,3 @@
-import { UserEntity } from 'src/modules/users/entities/user.entity'
 import {
 	CreateDateColumn,
 	Entity,
@@ -9,6 +8,7 @@ import {
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm'
+import { UserEntity } from 'src/utils/entities/user.entity'
 import { MessageEntity } from './message.entity'
 import { RoomEntity } from './room.entity'
 

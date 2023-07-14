@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { UserEntity } from '../../users/entities/user.entity'
+import { UserEntity } from './user.entity'
 import { RoomEntity } from './room.entity'
 
 @Entity('JoinedRooms')

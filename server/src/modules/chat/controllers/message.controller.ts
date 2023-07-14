@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common'
 import { AtGuard } from 'src/common/guards/at.guard'
-import { MessageI } from 'src/types/entities.types'
+import { MessageI } from 'src/utils/types/entities.types'
 import { MessageDto } from '../dto/message.dto'
 import { MessageService } from '../service/message.service'
 import { GetCurrentUserId } from 'src/common/decorators/getCurrentUserId.decorator'

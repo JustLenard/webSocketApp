@@ -8,9 +8,8 @@ import {
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm'
-import { UserEntity } from 'src/modules/users/entities/user.entity'
 import { RoomEntity } from './room.entity'
-import { NotificationsEntity } from './notifications.entity'
+import { UserEntity } from 'src/utils/entities/user.entity'
 
 @Entity('Messages')
 export class MessageEntity {

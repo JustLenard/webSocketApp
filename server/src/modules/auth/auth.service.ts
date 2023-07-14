@@ -1,17 +1,18 @@
-import { BadRequestException, ConflictException, ForbiddenException, Injectable } from '@nestjs/common'
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, Logger } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as argon2 from 'argon2'
-import { Tokens } from 'src/types/tokens.types'
+import { Tokens } from 'src/utils/types/tokens.types'
 import { In, Repository } from 'typeorm'
-import { UserEntity } from '../users/entities/user.entity'
+import { UserEntity } from '../../utils/entities/user.entity'
 import { UsersService } from '../users/users.service'
 import { AuthDto } from './auth.dto'
 import { Response } from 'express'
 import { RoomService } from '../chat/service/room.service'
-import { RoomEntity } from '../chat/entities/room.entity'
-import { RoomI } from 'src/types/entities.types'
-import { MessageEntity } from '../chat/entities/message.entity'
+import { RoomEntity } from '../../utils/entities/room.entity'
+import { RoomI } from 'src/utils/types/entities.types'
+import { MessageEntity } from '../../utils/entities/message.entity'
+import { alphabet, numbersOneToTen } from 'src/utils/constants'
 
 @Injectable()
 export class AuthService {
@@ -47,8 +48,7 @@ export class AuthService {
 		@InjectRepository(RoomEntity) private roomRepository: Repository<RoomEntity>,
 	) {}
 
-	alphabet = [...Array(26)].map((_, i) => (i + 10).toString(36))
-	numbers = [...Array(10)].map((_, i) => i.toString())
+	private logger: Logger = new Logger('Chat')
 
 	hashData(data: string) {
 		return argon2.hash(data)
@@ -169,25 +169,26 @@ export class AuthService {
 	}
 
 	async refresh(userId: string, rt: string, res: Response) {
-		const user = await this.userRepostiry.findOne({
-			where: {
-				id: userId,
-			},
+		const user = await this.userRepostiry.findOneBy({
+			id: userId,
 		})
 
-		// console.log('This is user', user)
+		console.log('This is user', user)
 		// console.log('pas 0')
 		// console.log('This is user.refreshToken', user.refreshToken)
 		if (!user || !user.refreshToken) throw new ForbiddenException('Access Denied')
 		console.log('pas 1')
 
+		this.logger.log('Verifying refresh token')
 		const rtMatches = await argon2.verify(user.refreshToken, rt)
 
 		if (!rtMatches) throw new ForbiddenException('Access Denied')
-		console.log('pas 2')
+		this.logger.log('Refresh token matches')
 
 		const tokens = await this.getTokens(user.id, user.username)
+		console.log('This is tokens', tokens)
 		await this.updateRtHash(user.id, tokens.refreshToken)
+		this.logger.log('Tokens updated')
 
 		// res.cookie('refreshToken', tokens.refreshToken, {
 		// 	httpOnly: true,
@@ -236,11 +237,11 @@ export class AuthService {
 		pass.toLowerCase()
 			.split('')
 			.forEach((letter) => {
-				if (this.numbers.includes(letter)) {
+				if (numbersOneToTen.includes(letter)) {
 					numberCheck = true
 				}
 
-				if (this.alphabet.includes(letter)) {
+				if (alphabet.includes(letter)) {
 					letterCheck = true
 				}
 			})

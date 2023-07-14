@@ -4,7 +4,7 @@ import { GetCurrentUserId } from 'src/common/decorators/getCurrentUserId.decorat
 import { AtGuard } from 'src/common/guards/at.guard'
 import { Response } from 'express'
 import { RtGuard } from 'src/common/guards/rt.guard'
-import { Tokens } from 'src/types/tokens.types'
+import { Tokens } from 'src/utils/types/tokens.types'
 import { AuthDto } from './auth.dto'
 import { AuthService } from './auth.service'
 

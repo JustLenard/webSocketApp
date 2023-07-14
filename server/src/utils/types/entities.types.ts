@@ -1,5 +1,4 @@
-import { MessageEntity } from 'src/modules/chat/entities/message.entity'
-import { AccountType, UserEntity } from 'src/modules/users/entities/user.entity'
+import { AccountType } from '../entities/user.entity'
 
 export interface UserI {
 	id?: string
