@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { appAxios } from '../api/axios'
 import { useAuth } from './useAuth'
 import useRefreshToken from './useRefresh'
+import { appRoutes } from '../router/Root'
 
 const useAxiosPrivate = () => {
 	const refresh = useRefreshToken()
@@ -38,6 +39,9 @@ const useAxiosPrivate = () => {
 					const newAccessToken = await refresh()
 					prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
 					return appAxios(prevRequest)
+				}
+				if (error?.response?.status === 401) {
+					return location.assign(appRoutes.login)
 				}
 				return Promise.reject(error)
 			},

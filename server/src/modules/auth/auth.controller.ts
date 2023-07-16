@@ -1,12 +1,13 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, Res, UseGuards } from '@nestjs/common'
+import { GetCurrentUserData } from 'src/common/decorators/getCurrentUserData.decorator'
 import { GetCurrentUser } from 'src/common/decorators/getCurrentUser.decorator'
-import { GetCurrentUserId } from 'src/common/decorators/getCurrentUserId.decorator'
 import { AtGuard } from 'src/common/guards/at.guard'
 import { Response } from 'express'
 import { RtGuard } from 'src/common/guards/rt.guard'
-import { Tokens } from 'src/utils/types/tokens.types'
 import { AuthDto } from './auth.dto'
 import { AuthService } from './auth.service'
+import { UserEntity } from 'src/utils/entities/user.entity'
+import { Tokens } from 'src/utils/types/types'
 
 @Controller('/api/auth')
 export class AuthController {
@@ -38,18 +39,18 @@ export class AuthController {
 	@UseGuards(AtGuard)
 	@Post('/logout')
 	@HttpCode(HttpStatus.OK)
-	logout(@GetCurrentUserId() userId: string) {
-		return this.authService.logout(userId)
+	logout(@GetCurrentUser() user: UserEntity) {
+		return this.authService.logout(user.id)
 	}
 
 	@UseGuards(RtGuard)
 	@Post('/refresh')
 	@HttpCode(HttpStatus.OK)
-	refresh(
-		@GetCurrentUser('refreshToken') refreshToken: string,
-		@GetCurrentUserId() userId: string,
+	async refresh(
+		@GetCurrentUserData('refreshToken') refreshToken: string,
+		@GetCurrentUser() user: UserEntity,
 		@Res({ passthrough: true }) res: Response,
 	) {
-		return this.authService.refresh(userId, refreshToken, res)
+		return this.authService.refresh(user.id, refreshToken, res)
 	}
 }

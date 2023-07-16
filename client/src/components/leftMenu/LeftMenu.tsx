@@ -4,9 +4,10 @@ import { useContext } from 'react'
 import { SocketContext } from '../../context/SocketProvider'
 import { Skeleton } from '@mui/material'
 import AppSpinner from '../AppSpinner'
+import { useSocket } from '../../hooks/useSocket'
 
 const LeftMenu = () => {
-	const { rooms } = useContext(SocketContext)
+	const { rooms } = useSocket()
 
 	if (!rooms) return <AppSpinner text="Left menu" />
 

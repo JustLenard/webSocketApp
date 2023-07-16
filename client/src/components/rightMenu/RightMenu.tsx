@@ -22,6 +22,7 @@ const RightMenu = () => {
 			const getUsers = async () => {
 				try {
 					const response = await appAxios.get('/users')
+					console.log('This is response', response)
 
 					setUsers(response.data)
 				} catch (err) {

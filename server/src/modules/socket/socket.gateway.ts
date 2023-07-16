@@ -10,9 +10,11 @@ import {
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import { UserEntity } from 'src/utils/entities/user.entity'
-import { JwtPayload } from 'src/utils/types/types'
+import { CreateMessageEvent, JwtPayload } from 'src/utils/types/types'
 import { AuthService } from '../auth/auth.service'
 import { UsersService } from '../users/users.service'
+import { OnEvent } from '@nestjs/event-emitter'
+import { socketEvents } from './socketEvents'
 
 @WebSocketGateway({ namespace: '/ws', cors: true })
 @Injectable()
@@ -51,8 +53,6 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 			} else {
 				await this.userService.updateUserSocketId(user.id, socket.id)
 				socket.data.user = user
-				// // await this.userService.updateUserSocketId(user.id, socket.id)
-				// socket.data.user = user
 			}
 		} catch (err) {
 			return this.handleDisconnect(socket)
@@ -63,5 +63,28 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		console.log('This is socket.data.user', socket.data.user)
 		this.userService.removeUserSocketId(socket.data.user.id)
 		socket.disconnect()
+	}
+
+	/**
+	 * Events
+	 **/
+	@OnEvent('message.create')
+	async handleMessageCreate(payload: CreateMessageEvent) {
+		const { message, room, user: sender } = payload
+		console.log('This is room', room)
+		console.log('This is message', message)
+		console.log('This is user', sender)
+
+		// 		const newNotification =  this.notifRepository.create({
+		// creator: newMessage.user,
+
+		// 		})
+
+		for (const user of room.users) {
+			if (user.socketId && user.socketId !== sender.socketId) {
+				this.logger.log('Sending message to', user.socketId)
+				this.server.to(user.socketId).emit(socketEvents.messageAdded, message)
+			}
+		}
 	}
 }

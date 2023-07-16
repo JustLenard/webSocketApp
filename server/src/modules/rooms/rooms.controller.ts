@@ -1,34 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { RoomsService } from './rooms.service';
-import { CreateRoomDto } from './dto/create-room.dto';
-import { UpdateRoomDto } from './dto/update-room.dto';
+import { Controller, Get, HttpCode, HttpStatus, Inject, UseGuards } from '@nestjs/common'
+import { GetCurrentUser } from 'src/common/decorators/getCurrentUser.decorator'
+import { AtGuard } from 'src/common/guards/at.guard'
+import { RoomEntity } from 'src/utils/entities/room.entity'
+import { RoomsService } from './rooms.service'
+@Controller('/api/rooms')
+export class RoomControler {
+	constructor(private readonly roomService: RoomsService) {}
 
-@Controller('rooms')
-export class RoomsController {
-  constructor(private readonly roomsService: RoomsService) {}
+	@UseGuards(AtGuard)
+	@Get('/')
+	@HttpCode(HttpStatus.CREATED)
+	getRoomsForUser(@GetCurrentUser() userId: string): Promise<RoomEntity[]> {
+		return this.roomService.getRoomsForUser(userId)
+	}
 
-  @Post()
-  create(@Body() createRoomDto: CreateRoomDto) {
-    return this.roomsService.create(createRoomDto);
-  }
+	// @UseGuards(AtGuard)
+	// @Post('/')
+	// @HttpCode(HttpStatus.CREATED)
+	// createRoom(@GetCurrentUserId() userId: string, @Body() dto: RoomDto): Promise<RoomEntity> {
+	// 	return this.roomService.createRoom(dto, userId)
+	// }
 
-  @Get()
-  findAll() {
-    return this.roomsService.findAll();
-  }
+	// @UseGuards(AtGuard)
+	// @Patch('/')
+	// @HttpCode(HttpStatus.OK)
+	//   updateRoom(@Body() dto: RoomDto, @Res({ passthrough: true }) res: Response): Promise<Tokens> {
+	// 	return this.roomService.signinLocal(dto, res)
+	// }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.roomsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRoomDto: UpdateRoomDto) {
-    return this.roomsService.update(+id, updateRoomDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.roomsService.remove(+id);
-  }
+	// @UseGuards(AtGuard)
+	// @Delete('/')
+	// @HttpCode(HttpStatus.OK)
+	//  deleteRoom(@Body() dto: RoomDto, @Res({ passthrough: true }) res: Response): Promise<Tokens> {
+	// 	return this.roomService.async signinLocal(dto, res)
+	// }
 }

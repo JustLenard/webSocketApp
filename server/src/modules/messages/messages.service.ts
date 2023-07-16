@@ -1,26 +1,46 @@
-import { Injectable } from '@nestjs/common';
-import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { MessageI } from 'src/utils/types/entities.types'
+import { Repository } from 'typeorm'
+import { UsersService } from 'src/modules/users/users.service'
+import { UserEntity } from 'src/utils/entities/user.entity'
+import { MessageEntity } from 'src/utils/entities/message.entity'
+import { MessageDto } from './dto/create-message.dto'
+import { RoomsService } from '../rooms/rooms.service'
 
 @Injectable()
-export class MessagesService {
-  create(createMessageDto: CreateMessageDto) {
-    return 'This action adds a new message';
-  }
+export class MessageService {
+	constructor(
+		@InjectRepository(MessageEntity)
+		private readonly messageRepository: Repository<MessageEntity>,
 
-  findAll() {
-    return `This action returns all messages`;
-  }
+		// private userService: UsersService,
+		private roomService: RoomsService,
+	) {}
 
-  findOne(id: number) {
-    return `This action returns a #${id} message`;
-  }
+	async createMessage(message: MessageDto, user: UserEntity): Promise<MessageEntity> {
+		const room = await this.roomService.findRoomById(message.roomId)
 
-  update(id: number, updateMessageDto: UpdateMessageDto) {
-    return `This action updates a #${id} message`;
-  }
+		if (!room) throw new BadRequestException('Room does not exist')
 
-  remove(id: number) {
-    return `This action removes a #${id} message`;
-  }
+		console.log('This is room', room)
+
+		const newMessage = this.messageRepository.create({
+			text: message.text,
+			room,
+			user,
+		})
+
+		return this.messageRepository.save(newMessage)
+	}
+
+	async findMessagesForRoom(roomId: number): Promise<any[]> {
+		return this.messageRepository
+			.createQueryBuilder('message')
+			.leftJoin('message.room', 'room')
+			.where('room.id = :roomId', { roomId })
+			.leftJoinAndSelect('message.user', 'user')
+			.orderBy('message.created_at', 'ASC')
+			.getMany()
+	}
 }

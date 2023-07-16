@@ -10,6 +10,8 @@ import { GLOBAL_ROOM_NAME } from '../utils/constants'
 import { useAuth } from '../hooks/useAuth'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { handleError } from '../utils/handleAxiosErrors'
+import AppSpinner from '../components/AppSpinner'
+import { isInsideOfApplication } from '../utils/allowedToTriggerRefresh'
 
 const websocketURL = import.meta.env.VITE_PUBLIC_URL + '/ws'
 
@@ -42,6 +44,7 @@ export interface UserData {
  */
 const SocketProvider: React.FC<Props> = ({ children }) => {
 	const [appSocket, setAppSocket] = useState<null | Socket>(null)
+
 	const [messages, setMessages] = useState<MessageI[]>([])
 	const [rooms, setRooms] = useState<RoomI[]>([])
 	const [currentRoom, setCurrentRoom] = useState<RoomI | null>(null)
@@ -90,12 +93,6 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 		socket.on('rooms', (rooms: RoomI[]) => {
 			setRooms(rooms)
 
-			const globalRoom = getGlobalRoom(rooms)
-
-			if (!globalRoom) return
-
-			setCurrentRoom(globalRoom)
-
 			// changeCurrentRoom(globalRoom.id)
 			// setCurrentRoom(globalRoom)
 			// const message = getMessagesForRoom(globalRoom.id)
@@ -103,11 +100,32 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 		})
 
 		socket.on(socketEvents.messageAdded, (message: MessageI) => {
+			console.log('Received message', message)
+
 			setMessages((prev) => [...prev, message])
 		})
 
 		setAppSocket(socket)
 	}, [logOut])
+
+	useEffect(() => {
+		if (rooms.length === 0 && accessToken) {
+			const getRooms = async () => {
+				try {
+					const response = await privateAxios.get('/rooms')
+					setRooms(response.data)
+
+					const globalRoom = getGlobalRoom(response.data)
+
+					if (!globalRoom) return
+					setCurrentRoom(globalRoom)
+				} catch (err) {
+					handleError(err)
+				}
+			}
+			getRooms()
+		}
+	}, [createSocket, loggedIn, accessToken])
 
 	useEffect(() => {
 		console.log('This is accessToken', accessToken)
@@ -147,7 +165,7 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 		currentRoom && getMessagesForRoom(currentRoom.id)
 	}, [currentRoom])
 
-	// if (!appSocket) return <AppLoading />
+	if (!appSocket && isInsideOfApplication()) return <AppSpinner text="socket provider" />
 
 	const sendMessage = async (messageContent: string) => {
 		if (!currentRoom) return console.log('Room not selected')

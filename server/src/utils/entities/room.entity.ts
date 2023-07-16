@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { MessageEntity } from './message.entity'
 import { UserEntity } from 'src/utils/entities/user.entity'
 import { JoinedRoomEntity } from './joinedRoom.entity'
@@ -21,6 +21,10 @@ export class RoomEntity {
 
 	@OneToMany(() => MessageEntity, (message) => message.room)
 	messages: MessageEntity[]
+
+	@OneToOne(() => MessageEntity, { nullable: true })
+	@JoinColumn({ name: 'Last_Message_Sent' })
+	lastMessage: MessageEntity
 
 	@OneToMany(() => JoinedRoomEntity, (joinedRoom) => joinedRoom.room)
 	joinedUsers: JoinedRoomEntity[]

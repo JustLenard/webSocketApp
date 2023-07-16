@@ -1,8 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch, UseGuards } from '@nestjs/common'
-import { GetCurrentUserId } from 'src/common/decorators/getCurrentUserId.decorator'
+import { GetCurrentUser } from 'src/common/decorators/getCurrentUser.decorator'
 import { AtGuard } from 'src/common/guards/at.guard'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UsersService } from './users.service'
+import { UserEntity } from 'src/utils/entities/user.entity'
 
 @Controller('api/users')
 export class UsersController {
@@ -10,8 +11,8 @@ export class UsersController {
 
 	@UseGuards(AtGuard)
 	@Get('/me')
-	whoAmI(@GetCurrentUserId() userId: string) {
-		return this.usersService.whoAmI(userId)
+	whoAmI(@GetCurrentUser() user: UserEntity) {
+		return this.usersService.whoAmI(user.id)
 	}
 
 	@UseGuards(AtGuard)

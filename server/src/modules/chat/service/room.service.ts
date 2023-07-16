@@ -7,7 +7,7 @@ import { PostRoomI } from 'src/utils/types/frontEnd.types'
 import { UserEntity } from 'src/utils/entities/user.entity'
 
 @Injectable()
-export class RoomService implements OnModuleInit {
+export class Mateservice implements OnModuleInit {
 	async onModuleInit() {
 		console.log(`The module has been initialized.`)
 		const globalRoom = await this.getRoomByName()

@@ -2,17 +2,19 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@n
 import { AtGuard } from 'src/common/guards/at.guard'
 import { RoomDto } from '../dto/room.dto'
 import { RoomEntity } from '../../../utils/entities/room.entity'
-import { RoomService } from '../service/room.service'
+import { Mateservice } from '../service/room.service'
+import { GetCurrentUser } from 'src/common/decorators/getCurrentUser.decorator'
+import { UserEntity } from 'src/utils/entities/user.entity'
 
 @Controller('/api/rooms')
 export class RoomControler {
-	constructor(private readonly roomService: RoomService) {}
+	constructor(private readonly roomService: Mateservice) {}
 
 	@UseGuards(AtGuard)
 	@Get('/')
 	@HttpCode(HttpStatus.CREATED)
-	getRoomsForUser(): Promise<RoomEntity[]> {
-		return this.getRoomsForUser()
+	getRoomsForUser(@GetCurrentUser() user: UserEntity): Promise<RoomEntity[]> {
+		return this.roomService.getRoomsForUser(user.id)
 	}
 
 	@UseGuards(AtGuard)

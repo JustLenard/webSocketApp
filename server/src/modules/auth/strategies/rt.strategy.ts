@@ -1,8 +1,11 @@
 import { ForbiddenException, Injectable } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
+import { InjectRepository } from '@nestjs/typeorm'
 import { Request } from 'express'
 import { Strategy } from 'passport-jwt'
+import { UserEntity } from 'src/utils/entities/user.entity'
 import { JwtPayload } from 'src/utils/types/types'
+import { Repository } from 'typeorm'
 
 const extractCookie = (req, cookie = 'refreshToken') => {
 	let token = null
@@ -14,7 +17,7 @@ const extractCookie = (req, cookie = 'refreshToken') => {
 
 @Injectable()
 export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
-	constructor() {
+	constructor(@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>) {
 		super({
 			jwtFromRequest: extractCookie,
 			secretOrKey: process.env.REFRESH_TOKEN_SECRET,
@@ -22,13 +25,13 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
 		})
 	}
 
-	validate(req: Request, payload: JwtPayload) {
+	async validate(req: Request, payload: JwtPayload) {
 		const refreshToken = extractCookie(req)
-
+		const user = await this.userRepostiry.findOneBy({ id: payload.sub })
 		if (!refreshToken) throw new ForbiddenException('Refresh token malformed')
 
 		return {
-			...payload,
+			...user,
 			refreshToken,
 		}
 	}

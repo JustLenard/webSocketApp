@@ -1,34 +1,53 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { MessagesService } from './messages.service';
-import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
+import {
+	BadRequestException,
+	Body,
+	Controller,
+	Get,
+	HttpCode,
+	HttpStatus,
+	Inject,
+	Param,
+	ParseIntPipe,
+	Post,
+	UseGuards,
+} from '@nestjs/common'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { GetCurrentUser } from 'src/common/decorators/getCurrentUser.decorator'
+import { AtGuard } from 'src/common/guards/at.guard'
+import { UserEntity } from 'src/utils/entities/user.entity'
+import { MessageI } from 'src/utils/types/entities.types'
+import { RoomsService } from '../rooms/rooms.service'
+import { MessageDto } from './dto/create-message.dto'
+import { MessageService } from './messages.service'
 
-@Controller('messages')
-export class MessagesController {
-  constructor(private readonly messagesService: MessagesService) {}
+@Controller('/api/messages')
+export class MessageController {
+	constructor(
+		private messageService: MessageService,
+		private roomService: RoomsService,
+		private readonly eventEmitter: EventEmitter2,
+	) {}
 
-  @Post()
-  create(@Body() createMessageDto: CreateMessageDto) {
-    return this.messagesService.create(createMessageDto);
-  }
+	@UseGuards(AtGuard)
+	@Get('/:roomId')
+	@HttpCode(HttpStatus.CREATED)
+	findMessagesForRoom(@Param('roomId', ParseIntPipe) roomId: number): Promise<MessageI[]> {
+		return this.messageService.findMessagesForRoom(roomId)
+	}
 
-  @Get()
-  findAll() {
-    return this.messagesService.findAll();
-  }
+	@UseGuards(AtGuard)
+	@Post('/')
+	@HttpCode(HttpStatus.CREATED)
+	async createMessage(@Body() dto: MessageDto, @GetCurrentUser() user: UserEntity) {
+		const room = await this.roomService.findRoomById(dto.roomId)
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.messagesService.findOne(+id);
-  }
+		console.log('sending message to room', room)
+		if (!room) throw new BadRequestException('Room does not exist')
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMessageDto: UpdateMessageDto) {
-    return this.messagesService.update(+id, updateMessageDto);
-  }
+		const message = await this.messageService.createMessage(dto, user)
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.messagesService.remove(+id);
-  }
+		this.eventEmitter.emit('message.create', { message, room, user })
+
+		return message
+	}
 }
