@@ -9,14 +9,23 @@ import { MessageI } from '../../types/BE_entities.types'
 
 interface Props {
 	message: MessageI
+	prev: MessageI | null
 }
 
-export const Message: React.FC<Props> = ({ message }) => {
+export const Message: React.FC<Props> = ({ message, prev }) => {
+	// console.log('This is prev', prev)
+	// console.log('This is message', message)
+	if (prev && prev.user.id === message.user.id) {
+		return <SImpleMessage message={message} />
+	}
+
 	return (
-		<Box sx={{ flexGrow: 1, overflow: 'hidden', px: 3 }}>
+		<Box sx={{ flexGrow: 1, overflow: 'hidden', px: 3, mt: '.75rem' }}>
 			<Stack spacing={2} direction="row" alignItems="center">
-				<Avatar>{message.user.username[0]}</Avatar>
-				<Stack direction={'column'} spacing={0}>
+				<div style={{ width: '40px' }}>
+					<Avatar>{message.user.username[0]}</Avatar>
+				</div>
+				<Stack direction={'column'}>
 					<Typography color="info" noWrap>
 						{message.user.username}
 					</Typography>
@@ -24,6 +33,16 @@ export const Message: React.FC<Props> = ({ message }) => {
 					<Typography noWrap>{message.text}</Typography>
 				</Stack>
 			</Stack>
+		</Box>
+	)
+}
+
+const SImpleMessage: React.FC<{ message: MessageI }> = ({ message }) => {
+	return (
+		<Box sx={{ flexGrow: 1, overflow: 'hidden', px: 3 }}>
+			<Typography sx={{ marginLeft: '56px' }} noWrap>
+				{message.text}
+			</Typography>
 		</Box>
 	)
 }

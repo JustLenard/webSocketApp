@@ -55,6 +55,7 @@ export class RoomsService implements OnModuleInit {
 
 	async createRoom(room: CreateRoomParams, creator: UserEntity) {
 		this.logger.debug('creating room')
+
 		const newRoom = await this.addUsersToRoom({ ...room, users: [creator] }, room.users)
 		console.log('This is newRoom', newRoom)
 		return this.roomRepository.save(newRoom)

@@ -33,7 +33,9 @@ const ChatContainer = () => {
 			<Grid
 				item
 				xs
-				height={'100%'}
+				// height={'100%'}
+				overflow={'scroll'}
+				boxSizing={'border-box'}
 				style={{
 					border: '1px solid red',
 				}}

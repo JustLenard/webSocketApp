@@ -3,6 +3,7 @@ import AppSpinner from '../components/AppSpinner'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useRefreshToken from '../hooks/useRefresh'
 import { isInsideOfApplication } from '../utils/allowedToTriggerRefresh'
+import { appRoutes } from '../router/Root'
 
 interface IContext {
 	loggedIn: boolean
@@ -25,7 +26,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 	const [loading, setLoading] = useState(false)
 
 	// console.log('This is accessToken', accessToken)
-	// console.log('This is loggedIn', loggedIn)
+	console.log('This is loggedIn', loggedIn)
 	// console.log('This is loading', loading)
 
 	const refresh = useRefreshToken()
@@ -34,7 +35,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 	const appAxios = useAxiosPrivate()
 
 	/**
-	 * Get access token if uses still has valid refresh token
+	 * Get access token if user still has valid refresh token
 	 **/
 	useEffect(() => {
 		console.log('This is isInsideOfApplication()', isInsideOfApplication())
@@ -55,8 +56,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 			if (loggedIn && accessToken === null && isInsideOfApplication()) {
 				// setLoading(true)
 				await getAccessToken()
+			} else if (!loggedIn && isInsideOfApplication()) {
+				location.assign(appRoutes.login)
 			}
-			setLoading(false)
+			// setLoading(false)
 		}
 
 		initialLaoad()

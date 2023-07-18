@@ -6,7 +6,17 @@ import RightMenu from '../components/rightMenu/RightMenu'
 
 const ChatPage = () => {
 	return (
-		<Grid sx={{ border: '1px solid blue', minHeight: '100vh', height: '100vh' }}>
+		<Grid
+			sx={{
+				border: '1px solid blue',
+				minHeight: '100vh',
+				height: '100vh',
+				display: 'flex',
+				flexDirection: 'column',
+				// marginTop: '0',
+				// marginLeft: '0',
+			}}
+		>
 			<Grid item pb={'1rem'}>
 				<AppNavbar />
 			</Grid>

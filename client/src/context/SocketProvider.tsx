@@ -13,6 +13,7 @@ import { handleError } from '../utils/handleAxiosErrors'
 import AppSpinner from '../components/AppSpinner'
 import { isInsideOfApplication } from '../utils/allowedToTriggerRefresh'
 import { CreateRoomParams } from '../types/types'
+import { getGlobalRoom } from '../utils/utils'
 
 const websocketURL = import.meta.env.VITE_PUBLIC_URL + '/ws'
 
@@ -224,10 +225,6 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	}
 
 	return <SocketContext.Provider value={contextValue}>{children}</SocketContext.Provider>
-}
-
-const getGlobalRoom = (rooms: RoomI[]) => {
-	return rooms.find((room) => room.id === 1 && room.name === GLOBAL_ROOM_NAME && room.isGroupChat) ?? null
 }
 
 export default SocketProvider
