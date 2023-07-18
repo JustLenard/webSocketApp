@@ -8,3 +8,10 @@ export interface SignUpForm {
 	password: string
 	cpassword: string
 }
+
+export type CreateRoomParams = {
+	name?: string
+	description?: string
+	isGroupChat: boolean
+	users: string[]
+}

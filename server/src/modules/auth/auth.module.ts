@@ -3,15 +3,13 @@ import { ConfigModule } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { RoomEntity } from '../../utils/entities/room.entity'
 import { UserEntity } from '../../utils/entities/user.entity'
 import { UsersModule } from '../users/users.module'
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 import { AtStrategy } from './strategies/at.strategy'
 import { RtStrategy } from './strategies/rt.strategy'
-import { ChatModule } from '../chat/chat.module'
-import { RoomEntity } from '../../utils/entities/room.entity'
-import { Mateservice } from '../chat/service/room.service'
 
 @Module({
 	imports: [

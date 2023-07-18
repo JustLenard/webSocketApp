@@ -1,10 +1,11 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { In, Repository } from 'typeorm'
-import { RoomI, UserI } from 'src/utils/types/entities.types'
-import { PostRoomI } from 'src/utils/types/frontEnd.types'
-import { UserEntity } from 'src/utils/entities/user.entity'
 import { RoomEntity } from 'src/utils/entities/room.entity'
+import { UserEntity } from 'src/utils/entities/user.entity'
+import { RoomI } from 'src/utils/types/entities.types'
+import { In, Repository } from 'typeorm'
+import { CreateRoomDto } from './dto/create-room.dto'
+import { CreateRoomParams } from 'src/utils/types/types'
 
 @Injectable()
 export class RoomsService implements OnModuleInit {
@@ -52,22 +53,11 @@ export class RoomsService implements OnModuleInit {
 		)
 	}
 
-	// async getRoomsForUser(userId: number) {
-	// 	return this.roomRepository
-	// 		.createQueryBuilder('room')
-	// 		.leftJoin('room.users', 'users')
-	// 		.where('users.id = :userId', { userId: userId })
-	// 		.getMany()
-	// }
-	async privateChatExists(firstUserId: string, secondUserId: string): Promise<null | RoomEntity> {
-		return this.roomRepository
-			.createQueryBuilder('room')
-			.leftJoin('room.users', 'users')
-			.leftJoin('room.users', 'all_users')
-			.where('users.id = :userId', { userId: firstUserId })
-			.andWhere('room.isGroupChat = :isGroupChat', { isGroupChat: false })
-			.andWhere('all_users.id = :secondUserId', { secondUserId: secondUserId })
-			.getOne()
+	async createRoom(room: CreateRoomParams, creator: UserEntity) {
+		this.logger.debug('creating room')
+		const newRoom = await this.addUsersToRoom({ ...room, users: [creator] }, room.users)
+		console.log('This is newRoom', newRoom)
+		return this.roomRepository.save(newRoom)
 	}
 
 	// async getRoomsForUser(userId: number) {
@@ -95,24 +85,21 @@ export class RoomsService implements OnModuleInit {
 			.getOne()
 	}
 
-	async createRoom(room: PostRoomI, creator: UserI) {
-		this.logger.debug('creating room')
-
-		const privateChat = await this.checkIfPrivateChatExits(creator.id, room.users[0])
-		if (privateChat) {
-			this.logger.warn('Room already exists. Aborting')
-			return privateChat
-		}
-
-		const newRoom = await this.addUsersToRoom({ ...room, users: [creator] }, room.users)
-
-		// return this.roomRepository.save(newRoom)
-	}
-
 	async getRoomByName(roomName = 'Global'): Promise<RoomEntity> {
 		return this.roomRepository.findOne({
 			where: { name: roomName },
 		})
+	}
+
+	async privateChatExists(firstUserId: string, secondUserId: string): Promise<null | RoomEntity> {
+		return this.roomRepository
+			.createQueryBuilder('room')
+			.leftJoin('room.users', 'users')
+			.leftJoin('room.users', 'all_users')
+			.where('users.id = :userId', { userId: firstUserId })
+			.andWhere('room.isGroupChat = :isGroupChat', { isGroupChat: false })
+			.andWhere('all_users.id = :secondUserId', { secondUserId: secondUserId })
+			.getOne()
 	}
 
 	async checkIfPrivateChatExits(firstUserId: string, secondUserId: string): Promise<number | boolean> {
@@ -127,6 +114,7 @@ export class RoomsService implements OnModuleInit {
 
 	async addUsersToRoom(room: RoomI, userIds: string[]) {
 		const users = await this.userRepository.findBy({ id: In(userIds) })
+		console.log('This is users', users)
 
 		room.users = [...room.users, ...users]
 

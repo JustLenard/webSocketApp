@@ -4,7 +4,7 @@ import useRefreshToken from '../hooks/useRefresh'
 import { PostRoomI, MessageI, RoomI } from '../types/BE_entities.types'
 import { IRoom } from '../types/room.type'
 import AuthContext from './AuthProvider'
-import { socketEvents } from '../websocket/socketEvents'
+import { socketEvents } from '../utils/constants'
 import { Message } from 'react-hook-form'
 import { GLOBAL_ROOM_NAME } from '../utils/constants'
 import { useAuth } from '../hooks/useAuth'
@@ -12,6 +12,7 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { handleError } from '../utils/handleAxiosErrors'
 import AppSpinner from '../components/AppSpinner'
 import { isInsideOfApplication } from '../utils/allowedToTriggerRefresh'
+import { CreateRoomParams } from '../types/types'
 
 const websocketURL = import.meta.env.VITE_PUBLIC_URL + '/ws'
 
@@ -22,7 +23,7 @@ interface IContext {
 	sendMessage: (message: string) => void
 	changeCurrentRoom: (roomId: number) => void
 	currentRoom: null | RoomI
-	createNewRoom: (newRoom: PostRoomI) => void
+	createNewRoom: (newRoom: CreateRoomParams) => void
 }
 
 export const SocketContext = React.createContext<IContext>({} as IContext)
@@ -50,7 +51,7 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	const [currentRoom, setCurrentRoom] = useState<RoomI | null>(null)
 
 	const { login, logOut, loggedIn, accessToken } = useAuth()
-	const privateAxios = useAxiosPrivate()
+	const { privateAxios } = useAxiosPrivate()
 
 	console.log('This is currentRoom', currentRoom)
 	// const getAccesToken = useRefreshToken()
@@ -189,13 +190,27 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 		}
 	}
 
-	const createNewRoom = (newRoom: PostRoomI) => {
-		appSocket?.emit(socketEvents.createRoom, newRoom, (callback: RoomI) => {
-			const newRooms = [...rooms]
-			newRooms.unshift(callback)
-			setRooms(newRooms)
-			setCurrentRoom(callback)
-		})
+	const createNewRoom = async (newRoom: CreateRoomParams) => {
+		try {
+			const response = await privateAxios.post('/rooms', newRoom)
+
+			console.log('This is response.data', response.data)
+
+			if (typeof response.data === 'number') {
+				if (currentRoom?.id !== response.data) return changeCurrentRoom(response.data)
+			}
+			if (typeof response.data === 'object') {
+				return setRooms((prev) => [response.data, ...prev])
+			}
+		} catch (err) {
+			handleError(err)
+		}
+		// appSocket?.emit(socketEvents.createRoom, newRoom, (callback: RoomI) => {
+		// 	const newRooms = [...rooms]
+		// 	newRooms.unshift(callback)
+		// 	setRooms(newRooms)
+		// 	setCurrentRoom(callback)
+		// })
 	}
 
 	const contextValue = {

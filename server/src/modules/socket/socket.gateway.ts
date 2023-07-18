@@ -1,20 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common'
-import {
-	ConnectedSocket,
-	MessageBody,
-	OnGatewayConnection,
-	OnGatewayDisconnect,
-	SubscribeMessage,
-	WebSocketGateway,
-	WebSocketServer,
-} from '@nestjs/websockets'
+import { OnEvent } from '@nestjs/event-emitter'
+import { OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import { UserEntity } from 'src/utils/entities/user.entity'
-import { CreateMessageEvent, JwtPayload } from 'src/utils/types/types'
+import { CreateMessageEvent, CreateRoomEvent, JwtPayload } from 'src/utils/types/types'
 import { AuthService } from '../auth/auth.service'
 import { UsersService } from '../users/users.service'
-import { OnEvent } from '@nestjs/event-emitter'
-import { socketEvents } from './socketEvents'
+import { appEmitters, socketEvents } from '../../utils/constants'
 
 @WebSocketGateway({ namespace: '/ws', cors: true })
 @Injectable()
@@ -68,7 +60,7 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	/**
 	 * Events
 	 **/
-	@OnEvent('message.create')
+	@OnEvent(appEmitters.messageCreate)
 	async handleMessageCreate(payload: CreateMessageEvent) {
 		const { message, room, user: sender } = payload
 		console.log('This is room', room)
@@ -84,6 +76,20 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 			if (user.socketId && user.socketId !== sender.socketId) {
 				this.logger.log('Sending message to', user.socketId)
 				this.server.to(user.socketId).emit(socketEvents.messageAdded, message)
+			}
+		}
+	}
+
+	@OnEvent(appEmitters.roomCreate)
+	async roomCreate(payload: CreateRoomEvent) {
+		const { room, creatorId } = payload
+		console.log('This is room', room)
+		console.log('This is creatorId', creatorId)
+
+		for (const user of room.users) {
+			if (user.socketId && user.id !== creatorId) {
+				this.logger.log('Sending message to', user.socketId)
+				this.server.to(user.socketId).emit(socketEvents.createRoom, room)
 			}
 		}
 	}

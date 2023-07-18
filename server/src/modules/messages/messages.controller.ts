@@ -19,6 +19,7 @@ import { MessageI } from 'src/utils/types/entities.types'
 import { RoomsService } from '../rooms/rooms.service'
 import { MessageDto } from './dto/create-message.dto'
 import { MessageService } from './messages.service'
+import { appEmitters } from 'src/utils/constants'
 
 @Controller('/api/messages')
 export class MessageController {
@@ -46,7 +47,7 @@ export class MessageController {
 
 		const message = await this.messageService.createMessage(dto, user)
 
-		this.eventEmitter.emit('message.create', { message, room, user })
+		this.eventEmitter.emit(appEmitters.messageCreate, { message, room, user })
 
 		return message
 	}

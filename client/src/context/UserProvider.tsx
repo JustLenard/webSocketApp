@@ -32,13 +32,13 @@ const UserProvider: React.FC<Props> = ({ children }) => {
 
 	const { accessToken } = useAuth()
 
-	const appAxios = useAxiosPrivate()
+	const { privateAxios } = useAxiosPrivate()
 
 	useEffect(() => {
 		const getMyInfo = async () => {
 			try {
 				setLoading(true)
-				const response = await appAxios.get('/users/me')
+				const response = await privateAxios.get('/users/me')
 
 				setUser(response.data)
 			} catch (err) {

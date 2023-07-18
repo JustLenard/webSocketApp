@@ -53,7 +53,7 @@ const useAxiosPrivate = () => {
 		}
 	}, [accessToken, refresh])
 
-	return appAxios
+	return { privateAxios: appAxios }
 }
 
 export default useAxiosPrivate

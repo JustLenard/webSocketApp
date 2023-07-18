@@ -9,17 +9,14 @@ import {
 import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as argon2 from 'argon2'
-import { In, Repository } from 'typeorm'
+import { Response } from 'express'
+import { ALPHABET, NUMBERS } from 'src/utils/constants'
+import { Tokens } from 'src/utils/types/types'
+import { Repository } from 'typeorm'
+import { RoomEntity } from '../../utils/entities/room.entity'
 import { UserEntity } from '../../utils/entities/user.entity'
 import { UsersService } from '../users/users.service'
 import { AuthDto } from './auth.dto'
-import { Response } from 'express'
-import { Mateservice } from '../chat/service/room.service'
-import { RoomEntity } from '../../utils/entities/room.entity'
-import { RoomI } from 'src/utils/types/entities.types'
-import { MessageEntity } from '../../utils/entities/message.entity'
-import { alphabet, numbersOneToTen } from 'src/utils/constants'
-import { Tokens } from 'src/utils/types/types'
 
 @Injectable()
 export class AuthService {
@@ -95,7 +92,6 @@ export class AuthService {
 	async updateRtHash(userId: string, rt: string) {
 		// const hash = await this.hashData(rt)
 		const hash = rt
-		console.log('This is rt', rt)
 
 		await this.userRepostiry
 			.createQueryBuilder()
@@ -140,8 +136,6 @@ export class AuthService {
 
 		await this.roomRepository.save(globalRoom)
 
-		console.log('This is globalRoom', globalRoom)
-
 		const tokens = await this.getTokens(newUser.id, newUser.username)
 		await this.updateRtHash(newUser.id, tokens.refreshToken)
 
@@ -178,7 +172,6 @@ export class AuthService {
 	}
 
 	async refresh(userId: string, rt: string, res: Response) {
-		console.log('This is userId', userId)
 		this.logger.log('Refreshing token')
 
 		if (!userId) {
@@ -189,25 +182,17 @@ export class AuthService {
 			id: userId,
 		})
 
-		console.log('This is user in refresh', user)
-		console.log('pas 0')
 		// console.log('This is user.refreshToken', user.refreshToken)
 		if (!user || !user.refreshToken) throw new ForbiddenException('Access Denied')
-		console.log('user exists')
 
 		this.logger.log('Verifying refresh token')
-		console.log('user token in db', user.refreshToken)
-		console.log('token in request', rt)
 		// const rtMatches = await argon2.verify(user.refreshToken, rt)
 		const rtMatches = user.refreshToken === rt
-
-		console.log('This is rtMatches', rtMatches)
 
 		if (!rtMatches) throw new UnauthorizedException('Unauthorized')
 		this.logger.log('Refresh token matches')
 
 		const tokens = await this.getTokens(user.id, user.username)
-		console.log('This is tokens', tokens)
 		await this.updateRtHash(user.id, tokens.refreshToken)
 		this.logger.log('Tokens updated')
 
@@ -257,11 +242,11 @@ export class AuthService {
 		pass.toLowerCase()
 			.split('')
 			.forEach((letter) => {
-				if (numbersOneToTen.includes(letter)) {
+				if (NUMBERS.includes(letter)) {
 					numberCheck = true
 				}
 
-				if (alphabet.includes(letter)) {
+				if (ALPHABET.includes(letter)) {
 					letterCheck = true
 				}
 			})

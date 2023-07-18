@@ -7,11 +7,12 @@ import { Avatar } from '@mui/joy'
 import { AxiosError } from 'axios'
 import { useAuth } from '../../hooks/useAuth'
 import { useSocket } from '../../hooks/useSocket'
-import { socketEvents } from '../../websocket/socketEvents'
+import { socketEvents } from '../../utils/constants'
 import { useUser } from '../../hooks/useUser'
+import { CreateRoomParams } from '../../types/types'
 
 const RightMenu = () => {
-	const appAxios = useAxiosPrivate()
+	const { privateAxios } = useAxiosPrivate()
 
 	const { accessToken } = useAuth()
 
@@ -21,7 +22,7 @@ const RightMenu = () => {
 		if (accessToken) {
 			const getUsers = async () => {
 				try {
-					const response = await appAxios.get('/users')
+					const response = await privateAxios.get('/users')
 					console.log('This is response', response)
 
 					setUsers(response.data)
@@ -49,33 +50,39 @@ interface ProfileItemProps {
 
 const ProfileItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 	const { user } = useUser()
+	const { privateAxios } = useAxiosPrivate()
 	const { appSocket, changeCurrentRoom, createNewRoom } = useSocket()
 
-	const checkIfPrivateChatExists = () => {
-		// console.log('This is user', user)
-		// console.log('This is appSocket', appSocket)
-		if (!user || !appSocket) return
-
-		const newRoom: PostRoomI = {
-			name: username,
+	const handleClick = () => {
+		const newRoom: CreateRoomParams = {
+			name: `${user?.username}-${username}`,
 			users: [id],
 			isGroupChat: false,
 		}
 
-		// console.log('This is newRoom', newRoom)
-
-		appSocket.emit(socketEvents.checkIfPrivateChatExists, id, (callBack: boolean | number) => {
-			console.log('This is callBack', callBack)
-
-			if (typeof callBack === 'number') {
-				changeCurrentRoom(callBack)
-			}
-
-			if (typeof callBack === 'boolean') {
-				createNewRoom(newRoom)
-			}
-		})
+		createNewRoom(newRoom)
 	}
+
+	// const checkIfPrivateChatExists = async () => {
+	// 	if (!user || !appSocket) return
+
+	// 	const response = await privateAxios.post('/rooms', newRoom)
+
+	// 	console.log('This is response.data', response.data)
+
+	// 	if (typeof response.data === 'number') {
+	// 		changeCurrentRoom(response)
+	// 	}
+
+	// 	if (typeof response.data === 'boolean') {
+	// 		createNewRoom(newRoom)
+	// 	}
+
+	// 	// appSocket.emit(socketEvents.checkIfPrivateChatExists, id, (callBack: boolean | number) => {
+	// 	// 	console.log('This is callBack', callBack)
+
+	// 	// })
+	// }
 
 	return (
 		<Stack
@@ -83,7 +90,7 @@ const ProfileItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 			flexDirection={'row'}
 			alignItems={'center'}
 			my={'1rem'}
-			onClick={checkIfPrivateChatExists}
+			onClick={handleClick}
 			sx={{
 				cursor: 'pointer',
 			}}

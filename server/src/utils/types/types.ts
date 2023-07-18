@@ -23,3 +23,15 @@ export type CreateMessageEvent = {
 	room: RoomEntity
 	user: UserEntity
 }
+
+export type CreateRoomParams = {
+	name?: string
+	description?: string
+	isGroupChat: boolean
+	users: string[]
+}
+
+export type CreateRoomEvent = {
+	room: RoomEntity
+	creatorId: string
+}

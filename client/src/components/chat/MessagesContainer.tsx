@@ -8,7 +8,7 @@ import { MessageI } from '../../types/BE_entities.types'
 interface Props {}
 
 const MessagesContainer: React.FC<Props> = () => {
-	const privateAxios = useAxiosPrivate()
+	const { privateAxios } = useAxiosPrivate()
 	const { messages, appSocket, currentRoom } = useSocket()
 	// const [messages, setMessages] = useState<null | MessageI[]>(null)
 

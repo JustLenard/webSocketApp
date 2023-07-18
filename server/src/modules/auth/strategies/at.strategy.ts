@@ -17,7 +17,6 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
 	async validate(payload: JwtPayload) {
 		const user = await this.userRepostiry.findOneBy({ id: payload.sub })
-		console.log('request send from this user: ', user)
 
 		return user
 	}

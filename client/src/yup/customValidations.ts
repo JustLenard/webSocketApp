@@ -1,4 +1,4 @@
-import { alphabet, numbers } from '../utils/constants'
+import { ALPHABET, NUMBERS } from '../utils/constants'
 
 export const minOneLetterAndNumber = (pass: string): boolean => {
 	let numberCheck = false
@@ -7,11 +7,11 @@ export const minOneLetterAndNumber = (pass: string): boolean => {
 	pass.toLowerCase()
 		.split('')
 		.forEach((letter) => {
-			if (numbers.includes(letter)) {
+			if (NUMBERS.includes(letter)) {
 				numberCheck = true
 			}
 
-			if (alphabet.includes(letter)) {
+			if (ALPHABET.includes(letter)) {
 				letterCheck = true
 			}
 		})
