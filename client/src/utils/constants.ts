@@ -18,3 +18,7 @@ export enum socketEvents {
 	addMessage = 'addMessage',
 	getMessagesForRoom = 'getMessagesForRoom',
 }
+
+export enum apiEndpoints {
+	messages = '/messages',
+}

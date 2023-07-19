@@ -43,4 +43,16 @@ export class MessageService {
 			.orderBy('message.created_at', 'ASC')
 			.getMany()
 	}
+
+	async patchMessage(messageId: number, newContent: string) {
+		return this.messageRepository.save({
+			id: messageId,
+			text: newContent,
+		})
+	}
+
+	async deleteMessage(messageId: number) {
+		this.messageRepository.delete({ id: messageId })
+		return 'ok'
+	}
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useContext, useEffect, useState } from 'react'
 import { Socket, io } from 'socket.io-client'
 import useRefreshToken from '../hooks/useRefresh'
 import { PostRoomI, MessageI, RoomI } from '../types/BE_entities.types'
@@ -25,6 +25,8 @@ interface IContext {
 	changeCurrentRoom: (roomId: number) => void
 	currentRoom: null | RoomI
 	createNewRoom: (newRoom: CreateRoomParams) => void
+	editingMessageId: number | null
+	setEditingMessageId: Dispatch<SetStateAction<number | null>>
 }
 
 export const SocketContext = React.createContext<IContext>({} as IContext)
@@ -48,6 +50,8 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	const [appSocket, setAppSocket] = useState<null | Socket>(null)
 
 	const [messages, setMessages] = useState<MessageI[]>([])
+	const [editingMessageId, setEditingMessageId] = useState<null | number>(null)
+
 	const [rooms, setRooms] = useState<RoomI[]>([])
 	const [currentRoom, setCurrentRoom] = useState<RoomI | null>(null)
 
@@ -222,6 +226,8 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 		createNewRoom,
 		sendMessage,
 		changeCurrentRoom,
+		editingMessageId,
+		setEditingMessageId,
 	}
 
 	return <SocketContext.Provider value={contextValue}>{children}</SocketContext.Provider>

@@ -21,7 +21,7 @@ export interface PostRoomI {
 }
 
 export interface MessageI {
-	id?: number
+	id: number
 	text: string
 	user: UserI
 	room: RoomI

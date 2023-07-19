@@ -2,12 +2,14 @@ import {
 	BadRequestException,
 	Body,
 	Controller,
+	Delete,
 	Get,
 	HttpCode,
 	HttpStatus,
 	Inject,
 	Param,
 	ParseIntPipe,
+	Patch,
 	Post,
 	UseGuards,
 } from '@nestjs/common'
@@ -20,6 +22,7 @@ import { RoomsService } from '../rooms/rooms.service'
 import { MessageDto } from './dto/create-message.dto'
 import { MessageService } from './messages.service'
 import { appEmitters } from 'src/utils/constants'
+import { UpdateMessageDto } from './dto/update-message.dto'
 
 @Controller('/api/messages')
 export class MessageController {
@@ -31,7 +34,7 @@ export class MessageController {
 
 	@UseGuards(AtGuard)
 	@Get('/:roomId')
-	@HttpCode(HttpStatus.CREATED)
+	@HttpCode(HttpStatus.OK)
 	findMessagesForRoom(@Param('roomId', ParseIntPipe) roomId: number): Promise<MessageI[]> {
 		return this.messageService.findMessagesForRoom(roomId)
 	}
@@ -50,5 +53,22 @@ export class MessageController {
 		this.eventEmitter.emit(appEmitters.messageCreate, { message, room, user })
 
 		return message
+	}
+
+	@UseGuards(AtGuard)
+	@Patch('/:messageId')
+	@HttpCode(HttpStatus.OK)
+	async patchMessage(@Param('messageId', ParseIntPipe) messageId: number, @Body() dto: UpdateMessageDto) {
+		const res = await this.messageService.patchMessage(messageId, dto.text)
+		console.log('This is res', res)
+
+		return res
+	}
+
+	@UseGuards(AtGuard)
+	@Delete('/:messageId')
+	@HttpCode(HttpStatus.OK)
+	deleteMessage(@Param('messageId', ParseIntPipe) messageId: number) {
+		return this.messageService.deleteMessage(messageId)
 	}
 }
