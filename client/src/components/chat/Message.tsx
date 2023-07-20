@@ -15,6 +15,12 @@ import { apiEndpoints } from '../../utils/constants'
 import { ModalDialog } from '@mui/joy'
 import ResponsiveModal from '../modal/ConfirmationModal'
 import { useSocket } from '../../hooks/useSocket'
+import { useUser } from '../../hooks/useUser'
+import moment from 'moment'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import dayjs from 'dayjs'
+
+dayjs.extend(relativeTime)
 
 interface Props {
 	message: MessageI
@@ -34,9 +40,13 @@ export const Message: React.FC<Props> = ({ message, prev }) => {
 				)}
 				<Stack width={'100%'}>
 					{!getCond && (
-						<Typography color="info" noWrap>
-							{message.user.username}
-						</Typography>
+						<Stack direction={'row'} gap={1} alignContent={'center'}>
+							<Typography color="info" noWrap>
+								{message.user.username}
+							</Typography>
+							{/* <Typography>{moment(message.updated_at).format('L')}</Typography> */}
+							<Typography>{moment(message.updated_at).startOf('day').fromNow()}</Typography>
+						</Stack>
 					)}
 
 					<SImpleMessage message={message} cond={getCond} />
@@ -47,6 +57,8 @@ export const Message: React.FC<Props> = ({ message, prev }) => {
 }
 
 const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message, cond }) => {
+	const { getMessagesForRoom, currentRoom } = useSocket()
+	const { user } = useUser()
 	const { privateAxios } = useAxiosPrivate()
 	const [edit, setEdit] = useState<null | string>(null)
 	const { editingMessageId, setEditingMessageId } = useSocket()
@@ -80,8 +92,9 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 			const response = await privateAxios.delete(`/messages/${message.id}`)
 			console.log('This is response', response)
 
-			if (response.data === 'ok') {
-				setLocalMessage(null)
+			if (response.data === 'ok' && currentRoom) {
+				// setLocalMessage(null)
+				getMessagesForRoom(currentRoom.id)
 			}
 		} catch (err) {
 			handleError(err)
@@ -100,6 +113,8 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 		setEdit(localMesasge.text)
 		setEditingMessageId(localMesasge.id)
 	}
+
+	const isMessageOwner = user ? user.id === message.user.id : false
 
 	return (
 		<>
@@ -120,8 +135,16 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 				) : (
 					<>
 						<Typography sx={{ marginLeft: marginLeft }}>{localMesasge.text}</Typography>
-						<Stack direction={'row'}>
-							<Tooltip title="Edit">
+
+						{isMessageOwner && (
+							<Stack direction={'row'}>
+								{/* <Tooltip title="Edit"> */}
+
+								{/* <Typography>{moment(message.updated_at).startOf('hour').fromNow()}</Typography> */}
+								<Typography>{dayjs(message.updated_at).fromNow()}</Typography>
+
+								{/* <Typography>{moment(message.updated_at).format('L')}</Typography> */}
+
 								<IconButton
 									size="small"
 									onClick={turnEditModeOn}
@@ -131,8 +154,8 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 								>
 									<ModeEditIcon fontSize="small" />
 								</IconButton>
-							</Tooltip>
-							<Tooltip title="Delete">
+								{/* </Tooltip> */}
+								{/* <Tooltip title="Delete"> */}
 								<IconButton
 									size="small"
 									onClick={() => setModal(true)}
@@ -142,8 +165,9 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 								>
 									<DeleteIcon fontSize="small" />
 								</IconButton>
-							</Tooltip>
-						</Stack>
+								{/* </Tooltip> */}
+							</Stack>
+						)}
 					</>
 				)}
 			</StyledStack>

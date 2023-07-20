@@ -1,8 +1,10 @@
-import { Button, FormControl, Input, OutlinedInput } from '@mui/material'
+import { Button, FormControl, IconButton, OutlinedInput } from '@mui/material'
 import { useContext, useState } from 'react'
 import { SocketContext } from '../../context/SocketProvider'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useSocket } from '../../hooks/useSocket'
+import { Input } from '@mui/joy'
+import SendIcon from '@mui/icons-material/Send'
 
 type ChatForm = {
 	message: string
@@ -29,10 +31,17 @@ const ChatInput: React.FC<Props> = () => {
 
 	return (
 		<form onSubmit={handleSubmit(handleMessageSubmit)}>
-			<FormControl>
-				<Input placeholder="Your message... " {...register('message')} />
-			</FormControl>
-			<Button type="submit">Submit</Button>
+			<Input
+				placeholder="Your message... "
+				{...register('message')}
+				fullWidth
+				variant="outlined"
+				endDecorator={
+					<IconButton type="submit">
+						<SendIcon />
+					</IconButton>
+				}
+			/>
 		</form>
 	)
 }

@@ -25,6 +25,7 @@ interface IContext {
 	changeCurrentRoom: (roomId: number) => void
 	currentRoom: null | RoomI
 	createNewRoom: (newRoom: CreateRoomParams) => void
+	getMessagesForRoom: (roomId: number) => void
 	editingMessageId: number | null
 	setEditingMessageId: Dispatch<SetStateAction<number | null>>
 }
@@ -150,24 +151,20 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 		}
 	}, [createSocket, loggedIn, accessToken])
 
+	const getMessagesForRoom = async (roomId: number) => {
+		try {
+			const response = await privateAxios.get(`/messages/${roomId}`)
+			console.log('This is response.data', response.data)
+			setMessages(response.data)
+		} catch (err) {
+			handleError(err)
+		}
+	}
+
 	/**
 	 * Get messages for the selected room
 	 **/
 	useEffect(() => {
-		const getMessagesForRoom = async (roomId: number) => {
-			// appSocket?.emit(socketEvents.getMessagesForRoom, roomId, (callback: MessageI[]) => {
-			// 	setMessages(callback)
-			// 	console.log('This is callback', callback)
-			// })
-
-			try {
-				const response = await privateAxios.get(`/messages/${roomId}`)
-				console.log('This is response.data', response.data)
-				setMessages(response.data)
-			} catch (err) {
-				// console.log('This is err', err.response)
-			}
-		}
 		currentRoom && getMessagesForRoom(currentRoom.id)
 	}, [currentRoom])
 
@@ -228,6 +225,7 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 		changeCurrentRoom,
 		editingMessageId,
 		setEditingMessageId,
+		getMessagesForRoom,
 	}
 
 	return <SocketContext.Provider value={contextValue}>{children}</SocketContext.Provider>
