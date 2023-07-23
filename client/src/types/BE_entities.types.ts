@@ -10,7 +10,8 @@ export interface RoomI {
 	name: string
 	isGroupChat: boolean
 	description?: string
-	users?: UserI[]
+	users: UserI[]
+	lastMessage: null | MessageI
 }
 
 export interface PostRoomI {
@@ -44,4 +45,5 @@ export interface JoinedRoomI {
 export interface UserI {
 	id: string
 	username: string
+	online: boolean
 }

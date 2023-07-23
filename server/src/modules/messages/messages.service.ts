@@ -23,15 +23,14 @@ export class MessageService {
 
 		if (!room) throw new BadRequestException('Room does not exist')
 
-		console.log('This is room', room)
-
 		const newMessage = this.messageRepository.create({
 			text: message.text,
 			room,
 			user,
 		})
-
-		return this.messageRepository.save(newMessage)
+		await this.messageRepository.save(newMessage)
+		await this.roomService.addLastMessageToRoom(room, newMessage)
+		return newMessage
 	}
 
 	async findMessagesForRoom(roomId: number): Promise<any[]> {

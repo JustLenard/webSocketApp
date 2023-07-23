@@ -2,7 +2,7 @@ import { ReactNode, createContext, useEffect, useState } from 'react'
 import AppSpinner from '../components/AppSpinner'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useRefreshToken from '../hooks/useRefresh'
-import { isInsideOfApplication } from '../utils/allowedToTriggerRefresh'
+import { isInsideOfApplication } from '../utils/utils'
 import { appRoutes } from '../router/Root'
 
 interface IContext {

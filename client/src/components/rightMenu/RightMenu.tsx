@@ -1,21 +1,16 @@
-import { Card, Grid, Stack, Typography } from '@mui/material'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import { appAxios } from '../../api/axios'
+import { Avatar, Typography } from '@mui/joy'
+import { Grid, Stack } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { PostRoomI, RoomI, UserI } from '../../types/BE_entities.types'
-import { Avatar } from '@mui/joy'
-import { AxiosError } from 'axios'
 import { useAuth } from '../../hooks/useAuth'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { useSocket } from '../../hooks/useSocket'
-import { socketEvents } from '../../utils/constants'
 import { useUser } from '../../hooks/useUser'
+import { UserI } from '../../types/BE_entities.types'
 import { CreateRoomParams } from '../../types/types'
 
 const RightMenu = () => {
 	const { privateAxios } = useAxiosPrivate()
-
 	const { accessToken } = useAuth()
-
 	const [users, setUsers] = useState<UserI[]>([])
 
 	useEffect(() => {
@@ -34,9 +29,25 @@ const RightMenu = () => {
 		}
 	}, [accessToken])
 
+	// const onlineUsers = []
+	const oflineUsers: UserI[] = []
+	const onlineUsers: UserI[] = []
+	users.map((user) => {
+		user.online ? onlineUsers.push(user) : oflineUsers.push(user)
+	})
+
 	return (
-		<Grid border={'2px solid blue'}>
-			{users.map((user, i) => (
+		<Grid border={'2px solid blue'} sx={{ height: '100%' }} p={'1rem'}>
+			<Typography level="h4" mb={'2rem'}>
+				Participants
+			</Typography>
+
+			<Typography level="h6">{`Online - (${onlineUsers.length})`}</Typography>
+			{onlineUsers.map((user, i) => (
+				<ProfileItem id={user.id} username={user.username} key={user.id} />
+			))}
+			<Typography level="h6">{`Ofline - (${onlineUsers.length})`}</Typography>
+			{oflineUsers.map((user, i) => (
 				<ProfileItem id={user.id} username={user.username} key={user.id} />
 			))}
 		</Grid>
@@ -62,27 +73,6 @@ const ProfileItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 
 		createNewRoom(newRoom)
 	}
-
-	// const checkIfPrivateChatExists = async () => {
-	// 	if (!user || !appSocket) return
-
-	// 	const response = await privateAxios.post('/rooms', newRoom)
-
-	// 	console.log('This is response.data', response.data)
-
-	// 	if (typeof response.data === 'number') {
-	// 		changeCurrentRoom(response)
-	// 	}
-
-	// 	if (typeof response.data === 'boolean') {
-	// 		createNewRoom(newRoom)
-	// 	}
-
-	// 	// appSocket.emit(socketEvents.checkIfPrivateChatExists, id, (callBack: boolean | number) => {
-	// 	// 	console.log('This is callBack', callBack)
-
-	// 	// })
-	// }
 
 	return (
 		<Stack

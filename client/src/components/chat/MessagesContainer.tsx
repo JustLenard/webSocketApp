@@ -1,14 +1,10 @@
-import { useContext, useEffect, useRef, useState } from 'react'
-import { SocketContext } from '../../context/SocketProvider'
-import Message from './Message'
-import { useSocket } from '../../hooks/useSocket'
+import { useEffect, useRef } from 'react'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
+import { useSocket } from '../../hooks/useSocket'
 import { MessageI } from '../../types/BE_entities.types'
-import { NUMBERS } from '../../utils/constants'
+import Message from './Message'
 
-interface Props {}
-
-const MessagesContainer: React.FC<Props> = () => {
+const MessagesContainer = () => {
 	const { privateAxios } = useAxiosPrivate()
 	const { messages, appSocket, currentRoom } = useSocket()
 

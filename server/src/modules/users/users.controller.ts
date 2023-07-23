@@ -17,8 +17,8 @@ export class UsersController {
 
 	@UseGuards(AtGuard)
 	@Get()
-	findAll() {
-		return this.usersService.findAll()
+	findAll(@GetCurrentUser() user: UserEntity) {
+		return this.usersService.findAll(user.id)
 	}
 
 	@UseGuards(AtGuard)

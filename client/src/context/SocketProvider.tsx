@@ -11,7 +11,7 @@ import { useAuth } from '../hooks/useAuth'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { handleError } from '../utils/handleAxiosErrors'
 import AppSpinner from '../components/AppSpinner'
-import { isInsideOfApplication } from '../utils/allowedToTriggerRefresh'
+import { isInsideOfApplication } from '../utils/utils'
 import { CreateRoomParams } from '../types/types'
 import { getGlobalRoom } from '../utils/utils'
 

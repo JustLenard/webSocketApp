@@ -1,11 +1,21 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+import {
+	BaseEntity,
+	Column,
+	Entity,
+	JoinColumn,
+	JoinTable,
+	ManyToMany,
+	OneToMany,
+	OneToOne,
+	PrimaryGeneratedColumn,
+} from 'typeorm'
 import { MessageEntity } from './message.entity'
 import { UserEntity } from 'src/utils/entities/user.entity'
 import { JoinedRoomEntity } from './joinedRoom.entity'
 import { NotificationsEntity } from './notifications.entity'
 
 @Entity('Rooms')
-export class RoomEntity {
+export class RoomEntity extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number
 

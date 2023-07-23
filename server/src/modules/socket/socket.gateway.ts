@@ -36,8 +36,6 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 			user.socketId = socket.id
 			await user.save()
 
-			console.log('This is user', user)
-
 			if (!user) {
 				this.logger.log('User does not exist')
 				await this.userService.removeUserSocketId(user.id)
@@ -63,9 +61,6 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	@OnEvent(appEmitters.messageCreate)
 	async handleMessageCreate(payload: CreateMessageEvent) {
 		const { message, room, user: sender } = payload
-		console.log('This is room', room)
-		console.log('This is message', message)
-		console.log('This is user', sender)
 
 		// 		const newNotification =  this.notifRepository.create({
 		// creator: newMessage.user,
@@ -83,8 +78,6 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	@OnEvent(appEmitters.roomCreate)
 	async roomCreate(payload: CreateRoomEvent) {
 		const { room, creatorId } = payload
-		console.log('This is room', room)
-		console.log('This is creatorId', creatorId)
 
 		for (const user of room.users) {
 			if (user.socketId && user.id !== creatorId) {

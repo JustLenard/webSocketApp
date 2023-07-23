@@ -10,11 +10,17 @@ import { ShortUser, UserI } from 'src/utils/types/entities.types'
 export class UsersService {
 	constructor(@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>) {}
 
-	async findAll(): Promise<ShortUser[]> {
-		const users = await this.userRepostiry.find()
+	async findAll(userId: string): Promise<ShortUser[]> {
+		// const users = await this.userRepostiry.find({where: {
+		// 	id:
+		// }})
+		let users = await this.userRepostiry.find()
+		users = users.filter((user) => user.id !== userId)
+
 		return users.map((user) => ({
 			id: user.id,
 			username: user.username,
+			online: user.socketId ? true : false,
 		}))
 	}
 

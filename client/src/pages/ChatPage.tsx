@@ -8,23 +8,16 @@ const ChatPage = () => {
 	return (
 		<Grid
 			sx={{
-				border: '1px solid blue',
 				minHeight: '100vh',
 				height: '100vh',
 				display: 'flex',
 				flexDirection: 'column',
-				// marginTop: '0',
-				// marginLeft: '0',
 			}}
 		>
-			<Grid item pb={'1rem'}>
+			<Grid item>
 				<AppNavbar />
 			</Grid>
-			<Grid
-				container
-				spacing={2}
-				sx={{ height: '100%', border: '1px solid green', width: '100%', marginTop: '0', marginLeft: '0' }}
-			>
+			<Grid container sx={{ height: '100%', width: '100%' }}>
 				<Grid item xs={2}>
 					<LeftMenu />
 				</Grid>
