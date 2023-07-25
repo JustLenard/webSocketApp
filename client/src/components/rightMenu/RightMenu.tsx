@@ -1,4 +1,4 @@
-import { Avatar, Typography } from '@mui/joy'
+import { Avatar, List, ListDivider, ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/joy'
 import { Grid, Stack } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useAuth } from '../../hooks/useAuth'
@@ -30,26 +30,50 @@ const RightMenu = () => {
 	}, [accessToken])
 
 	// const onlineUsers = []
-	const oflineUsers: UserI[] = []
+	const offlineUsers: UserI[] = []
 	const onlineUsers: UserI[] = []
 	users.map((user) => {
-		user.online ? onlineUsers.push(user) : oflineUsers.push(user)
+		user.online ? onlineUsers.push(user) : offlineUsers.push(user)
 	})
 
 	return (
-		<Grid border={'2px solid blue'} sx={{ height: '100%' }} p={'1rem'}>
-			<Typography level="h4" mb={'2rem'}>
-				Participants
+		<Grid container sx={{ height: '100%' }} p={'.5rem'} direction={'column'} bgcolor={'Menu'}>
+			<Typography level="h4" mb={'1rem'} p={'1rem'}>
+				Users
 			</Typography>
-
-			<Typography level="h6">{`Online - (${onlineUsers.length})`}</Typography>
-			{onlineUsers.map((user, i) => (
-				<ProfileItem id={user.id} username={user.username} key={user.id} />
-			))}
-			<Typography level="h6">{`Ofline - (${onlineUsers.length})`}</Typography>
-			{oflineUsers.map((user, i) => (
-				<ProfileItem id={user.id} username={user.username} key={user.id} />
-			))}
+			<Grid item overflow={'scroll'}>
+				<Typography level="h6" mb={'1rem'}>{`Online - (${onlineUsers.length})`}</Typography>
+				{onlineUsers.length !== 0 && (
+					<List
+						variant={'outlined'}
+						sx={{
+							minWidth: 240,
+							borderRadius: 'sm',
+							boxShadow: 'sm',
+						}}
+					>
+						{onlineUsers.map((user, i) => (
+							<ProfileListItem id={user.id} username={user.username} key={user.id} />
+						))}
+					</List>
+				)}
+				<Typography level="h6" mb={'1rem'}>{`Offline - (${offlineUsers.length})`}</Typography>
+				{offlineUsers.length !== 0 && (
+					<List
+						variant={'outlined'}
+						sx={{
+							minWidth: 240,
+							borderRadius: 'sm',
+							boxShadow: 'sm',
+							'--ListItem-paddingY': 0,
+						}}
+					>
+						{offlineUsers.map((user, i) => (
+							<ProfileListItem id={user.id} username={user.username} key={user.id} />
+						))}
+					</List>
+				)}
+			</Grid>
 		</Grid>
 	)
 }
@@ -59,7 +83,7 @@ interface ProfileItemProps {
 	username: string
 }
 
-const ProfileItem: React.FC<ProfileItemProps> = ({ id, username }) => {
+const ProfileListItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 	const { user } = useUser()
 	const { privateAxios } = useAxiosPrivate()
 	const { appSocket, changeCurrentRoom, createNewRoom } = useSocket()
@@ -75,20 +99,19 @@ const ProfileItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 	}
 
 	return (
-		<Stack
-			display={'flex'}
-			flexDirection={'row'}
-			alignItems={'center'}
-			my={'1rem'}
-			onClick={handleClick}
-			sx={{
-				cursor: 'pointer',
-			}}
-		>
-			<Avatar size="sm">{username[0].toUpperCase()}</Avatar>
+		<>
+			<ListItem>
+				<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
+					{/* <Avatar size="sm">{username[0].toUpperCase()}</Avatar> */}
+					<Avatar src="/static/images/avatar/1.jpg" />
+				</ListItemDecorator>
 
-			<Typography pl={'1rem'}>{username}</Typography>
-		</Stack>
+				<ListItemContent>
+					<Typography>{username}</Typography>
+				</ListItemContent>
+			</ListItem>
+			<ListDivider inset={'gutter'} />
+		</>
 	)
 }
 

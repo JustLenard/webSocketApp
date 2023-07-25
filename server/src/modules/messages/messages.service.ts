@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { MessageI } from 'src/utils/types/entities.types'
 import { Repository } from 'typeorm'
@@ -43,15 +43,30 @@ export class MessageService {
 			.getMany()
 	}
 
-	async patchMessage(messageId: number, newContent: string) {
-		return this.messageRepository.save({
-			id: messageId,
-			text: newContent,
+	async patchMessage(messageId: number, newContent: string, userId: string) {
+		const message = await this.messageRepository.findOne({
+			where: { id: messageId, user: { id: userId } },
+			relations: ['user'],
 		})
+		if (!message) {
+			throw new BadRequestException('Cannot delete message')
+		}
+		message.text = newContent
+
+		return this.messageRepository.save(message)
 	}
 
-	async deleteMessage(messageId: number) {
+	async deleteMessage(messageId: number, userId: string) {
+		const mesage = await this.messageRepository.findOne({
+			where: { id: messageId, user: { id: userId } },
+			relations: ['room', 'user'],
+		})
+		if (!mesage) {
+			throw new BadRequestException('Cannot delete message')
+		}
+		await this.roomService.rollBackLastMessage(mesage.room.id)
 		this.messageRepository.delete({ id: messageId })
+
 		return 'ok'
 	}
 }

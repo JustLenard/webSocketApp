@@ -58,8 +58,12 @@ export class MessageController {
 	@UseGuards(AtGuard)
 	@Patch('/:messageId')
 	@HttpCode(HttpStatus.OK)
-	async patchMessage(@Param('messageId', ParseIntPipe) messageId: number, @Body() dto: UpdateMessageDto) {
-		const res = await this.messageService.patchMessage(messageId, dto.text)
+	async patchMessage(
+		@Param('messageId', ParseIntPipe) messageId: number,
+		@Body() dto: UpdateMessageDto,
+		@GetCurrentUser() user: UserEntity,
+	) {
+		const res = await this.messageService.patchMessage(messageId, dto.text, user.id)
 		console.log('This is res', res)
 
 		return res
@@ -68,7 +72,8 @@ export class MessageController {
 	@UseGuards(AtGuard)
 	@Delete('/:messageId')
 	@HttpCode(HttpStatus.OK)
-	deleteMessage(@Param('messageId', ParseIntPipe) messageId: number) {
-		return this.messageService.deleteMessage(messageId)
+	deleteMessage(@Param('messageId', ParseIntPipe) messageId: number, @GetCurrentUser() user: UserEntity) {
+		// console.log('This is user', user)
+		return this.messageService.deleteMessage(messageId, user.id)
 	}
 }

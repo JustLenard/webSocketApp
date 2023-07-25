@@ -3,6 +3,7 @@ import { useSocket } from '../../hooks/useSocket'
 import AppSpinner from '../AppSpinner'
 import ChatInput from './ChatInput'
 import MessagesContainer from './MessagesContainer'
+import { Typography } from '@mui/joy'
 
 const ChatContainer = () => {
 	const { currentRoom } = useSocket()
@@ -20,29 +21,12 @@ const ChatContainer = () => {
 					padding: '1rem',
 				}}
 			>
-				<Stack display={'flex'} justifyContent={'space-between'} direction={'row'}>
-					{currentRoom.name}
-
-					<div>
-						{currentRoom.users?.map((user) => (
-							<div key={user.id}>{user.username}</div>
-						))}
-					</div>
-				</Stack>
+				<Typography level="h5">{currentRoom.name}</Typography>
 			</Grid>
-			<Grid
-				item
-				xs
-				// height={'100%'}
-				overflow={'scroll'}
-				boxSizing={'border-box'}
-				style={{
-					border: '1px solid red',
-				}}
-			>
+			<Grid item xs overflow={'scroll'}>
 				<MessagesContainer />
 			</Grid>
-			<Grid>
+			<Grid p={'1rem'}>
 				<ChatInput />
 			</Grid>
 		</Grid>

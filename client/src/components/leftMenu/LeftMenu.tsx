@@ -1,9 +1,8 @@
-import { Stack } from '@mui/system'
+import { List, Typography } from '@mui/joy'
+import { Grid } from '@mui/material'
 import { useSocket } from '../../hooks/useSocket'
 import AppSpinner from '../AppSpinner'
-import RoomName from './RoomName'
-import { Grid } from '@mui/material'
-import { Typography } from '@mui/joy'
+import ConversationsListItem from './ConversationsListItem'
 
 const LeftMenu = () => {
 	const { rooms } = useSocket()
@@ -11,15 +10,30 @@ const LeftMenu = () => {
 	if (!rooms) return <AppSpinner text="Left menu" />
 
 	return (
-		<Grid border={'2px solid blue'} sx={{ height: '100%' }} p={'1rem'}>
-			<Typography level="h4" mb={'2rem'}>
+		<Grid container height={'100%'} direction={'column'} p={'.5rem'} bgcolor={'Menu'}>
+			<Typography level="h4" mb={'1rem'} p={'1rem'}>
 				Conversations
 			</Typography>
-			<Stack spacing={1}>
-				{rooms.map((room, i) => (
-					<RoomName {...room} key={room.id} />
-				))}
-			</Stack>
+			<Grid item overflow={'scroll'}>
+				<List
+					variant={'outlined'}
+					sx={{
+						minWidth: 240,
+						borderRadius: 'sm',
+						boxShadow: 'sm',
+						'--ListItem-paddingY': 0,
+						'--ListDivider-gap': '0px',
+						'& [role="button"]': {
+							// width: '80%',
+							// borderRadius: '20px',
+						},
+					}}
+				>
+					{rooms.map((room, i) => (
+						<ConversationsListItem {...room} key={room.id} />
+					))}
+				</List>
+			</Grid>
 		</Grid>
 	)
 }

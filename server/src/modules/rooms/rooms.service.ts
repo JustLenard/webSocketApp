@@ -115,4 +115,18 @@ export class RoomsService implements OnModuleInit {
 
 		return room
 	}
+
+	async rollBackLastMessage(roomId) {
+		const room = await this.roomRepository.findOne({
+			where: { id: roomId },
+			relations: ['messages', 'lastMessage'],
+		})
+		const newLastMessage = room.messages.length > 1 ? room.messages[room.messages.length - 2] : null
+		// console.log('This is newLastMessage', newLastMessage)
+
+		room.lastMessage = newLastMessage
+		const res = await this.roomRepository.save(room)
+		// console.log('This is res', res)
+		// console.log('This is room', room)
+	}
 }

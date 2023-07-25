@@ -17,17 +17,11 @@ const ChatPage = () => {
 			<Grid item>
 				<AppNavbar />
 			</Grid>
-			<Grid container sx={{ height: '100%', width: '100%' }}>
+			<Grid container sx={{ width: '100%', height: '100%' }}>
 				<Grid item xs={2}>
 					<LeftMenu />
 				</Grid>
-				<Grid
-					item
-					xs
-					sx={{
-						display: 'inline-flex',
-					}}
-				>
+				<Grid item xs>
 					<ChatContainer />
 				</Grid>
 				<Grid item xs={2}>
