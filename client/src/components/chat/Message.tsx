@@ -1,24 +1,21 @@
+import DeleteIcon from '@mui/icons-material/Delete'
 import ModeEditIcon from '@mui/icons-material/ModeEdit'
 import Avatar from '@mui/joy/Avatar'
-import DeleteIcon from '@mui/icons-material/Delete'
 import Box from '@mui/joy/Box'
-import Sheet from '@mui/joy/Sheet'
 import Stack from '@mui/joy/Stack'
-import { styled } from '@mui/joy/styles'
 import Typography from '@mui/joy/Typography'
-import { MessageI } from '../../types/BE_entities.types'
-import { Button, IconButton, Input, Tooltip } from '@mui/material'
-import { KeyboardEventHandler, useEffect, useState } from 'react'
-import { handleError } from '../../utils/handleAxiosErrors'
+import { styled } from '@mui/joy/styles'
+import { Input, IconButton, Tooltip } from '@mui/material'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import moment from 'moment'
+import { useEffect, useState } from 'react'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import { apiEndpoints } from '../../utils/constants'
-import { ModalDialog } from '@mui/joy'
-import ResponsiveModal from '../modal/ConfirmationModal'
 import { useSocket } from '../../hooks/useSocket'
 import { useUser } from '../../hooks/useUser'
-import moment from 'moment'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import dayjs from 'dayjs'
+import { MessageI } from '../../types/BE_entities.types'
+import { handleError } from '../../utils/handleAxiosErrors'
+import ResponsiveModal from '../modal/ConfirmationModal'
 
 dayjs.extend(relativeTime)
 
@@ -127,7 +124,13 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 					<Input
 						sx={{
 							marginLeft: marginLeft,
+							// bgcolor: 'sienna',
+							// background: 'red',
 						}}
+						autoFocus
+						fullWidth
+						// variant="soft"
+						// size="sm"
 						value={edit}
 						onChange={(e) => setEdit(e.target.value)}
 						onKeyDownCapture={(e) => handleKeypress(e)}
@@ -136,38 +139,39 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 					<>
 						<Typography sx={{ marginLeft: marginLeft }}>{localMesasge.text}</Typography>
 
-						{isMessageOwner && (
-							<Stack direction={'row'}>
-								{/* <Tooltip title="Edit"> */}
+						<Stack direction={'row'} className="buttons-wrapper">
+							{/* <Typography>{moment(message.updated_at).startOf('hour').fromNow()}</Typography> */}
+							<Typography>{dayjs(message.updated_at).fromNow()}</Typography>
 
-								{/* <Typography>{moment(message.updated_at).startOf('hour').fromNow()}</Typography> */}
-								<Typography>{dayjs(message.updated_at).fromNow()}</Typography>
-
-								{/* <Typography>{moment(message.updated_at).format('L')}</Typography> */}
-
-								<IconButton
-									size="small"
-									onClick={turnEditModeOn}
-									sx={{
-										height: '1.5rem',
-									}}
-								>
-									<ModeEditIcon fontSize="small" />
-								</IconButton>
-								{/* </Tooltip> */}
-								{/* <Tooltip title="Delete"> */}
-								<IconButton
-									size="small"
-									onClick={() => setModal(true)}
-									sx={{
-										height: '1.5rem',
-									}}
-								>
-									<DeleteIcon fontSize="small" />
-								</IconButton>
-								{/* </Tooltip> */}
-							</Stack>
-						)}
+							{/* <Typography>{moment(message.updated_at).format('L')}</Typography> */}
+							{isMessageOwner && (
+								<>
+									{' '}
+									<Tooltip title="Edit">
+										<IconButton
+											size="small"
+											onClick={turnEditModeOn}
+											sx={{
+												height: '1.5rem',
+											}}
+										>
+											<ModeEditIcon fontSize="small" />
+										</IconButton>
+									</Tooltip>
+									<Tooltip title="Delete">
+										<IconButton
+											size="small"
+											onClick={() => setModal(true)}
+											sx={{
+												height: '1.5rem',
+											}}
+										>
+											<DeleteIcon fontSize="small" />
+										</IconButton>
+									</Tooltip>
+								</>
+							)}
+						</Stack>
 					</>
 				)}
 			</StyledStack>
@@ -184,16 +188,16 @@ const StyledStack = styled(Stack)`
 
 	border-radius: 0.25rem;
 
-	/* div {
+	.buttons-wrapper {
 		display: none;
-	} */
+	}
 
 	&:hover {
 		background-color: rgba(0, 0, 0, 0.04);
 
-		/* div {
-			display: initial;
-		} */
+		.buttons-wrapper {
+			display: flex;
+		}
 	}
 `
 

@@ -31,7 +31,7 @@ const AppSpinner: React.FC<Props> = ({ text, contained = false, amount = 2, circ
 	}
 
 	return (
-		<Stack direction={'column'} gap={2}>
+		<Stack direction={'column'}>
 			{circle ? (
 				<SpinnerContainer>
 					{text}
@@ -42,7 +42,7 @@ const AppSpinner: React.FC<Props> = ({ text, contained = false, amount = 2, circ
 					.fill(null)
 					.map((f, i) => {
 						return (
-							<Stack direction={'row'} gap={2} key={i}>
+							<Stack direction={'row'} gap={2} key={i} mb={'1rem'}>
 								{text}
 								<Skeleton variant="circular" width={40} height={40} />
 								<Skeleton variant="rounded" width={210} height={40} />

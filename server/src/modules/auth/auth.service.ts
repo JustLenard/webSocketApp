@@ -169,6 +169,7 @@ export class AuthService {
 				refreshToken: null,
 			},
 		)
+		return 'ok'
 	}
 
 	async refresh(userId: string, rt: string, res: Response) {

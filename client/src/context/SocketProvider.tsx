@@ -4,14 +4,19 @@ import useRefreshToken from '../hooks/useRefresh'
 import { PostRoomI, MessageI, RoomI } from '../types/BE_entities.types'
 import { IRoom } from '../types/room.type'
 import AuthContext from './AuthProvider'
-import { socketEvents } from '../utils/constants'
+import { CURRENT_ROOM_KEY_NAME, socketEvents } from '../utils/constants'
 import { Message } from 'react-hook-form'
 import { GLOBAL_ROOM_NAME } from '../utils/constants'
 import { useAuth } from '../hooks/useAuth'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { handleError } from '../utils/handleAxiosErrors'
 import AppSpinner from '../components/AppSpinner'
-import { isInsideOfApplication } from '../utils/utils'
+import {
+	getSavedCurrentRoom as getSavedOrGlobalRoom,
+	getCurrentRoomFromSessionStorage,
+	isInsideOfApplication,
+	saveRoomIdToStorage,
+} from '../utils/utils'
 import { CreateRoomParams } from '../types/types'
 import { getGlobalRoom } from '../utils/utils'
 
@@ -99,7 +104,6 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 
 		socket.on('rooms', (rooms: RoomI[]) => {
 			setRooms(rooms)
-
 			// changeCurrentRoom(globalRoom.id)
 			// setCurrentRoom(globalRoom)
 			// const message = getMessagesForRoom(globalRoom.id)
@@ -120,12 +124,11 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 			const getRooms = async () => {
 				try {
 					const response = await privateAxios.get('/rooms')
+
+					const room = getSavedOrGlobalRoom(response.data)
 					setRooms(response.data)
-
-					const globalRoom = getGlobalRoom(response.data)
-
-					if (!globalRoom) return
-					setCurrentRoom(globalRoom)
+					setCurrentRoom(room)
+					room && saveRoomIdToStorage(room.id)
 				} catch (err) {
 					handleError(err)
 				}
@@ -135,8 +138,6 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	}, [createSocket, loggedIn, accessToken])
 
 	useEffect(() => {
-		console.log('This is accessToken', accessToken)
-		console.log('This is loggedIn', loggedIn)
 		if (loggedIn && accessToken) {
 			console.log('Creating socket connection')
 			createSocket()
@@ -164,9 +165,10 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	/**
 	 * Get messages for the selected room
 	 **/
-	useEffect(() => {
-		currentRoom && getMessagesForRoom(currentRoom.id)
-	}, [currentRoom])
+	// useEffect(() => {
+	// 	// getInitialCurrentRoom(savedCurrentRoom, rooms)
+	// 	// currentRoom && getMessagesForRoom(currentRoom.id)
+	// }, [])
 
 	if (!appSocket && isInsideOfApplication()) return <AppSpinner text="socket provider" />
 
@@ -189,6 +191,8 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 
 		if (selectedRoom) {
 			setCurrentRoom(selectedRoom)
+			getMessagesForRoom(selectedRoom.id)
+			saveRoomIdToStorage(selectedRoom.id)
 		}
 	}
 
@@ -202,7 +206,8 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 				if (currentRoom?.id !== response.data) return changeCurrentRoom(response.data)
 			}
 			if (typeof response.data === 'object') {
-				return setRooms((prev) => [response.data, ...prev])
+				setRooms((prev) => [response.data, ...prev])
+				setCurrentRoom(response.data)
 			}
 		} catch (err) {
 			handleError(err)

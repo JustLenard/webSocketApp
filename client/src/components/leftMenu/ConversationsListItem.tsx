@@ -22,7 +22,7 @@ const ConversationsListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, 
 
 	return (
 		<>
-			<ListItemButton onClick={handleClick}>
+			<ListItemButton onClick={handleClick} selected={currentRoom.id === id}>
 				<ListItem>
 					<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
 						<Avatar src="/static/images/avatar/1.jpg" />

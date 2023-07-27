@@ -32,6 +32,7 @@ const ChatInput: React.FC<Props> = () => {
 	return (
 		<form onSubmit={handleSubmit(handleMessageSubmit)}>
 			<Input
+				autoComplete="off"
 				placeholder="Your message... "
 				{...register('message')}
 				fullWidth

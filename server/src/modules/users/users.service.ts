@@ -20,7 +20,7 @@ export class UsersService {
 		return users.map((user) => ({
 			id: user.id,
 			username: user.username,
-			online: user.socketId ? true : false,
+			online: user.socketId || user.accountType === 'bot' ? true : false,
 		}))
 	}
 
