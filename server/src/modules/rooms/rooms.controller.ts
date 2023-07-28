@@ -6,13 +6,13 @@ import { RoomsService } from './rooms.service'
 import { UserEntity } from 'src/utils/entities/user.entity'
 import { CreateRoomDto } from './dto/create-room.dto'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { appEmitters } from 'src/utils/constants'
-@Controller('/api/rooms')
+import { Routes, appEmitters } from 'src/utils/constants'
+@Controller(Routes.rooms)
 export class RoomControler {
 	constructor(private readonly roomService: RoomsService, private readonly eventEmitter: EventEmitter2) {}
 
 	@UseGuards(AtGuard)
-	@Get('/')
+	@Get()
 	@HttpCode(HttpStatus.CREATED)
 	getRoomsForUser(@GetCurrentUser() user: UserEntity) {
 		return this.roomService.getRoomsForUser(user.id)
@@ -21,7 +21,7 @@ export class RoomControler {
 	private logger: Logger = new Logger('Room Service')
 
 	@UseGuards(AtGuard)
-	@Post('/')
+	@Post()
 	@HttpCode(HttpStatus.CREATED)
 	async createRoom(@GetCurrentUser() user: UserEntity, @Body() dto: CreateRoomDto) {
 		const privateChat = await this.roomService.checkIfPrivateChatExits(user.id, dto.users[0])
@@ -35,18 +35,4 @@ export class RoomControler {
 		this.logger.warn('Room already exists. Aborting')
 		return privateChat
 	}
-
-	// @UseGuards(AtGuard)
-	// @Patch('/')
-	// @HttpCode(HttpStatus.OK)
-	//   updateRoom(@Body() dto: RoomDto, @Res({ passthrough: true }) res: Response): Promise<Tokens> {
-	// 	return this.roomService.signinLocal(dto, res)
-	// }
-
-	// @UseGuards(AtGuard)
-	// @Delete('/')
-	// @HttpCode(HttpStatus.OK)
-	//  deleteRoom(@Body() dto: RoomDto, @Res({ passthrough: true }) res: Response): Promise<Tokens> {
-	// 	return this.roomService.async signinLocal(dto, res)
-	// }
 }

@@ -49,24 +49,25 @@ export class MessageService {
 			relations: ['user'],
 		})
 		if (!message) {
-			throw new BadRequestException('Cannot delete message')
+			throw new BadRequestException('Cannot patch message')
 		}
 		message.text = newContent
 
 		return this.messageRepository.save(message)
 	}
 
-	async deleteMessage(messageId: number, userId: string) {
-		const mesage = await this.messageRepository.findOne({
-			where: { id: messageId, user: { id: userId } },
-			relations: ['room', 'user'],
+	async deleteMessage(messageId: number, userId: string, roomId: number) {
+		const message = await this.messageRepository.findOne({
+			where: { id: messageId, user: { id: userId }, room: { id: roomId } },
+			relations: ['user', 'room'],
 		})
-		if (!mesage) {
+
+		if (!message) {
 			throw new BadRequestException('Cannot delete message')
 		}
-		await this.roomService.rollBackLastMessage(mesage.room.id)
-		this.messageRepository.delete({ id: messageId })
+		await this.roomService.rollBackLastMessage(roomId)
+		await this.messageRepository.delete({ id: messageId })
 
-		return 'ok'
+		return message
 	}
 }

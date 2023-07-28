@@ -68,10 +68,11 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 	const marginLeft = cond ? '56px' : 0
 
 	const handleKeypress = async (e: React.KeyboardEvent<HTMLDivElement>) => {
+		if (!currentRoom) return
 		//it triggers by pressing the enter key
 		if (e.keyCode === 13 && edit) {
 			try {
-				const response = await privateAxios.patch(`/messages/${message.id}`, {
+				const response = await privateAxios.patch(`room/${currentRoom.id}/messages/${message.id}`, {
 					text: edit,
 				})
 				console.log('This is response', response)
@@ -85,12 +86,12 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 	}
 
 	const handleDelete = async () => {
+		if (!currentRoom) return
 		try {
-			const response = await privateAxios.delete(`/messages/${message.id}`)
+			const response = await privateAxios.delete(`room/${currentRoom.id}/messages/${message.id}`)
 			console.log('This is response', response)
 
-			if (response.data === 'ok' && currentRoom) {
-				// setLocalMessage(null)
+			if (response.data === 'ok') {
 				getMessagesForRoom(currentRoom.id)
 			}
 		} catch (err) {

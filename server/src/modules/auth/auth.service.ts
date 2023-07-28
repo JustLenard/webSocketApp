@@ -3,6 +3,7 @@ import {
 	ConflictException,
 	ForbiddenException,
 	Injectable,
+	InternalServerErrorException,
 	Logger,
 	UnauthorizedException,
 } from '@nestjs/common'
@@ -14,9 +15,11 @@ import { ALPHABET, NUMBERS } from 'src/utils/constants'
 import { Tokens } from 'src/utils/types/types'
 import { Repository } from 'typeorm'
 import { RoomEntity } from '../../utils/entities/room.entity'
-import { UserEntity } from '../../utils/entities/user.entity'
+import { AccountType, UserEntity } from '../../utils/entities/user.entity'
 import { UsersService } from '../users/users.service'
 import { AuthDto } from './auth.dto'
+import { selectRandomArrayElement } from 'src/utils/utils'
+import { UserI } from 'src/utils/types/entities.types'
 
 @Injectable()
 export class AuthService {
@@ -53,10 +56,6 @@ export class AuthService {
 	) {}
 
 	private logger: Logger = new Logger('Chat')
-
-	hashData(data: string) {
-		return argon2.hash(data)
-	}
 
 	async getTokens(userId: string, username: string): Promise<Tokens> {
 		const [at, rt] = await Promise.all([
@@ -160,6 +159,22 @@ export class AuthService {
 		return tokens
 	}
 
+	async signinAsGuest(res: Response): Promise<Tokens> {
+		const guestUsers = await this.userRepostiry.find({
+			where: { accountType: AccountType.guest },
+		})
+
+		if (guestUsers.length === 0) throw new InternalServerErrorException('No guest accounts')
+		const selectedUser: UserEntity = selectRandomArrayElement(guestUsers)
+
+		const tokens = await this.getTokens(selectedUser.id, selectedUser.username)
+		await this.updateRtHash(selectedUser.id, tokens.refreshToken)
+
+		this.setCookie(res, tokens.refreshToken)
+
+		return tokens
+	}
+
 	async logout(userId: string) {
 		await this.userRepostiry.update(
 			{
@@ -252,5 +267,9 @@ export class AuthService {
 				}
 			})
 		return lengthCheck && numberCheck && letterCheck
+	}
+
+	hashData(data: string) {
+		return argon2.hash(data)
 	}
 }

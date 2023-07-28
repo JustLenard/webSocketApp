@@ -53,6 +53,17 @@ const LoginPage: React.FC = () => {
 		}
 	}
 
+	const logInAsGuest = async () => {
+		try {
+			const response = await appAxios.post('/auth/guest')
+			login(response.data.accessToken)
+		} catch (err) {
+			if (isAxiosError(err)) {
+				setManualErrors(err.response?.data.message)
+			}
+		}
+	}
+
 	return (
 		<CssVarsProvider>
 			<main>
@@ -102,11 +113,9 @@ const LoginPage: React.FC = () => {
 							<Button type="submit" sx={{ mt: 1 }}>
 								Log in
 							</Button>
-							<Button type="submit" sx={{ mt: 1 }}>
-								Log in as guest
-							</Button>
 						</Stack>
 					</form>
+					<Button onClick={logInAsGuest}>Log in as guest</Button>
 					<Typography
 						endDecorator={<Link to={appRoutes.signUp}>Sign up</Link>}
 						fontSize="sm"

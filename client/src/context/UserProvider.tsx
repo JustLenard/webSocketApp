@@ -19,7 +19,6 @@ export interface UserData {
 	email: string
 	firstName: string
 	lastName: string
-	phone: string
 	groups: string
 }
 

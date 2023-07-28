@@ -4,8 +4,9 @@ import { AtGuard } from 'src/common/guards/at.guard'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UsersService } from './users.service'
 import { UserEntity } from 'src/utils/entities/user.entity'
+import { Routes } from 'src/utils/constants'
 
-@Controller('api/users')
+@Controller(Routes.user)
 export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
 

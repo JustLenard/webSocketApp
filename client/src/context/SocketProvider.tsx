@@ -1,24 +1,13 @@
-import React, { Dispatch, SetStateAction, useCallback, useContext, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { Socket, io } from 'socket.io-client'
-import useRefreshToken from '../hooks/useRefresh'
-import { PostRoomI, MessageI, RoomI } from '../types/BE_entities.types'
-import { IRoom } from '../types/room.type'
-import AuthContext from './AuthProvider'
-import { CURRENT_ROOM_KEY_NAME, socketEvents } from '../utils/constants'
-import { Message } from 'react-hook-form'
-import { GLOBAL_ROOM_NAME } from '../utils/constants'
+import AppSpinner from '../components/AppSpinner'
 import { useAuth } from '../hooks/useAuth'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { handleError } from '../utils/handleAxiosErrors'
-import AppSpinner from '../components/AppSpinner'
-import {
-	getSavedCurrentRoom as getSavedOrGlobalRoom,
-	getCurrentRoomFromSessionStorage,
-	isInsideOfApplication,
-	saveRoomIdToStorage,
-} from '../utils/utils'
+import { MessageI, RoomI } from '../types/BE_entities.types'
 import { CreateRoomParams } from '../types/types'
-import { getGlobalRoom } from '../utils/utils'
+import { socketEvents } from '../utils/constants'
+import { handleError } from '../utils/handleAxiosErrors'
+import { getSavedOrGlobalRoom, isInsideOfApplication, saveRoomIdToSessionStorage } from '../utils/utils'
 
 const websocketURL = import.meta.env.VITE_PUBLIC_URL + '/ws'
 
@@ -128,7 +117,10 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 					const room = getSavedOrGlobalRoom(response.data)
 					setRooms(response.data)
 					setCurrentRoom(room)
-					room && saveRoomIdToStorage(room.id)
+					if (room) {
+						saveRoomIdToSessionStorage(room.id)
+						getMessagesForRoom(room.id)
+					}
 				} catch (err) {
 					handleError(err)
 				}
@@ -154,7 +146,7 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 
 	const getMessagesForRoom = async (roomId: number) => {
 		try {
-			const response = await privateAxios.get(`/messages/${roomId}`)
+			const response = await privateAxios.get(`room/${roomId}/messages`)
 			console.log('This is response.data', response.data)
 			setMessages(response.data)
 		} catch (err) {
@@ -175,7 +167,7 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	const sendMessage = async (messageContent: string) => {
 		if (!currentRoom) return console.log('Room not selected')
 		try {
-			const response = await privateAxios.post('/messages', {
+			const response = await privateAxios.post(`/room/${currentRoom.id}/messages`, {
 				roomId: currentRoom.id,
 				text: messageContent,
 			})
@@ -192,7 +184,7 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 		if (selectedRoom) {
 			setCurrentRoom(selectedRoom)
 			getMessagesForRoom(selectedRoom.id)
-			saveRoomIdToStorage(selectedRoom.id)
+			saveRoomIdToSessionStorage(selectedRoom.id)
 		}
 	}
 

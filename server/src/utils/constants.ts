@@ -3,11 +3,20 @@ export const NUMBERS = [...Array(10)].map((_, i) => i.toString())
 
 export const GLOBAL_ROOM_NAME = 'Global'
 
+export enum Routes {
+	rooms = 'api/rooms',
+	messages = '/api/room/:roomId/messages',
+	auth = '/api/auth',
+	user = 'api/users',
+}
+
 export enum socketEvents {
 	/**
 	 * Emited by Backend
 	 **/
 	messageAdded = 'messageAdded',
+	messagePatched = 'messagePatched',
+	messageDeleted = 'messageDeleted',
 	messages = 'messages',
 
 	/**
@@ -21,6 +30,8 @@ export enum socketEvents {
 
 export enum appEmitters {
 	messageCreate = 'message.create',
+	messageEdit = 'message.edit',
+	messageDelete = 'message.delete',
 
 	roomCreate = 'room.create',
 }

@@ -8,21 +8,11 @@ import { AuthDto } from './auth.dto'
 import { AuthService } from './auth.service'
 import { UserEntity } from 'src/utils/entities/user.entity'
 import { Tokens } from 'src/utils/types/types'
+import { Routes } from 'src/utils/constants'
 
-@Controller('/api/auth')
+@Controller(Routes.auth)
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
-
-	// @Post('/signup')
-	// async createUser(
-	//   @Body('password') password: string,
-	//   @Body('username') username: string,
-	// ): Promise<User> {
-	//   const saltOrRounds = 10;
-	//   const hashedPassword = await bcrypt.hash(password, saltOrRounds);
-	//   const result = await this.authService.createUser(username, hashedPassword);
-	//   return result;
-	// }
 
 	@Post('/signup')
 	@HttpCode(HttpStatus.CREATED)
@@ -34,6 +24,12 @@ export class AuthController {
 	@HttpCode(HttpStatus.OK)
 	signinLocal(@Body() dto: AuthDto, @Res({ passthrough: true }) res: Response): Promise<Tokens> {
 		return this.authService.signinLocal(dto, res)
+	}
+
+	@Post('/guest')
+	@HttpCode(HttpStatus.OK)
+	signinAsGuest(@Res({ passthrough: true }) res: Response): Promise<Tokens> {
+		return this.authService.signinAsGuest(res)
 	}
 
 	@UseGuards(AtGuard)
