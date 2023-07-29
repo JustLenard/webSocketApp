@@ -1,12 +1,11 @@
 import { Avatar, List, ListDivider, ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/joy'
-import { Grid, Stack } from '@mui/material'
+import { Grid } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { useAuth } from '../../hooks/useAuth'
+import { useRooms } from '../../hooks/contextHooks'
+import { useAuth } from '../../hooks/contextHooks'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import { useSocket } from '../../hooks/useSocket'
-import { useUser } from '../../hooks/useUser'
-import { UserI } from '../../types/types'
-import { CreateRoomParams } from '../../types/types'
+import { useUser } from '../../hooks/contextHooks'
+import { CreateRoomParams, UserI } from '../../types/types'
 
 const RightMenu = () => {
 	const { privateAxios } = useAxiosPrivate()
@@ -85,8 +84,7 @@ interface ProfileItemProps {
 
 const ProfileListItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 	const { user } = useUser()
-	const { privateAxios } = useAxiosPrivate()
-	const { appSocket, changeCurrentRoom, createNewRoom } = useSocket()
+	const { createNewRoom } = useRooms()
 
 	const handleClick = () => {
 		const newRoom: CreateRoomParams = {

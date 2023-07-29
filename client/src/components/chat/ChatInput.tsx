@@ -2,7 +2,8 @@ import SendIcon from '@mui/icons-material/Send'
 import { Input } from '@mui/joy'
 import { IconButton } from '@mui/material'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { useSocket } from '../../hooks/useSocket'
+import { useSocket } from '../../hooks/contextHooks'
+import { useMessages } from '../../hooks/contextHooks'
 
 type ChatForm = {
 	message: string
@@ -19,7 +20,7 @@ const ChatInput: React.FC<Props> = () => {
 		resetField,
 	} = useForm<ChatForm>()
 
-	const { appSocket, sendMessage } = useSocket()
+	const { sendMessage } = useMessages()
 
 	const handleMessageSubmit: SubmitHandler<ChatForm> = (formData) => {
 		sendMessage(formData.message)

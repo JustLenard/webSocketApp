@@ -1,11 +1,12 @@
 import { List, Typography } from '@mui/joy'
 import { Grid } from '@mui/material'
-import { useSocket } from '../../hooks/useSocket'
+import { useSocket } from '../../hooks/contextHooks'
 import AppSpinner from '../AppSpinner'
 import ConversationsListItem from './ConversationsListItem'
+import { useRooms } from '../../hooks/contextHooks'
 
 const LeftMenu = () => {
-	const { rooms } = useSocket()
+	const { rooms } = useRooms()
 
 	if (!rooms) return <AppSpinner text="Left menu" />
 

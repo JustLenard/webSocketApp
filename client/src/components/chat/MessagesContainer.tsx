@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import { useSocket } from '../../hooks/useSocket'
+import { useSocket } from '../../hooks/contextHooks'
 import { MessageI } from '../../types/types'
 import Message from './Message'
+import { useMessages } from '../../hooks/contextHooks'
 
 const MessagesContainer = () => {
-	const { privateAxios } = useAxiosPrivate()
-	const { messages, appSocket, currentRoom } = useSocket()
+	const { messages } = useMessages()
 
 	const messagesRef = useRef<HTMLDivElement | null>(null)
 

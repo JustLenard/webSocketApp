@@ -5,14 +5,13 @@ import Box from '@mui/joy/Box'
 import Stack from '@mui/joy/Stack'
 import Typography from '@mui/joy/Typography'
 import { styled } from '@mui/joy/styles'
-import { Input, IconButton, Tooltip } from '@mui/material'
+import { IconButton, Input, Tooltip } from '@mui/material'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
+import { useMessages, useRooms, useUser } from '../../hooks/contextHooks'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import { useSocket } from '../../hooks/useSocket'
-import { useUser } from '../../hooks/useUser'
 import { MessageI } from '../../types/types'
 import { handleError } from '../../utils/handleAxiosErrors'
 import ResponsiveModal from '../modal/ConfirmationModal'
@@ -54,11 +53,11 @@ export const Message: React.FC<Props> = ({ message, prev }) => {
 }
 
 const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message, cond }) => {
-	const { getMessagesForRoom, currentRoom } = useSocket()
+	const { currentRoom } = useRooms()
+	const { editingMessageId, setEditingMessageId, getMessagesForRoom } = useMessages()
 	const { user } = useUser()
 	const { privateAxios } = useAxiosPrivate()
 	const [edit, setEdit] = useState<null | string>(null)
-	const { editingMessageId, setEditingMessageId } = useSocket()
 	const [modal, setModal] = useState(false)
 
 	const [localMesasge, setLocalMessage] = useState<null | MessageI>(message)
@@ -117,16 +116,11 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 	return (
 		<>
 			<ResponsiveModal handleClose={() => setModal(false)} open={modal} handleConfirm={handleDelete} />
-			<StyledStack
-			// onMouseOver={() => setActionsVisible(true)}
-			// onMouseLeave={() => setActionsVisible(false)}
-			>
+			<StyledStack>
 				{edit !== null ? (
 					<Input
 						sx={{
 							marginLeft: marginLeft,
-							// bgcolor: 'sienna',
-							// background: 'red',
 						}}
 						autoFocus
 						fullWidth
@@ -147,7 +141,6 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 							{/* <Typography>{moment(message.updated_at).format('L')}</Typography> */}
 							{isMessageOwner && (
 								<>
-									{' '}
 									<Tooltip title="Edit">
 										<IconButton
 											size="small"

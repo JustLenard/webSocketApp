@@ -1,5 +1,5 @@
 import { appAxios } from '../api/axios'
-import { useAuth } from './useAuth'
+import { useAuth } from './contextHooks'
 
 const useRefreshToken = () => {
 	const { login, logOut } = useAuth()

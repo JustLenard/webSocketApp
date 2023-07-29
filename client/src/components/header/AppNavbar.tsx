@@ -16,8 +16,8 @@ import MailIcon from '@mui/icons-material/Mail'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import MoreIcon from '@mui/icons-material/MoreVert'
 import AuthContext from '../../providers/AuthProvider'
-import { useAuth } from '../../hooks/useAuth'
-import { useUser } from '../../hooks/useUser'
+import { useAuth } from '../../hooks/contextHooks'
+import { useUser } from '../../hooks/contextHooks'
 
 const Search = styled('div')(({ theme }) => ({
 	position: 'relative',

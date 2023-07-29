@@ -5,7 +5,7 @@ import Avatar from '@mui/joy/Avatar'
 import { MouseEvent, useContext, useState } from 'react'
 import { Typography } from '@mui/material'
 import AuthContext from '../../providers/AuthProvider'
-import { useAuth } from '../../hooks/useAuth'
+import { useAuth } from '../../hooks/contextHooks'
 
 const MyProfile = () => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)

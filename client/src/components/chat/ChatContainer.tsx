@@ -1,12 +1,13 @@
 import { Grid, Stack } from '@mui/material'
-import { useSocket } from '../../hooks/useSocket'
+import { useSocket } from '../../hooks/contextHooks'
 import AppSpinner from '../AppSpinner'
 import ChatInput from './ChatInput'
 import MessagesContainer from './MessagesContainer'
 import { Typography } from '@mui/joy'
+import { useRooms } from '../../hooks/contextHooks'
 
 const ChatContainer = () => {
-	const { currentRoom } = useSocket()
+	const { currentRoom } = useRooms()
 
 	if (!currentRoom) return <AppSpinner contained text="Chat container" />
 
