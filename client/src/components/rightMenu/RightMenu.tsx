@@ -5,7 +5,7 @@ import { useAuth } from '../../hooks/useAuth'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { useSocket } from '../../hooks/useSocket'
 import { useUser } from '../../hooks/useUser'
-import { UserI } from '../../types/BE_entities.types'
+import { UserI } from '../../types/types'
 import { CreateRoomParams } from '../../types/types'
 
 const RightMenu = () => {

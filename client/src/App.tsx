@@ -1,8 +1,7 @@
-import { Provider } from 'react-redux'
+import { AuthProvider } from './providers/AuthProvider'
+import SocketProvider from './providers/SocketProvider'
+import UserProvider from './providers/UserProvider'
 import Root from './router/Root'
-import { AuthProvider } from './context/AuthProvider'
-import SocketProvider from './context/SocketProvider'
-import UserProvider from './context/UserProvider'
 
 const App: React.FC = () => {
 	return (

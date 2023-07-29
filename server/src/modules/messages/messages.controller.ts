@@ -67,7 +67,7 @@ export class MessageController {
 		@GetCurrentUser() user: UserEntity,
 	) {
 		const message = await this.messageService.patchMessage(messageId, dto.text, user.id)
-		delete message.user
+		message.user = { id: message.user.id, username: message.user.username } as UserEntity
 		const room = await this.roomService.findRoomById(roomId)
 		this.eventEmitter.emit(appEmitters.messageEdit, { message, room, user })
 		return message
@@ -82,7 +82,7 @@ export class MessageController {
 		@GetCurrentUser() user: UserEntity,
 	) {
 		const message = await this.messageService.deleteMessage(messageId, user.id, roomId)
-		delete message.user
+		message.user = { id: message.user.id, username: message.user.username } as UserEntity
 		const room = await this.roomService.findRoomById(roomId)
 		this.eventEmitter.emit(appEmitters.messageDelete, { message, room, user })
 		return 'ok'

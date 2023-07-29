@@ -2,19 +2,11 @@ import { ReactNode, createContext, useEffect, useState } from 'react'
 import AppSpinner from '../components/AppSpinner'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useRefreshToken from '../hooks/useRefresh'
-import { isInsideOfApplication } from '../utils/utils'
+import { isInsideOfApplication } from '../utils/helpers'
 import { appRoutes } from '../router/Root'
 import { handleError } from '../utils/handleAxiosErrors'
 import { LOGGED_IN_KEY_NAME } from '../utils/constants'
-
-interface IContext {
-	loggedIn: boolean
-	accessToken: string | null
-	logOut: () => void
-	login: (accToken: string) => void
-}
-
-const AuthContext = createContext<IContext>({ accessToken: null } as IContext)
+import { AuthContext, IContext } from './context/auth.context'
 
 interface Props {
 	children: ReactNode

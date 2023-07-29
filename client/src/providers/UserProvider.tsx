@@ -1,25 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { UserI } from '../types/BE_entities.types'
-
-interface IContext {
-	user: UserI | null
-}
-
-export const UserContext = React.createContext<IContext>({
-	user: null,
-} as IContext)
+import { UserI } from '../types/types'
+import { UserContext } from './context/user.context'
 
 interface Props {
 	children: React.ReactNode
-}
-
-export interface UserData {
-	email: string
-	firstName: string
-	lastName: string
-	groups: string
 }
 
 /**

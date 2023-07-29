@@ -1,4 +1,4 @@
-import { RoomI, UserI } from '../types/BE_entities.types'
+import { RoomI, UserI } from '../types/types'
 import { CURRENT_ROOM_KEY_NAME, GLOBAL_ROOM_NAME } from './constants'
 import { appRoutes } from '../router/Root'
 

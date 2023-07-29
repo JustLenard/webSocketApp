@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { useSocket } from '../../hooks/useSocket'
-import { MessageI } from '../../types/BE_entities.types'
+import { MessageI } from '../../types/types'
 import Message from './Message'
 
 const MessagesContainer = () => {

@@ -15,7 +15,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle'
 import MailIcon from '@mui/icons-material/Mail'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import MoreIcon from '@mui/icons-material/MoreVert'
-import AuthContext from '../../context/AuthProvider'
+import AuthContext from '../../providers/AuthProvider'
 import { useAuth } from '../../hooks/useAuth'
 import { useUser } from '../../hooks/useUser'
 

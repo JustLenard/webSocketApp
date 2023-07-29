@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { useSocket } from '../../hooks/useSocket'
 import { useUser } from '../../hooks/useUser'
-import { MessageI } from '../../types/BE_entities.types'
+import { MessageI } from '../../types/types'
 import { handleError } from '../../utils/handleAxiosErrors'
 import ResponsiveModal from '../modal/ConfirmationModal'
 

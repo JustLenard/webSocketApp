@@ -1,10 +1,8 @@
-import { Button, FormControl, IconButton, OutlinedInput } from '@mui/material'
-import { useContext, useState } from 'react'
-import { SocketContext } from '../../context/SocketProvider'
+import SendIcon from '@mui/icons-material/Send'
+import { Input } from '@mui/joy'
+import { IconButton } from '@mui/material'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useSocket } from '../../hooks/useSocket'
-import { Input } from '@mui/joy'
-import SendIcon from '@mui/icons-material/Send'
 
 type ChatForm = {
 	message: string

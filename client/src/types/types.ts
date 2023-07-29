@@ -1,9 +1,28 @@
-export interface LogInCredentials {
+export type User = {
+	id: number
+}
+
+export type IRoom = {
+	id: number
+	name: string
+	description?: string
+	users?: User[]
+}
+
+/**
+ * Authorization
+ **/
+export type Tokens = {
+	accessToken: string
+	refreshToken: string
+}
+
+export type LogInCredentials = {
 	username: string
 	password: string
 }
 
-export interface SignUpForm {
+export type SignUpForm = {
 	username: string
 	password: string
 	cpassword: string
@@ -14,4 +33,60 @@ export type CreateRoomParams = {
 	description?: string
 	isGroupChat: boolean
 	users: string[]
+}
+
+export type MessageEventParams = {
+	roomId: number
+	message: MessageI
+}
+
+export type RoomI = {
+	id: number
+	name: string
+	isGroupChat: boolean
+	description?: string
+	users: UserI[]
+	lastMessage: null | MessageI
+}
+
+export type PostRoomI = {
+	name: string
+	description?: string
+	users: string[]
+	isGroupChat: false
+}
+
+export type MessageI = {
+	id: number
+	text: string
+	user: UserI
+	room: RoomI
+	created_at: Date
+	updated_at: Date
+}
+
+export type ISentMessage = {
+	text: string
+	room: number
+}
+
+export type JoinedRoomI = {
+	id?: number
+	socketId: string
+	user: UserI
+	room: RoomI
+}
+
+export type UserI = {
+	id: string
+	username: string
+	online: boolean
+}
+
+/**
+ * Socket event payloads
+ **/
+export type MessageSocketEvent = {
+	message: MessageI
+	roomId: number
 }

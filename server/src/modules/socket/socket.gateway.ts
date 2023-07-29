@@ -70,7 +70,7 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		for (const user of room.users) {
 			if (user.socketId && user.socketId !== sender.socketId) {
 				this.logger.log('Sending message to', user.socketId)
-				this.server.to(user.socketId).emit(socketEvents.messageAdded, message)
+				this.server.to(user.socketId).emit(socketEvents.messageAdded, { message, roomId: room.id })
 			}
 		}
 	}
@@ -82,18 +82,20 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		for (const user of room.users) {
 			if (user.socketId && user.socketId !== sender.socketId) {
 				this.logger.log('Sending message to', user.socketId)
-				this.server.to(user.socketId).emit(socketEvents.messagePatched, message)
+				this.server.to(user.socketId).emit(socketEvents.messagePatched, { message, roomId: room.id })
 			}
 		}
 	}
 	@OnEvent(appEmitters.messageDelete)
 	async handleMessageDelete(payload: CreateMessageEvent) {
 		const { message, room, user: sender } = payload
+		console.log('This is message', message)
+		console.log('This is room', room)
 
 		for (const user of room.users) {
 			if (user.socketId && user.socketId !== sender.socketId) {
 				this.logger.log('Sending message to', user.socketId)
-				this.server.to(user.socketId).emit(socketEvents.messageDeleted, message)
+				this.server.to(user.socketId).emit(socketEvents.messageDeleted, { message, roomId: room.id })
 			}
 		}
 	}

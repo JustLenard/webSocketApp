@@ -1,9 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom'
-import { useAppSelector } from '../hooks/reduxHooks'
-import { appRoutes } from './Root'
-import { useContext } from 'react'
-import AuthContext from '../context/AuthProvider'
 import { useAuth } from '../hooks/useAuth'
+import { appRoutes } from './Root'
 
 interface Props {
 	children: React.ReactElement

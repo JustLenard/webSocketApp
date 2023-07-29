@@ -1,14 +1,13 @@
 import { Avatar, ListDivider, ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/joy'
-import { useContext } from 'react'
-import { SocketContext } from '../../context/SocketProvider'
-import { useUser } from '../../hooks/useUser'
-import { RoomI } from '../../types/BE_entities.types'
-import { getReceivingUser } from '../../utils/utils'
-import AppSpinner from '../AppSpinner'
 import { ListItemButton } from '@mui/material'
+import { useSocket } from '../../hooks/useSocket'
+import { useUser } from '../../hooks/useUser'
+import { RoomI } from '../../types/types'
+import { getReceivingUser } from '../../utils/helpers'
+import AppSpinner from '../AppSpinner'
 
 const ConversationsListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, description, lastMessage }) => {
-	const { currentRoom, changeCurrentRoom, appSocket } = useContext(SocketContext)
+	const { currentRoom, changeCurrentRoom, appSocket } = useSocket()
 	const { user } = useUser()
 
 	const handleClick = () => {

@@ -1,41 +1,18 @@
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Socket, io } from 'socket.io-client'
 import AppSpinner from '../components/AppSpinner'
 import { useAuth } from '../hooks/useAuth'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { MessageI, RoomI } from '../types/BE_entities.types'
-import { CreateRoomParams } from '../types/types'
+import { CreateRoomParams, MessageI, MessageSocketEvent, RoomI } from '../types/types'
 import { socketEvents } from '../utils/constants'
 import { handleError } from '../utils/handleAxiosErrors'
-import { getSavedOrGlobalRoom, isInsideOfApplication, saveRoomIdToSessionStorage } from '../utils/utils'
+import { getSavedOrGlobalRoom, isInsideOfApplication, saveRoomIdToSessionStorage } from '../utils/helpers'
+import { SocketContext } from './context/socket.contetx'
 
 const websocketURL = import.meta.env.VITE_PUBLIC_URL + '/ws'
 
-interface IContext {
-	appSocket: Socket | null
-	rooms: RoomI[]
-	messages: MessageI[]
-	sendMessage: (message: string) => void
-	changeCurrentRoom: (roomId: number) => void
-	currentRoom: null | RoomI
-	createNewRoom: (newRoom: CreateRoomParams) => void
-	getMessagesForRoom: (roomId: number) => void
-	editingMessageId: number | null
-	setEditingMessageId: Dispatch<SetStateAction<number | null>>
-}
-
-export const SocketContext = React.createContext<IContext>({} as IContext)
-
 interface Props {
 	children: React.ReactNode
-}
-
-export interface UserData {
-	email: string
-	firstName: string
-	lastName: string
-	phone: string
-	groups: string
 }
 
 /**
@@ -73,24 +50,6 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 			},
 		})
 
-		socket.on('connect', () => {})
-
-		socket.on('messages', (messages: MessageI[]) => {
-			console.log('This is messages', messages)
-			setMessages(messages)
-		})
-
-		socket.on('messageAdded', (newMessage: MessageI[]) => {
-			// setMessages(messages)
-		})
-
-		socket.on('disconnect', () => {})
-
-		/* Close socket connection when specific event is triggered  by back end*/
-		socket.on('closeSocket', () => {
-			socket.disconnect()
-		})
-
 		socket.on('rooms', (rooms: RoomI[]) => {
 			setRooms(rooms)
 			// changeCurrentRoom(globalRoom.id)
@@ -99,10 +58,35 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 			// console.log('This is message', message)
 		})
 
-		socket.on(socketEvents.messageAdded, (message: MessageI) => {
-			console.log('Received message', message)
+		socket.on(socketEvents.messageAdded, (event: MessageSocketEvent) => {
+			console.log('This is currentRoom', currentRoom)
+			if (event.roomId !== currentRoom?.id) return
+			setMessages((prev) => [...prev, event.message])
+		})
 
-			setMessages((prev) => [...prev, message])
+		socket.on(socketEvents.messagePatched, (event: MessageSocketEvent) => {
+			console.log('This is event', event)
+			console.log('This is currentRoom?.id', currentRoom?.id)
+			console.log(event.roomId !== currentRoom?.id)
+			if (event.roomId !== currentRoom?.id) return
+			console.log('This is messages', messages)
+			const mess = messages.find((elem) => elem.id === event.message.id)
+			console.log('This is mess', mess)
+
+			const index = messages.findIndex((elem) => elem.id === event.message.id)
+			console.log('This is index', index)
+			const newMessages = [...messages]
+
+			if (index === -1) return
+
+			newMessages[index] = event.message
+			console.log('This is newMessages', newMessages)
+			setMessages([...newMessages])
+		})
+
+		socket.on(socketEvents.messageDeleted, (event: MessageSocketEvent) => {
+			if (event.roomId !== currentRoom?.id) return
+			getMessagesForRoom(currentRoom.id)
 		})
 
 		setAppSocket(socket)
