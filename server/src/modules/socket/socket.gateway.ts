@@ -7,51 +7,53 @@ import { CreateMessageEvent, CreateRoomEvent, JwtPayload } from 'src/utils/types
 import { AuthService } from '../auth/auth.service'
 import { UsersService } from '../users/users.service'
 import { appEmitters, socketEvents } from '../../utils/constants'
+import { AuthenticatedSocket } from 'src/utils/interfaces'
 
-@WebSocketGateway({ namespace: '/ws', cors: true })
+// @WebSocketGateway({ namespace: '/ws', cors: true })
+@WebSocketGateway({
+	cors: {
+		origin: ['http://localhost:5173'],
+		credentials: true,
+	},
+	pingInterval: 10000,
+	pingTimeout: 15000,
+})
 @Injectable()
 export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
-	constructor(
-		private authService: AuthService,
-
-		private userService: UsersService,
-	) {}
+	constructor(private authService: AuthService, private userService: UsersService) {}
 
 	@WebSocketServer()
 	server: Server
 	private logger: Logger = new Logger('Chat')
 
-	afterInit(server: Server) {
-		console.log('WebSocket server initialized')
+	// afterInit(server: Server) {
+	// 	console.log('WebSocket server initialized')
+	// }
+
+	async handleConnection(socket: AuthenticatedSocket) {
+		console.log('This is socket.user', socket.user)
+		// console.log('This is socket.user', socket.user)
+		// try {
+		// 	const accesToken = socket.handshake.headers.authorization.replace('Bearer', '').trim()
+		// 	const decodedToken: JwtPayload = await this.authService.verifyJwt(accesToken)
+		// 	this.logger.log('Looking for user in db')
+		// 	const user: UserEntity = await this.userService.findById(decodedToken.sub)
+		// 	user.socketId = socket.id
+		// 	await user.save()
+		// 	if (!user) {
+		// 		this.logger.log('User does not exist')
+		// 		await this.userService.removeUserSocketId(user.id)
+		// 		return this.handleDisconnect(socket)
+		// 	} else {
+		// 		await this.userService.updateUserSocketId(user.id, socket.id)
+		// 		socket.user = user
+		// 	}
+		// } catch (err) {
+		// 	return this.handleDisconnect(socket)		f // }
 	}
 
-	async handleConnection(socket: Socket) {
-		try {
-			const accesToken = socket.handshake.headers.authorization.replace('Bearer', '').trim()
-			const decodedToken: JwtPayload = await this.authService.verifyJwt(accesToken)
-
-			this.logger.log('Looking for user in db')
-			const user: UserEntity = await this.userService.findById(decodedToken.sub)
-
-			user.socketId = socket.id
-			await user.save()
-
-			if (!user) {
-				this.logger.log('User does not exist')
-				await this.userService.removeUserSocketId(user.id)
-				return this.handleDisconnect(socket)
-			} else {
-				await this.userService.updateUserSocketId(user.id, socket.id)
-				socket.data.user = user
-			}
-		} catch (err) {
-			return this.handleDisconnect(socket)
-		}
-	}
-
-	handleDisconnect(socket: Socket) {
-		console.log('This is socket.data.user', socket.data.user)
-		this.userService.removeUserSocketId(socket.data.user.id)
+	handleDisconnect(socket: AuthenticatedSocket) {
+		this.userService.removeUserSocketId(socket.user.id)
 		socket.disconnect()
 	}
 

@@ -58,11 +58,11 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
 	}, [])
 
 	const logOut = () => {
-		// try {
-		// 	const response = privateAxios.post('/logout')
-		// } catch (err) {
-		// 	handleError(err)
-		// }
+		try {
+			const response = privateAxios.post('/logout')
+		} catch (err) {
+			handleError(err)
+		}
 
 		setAccessToken(null)
 		setLoggedIn(false)

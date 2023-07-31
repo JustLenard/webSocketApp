@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/contextHooks'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { SocketContext, SocketContextType } from './context/socket.contetx'
 
-const websocketURL = import.meta.env.VITE_PUBLIC_URL + '/ws'
+const websocketURL = import.meta.env.VITE_PUBLIC_URL
 
 interface Props {
 	children: React.ReactNode
@@ -23,9 +23,7 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 		const socket: Socket = io(`${websocketURL}`, {
 			reconnection: true, // enable automatic reconnect
 			reconnectionAttempts: 1, // maximum number of reconnection attempts
-
 			reconnectionDelay: 1000, // delay between reconnection attempts (in ms)
-
 			transportOptions: {
 				polling: {
 					extraHeaders: {

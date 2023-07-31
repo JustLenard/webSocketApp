@@ -4,10 +4,10 @@ export const NUMBERS = [...Array(10)].map((_, i) => i.toString())
 export const GLOBAL_ROOM_NAME = 'Global'
 
 export enum Routes {
-	rooms = 'api/rooms',
-	messages = '/api/room/:roomId/messages',
-	auth = '/api/auth',
-	user = 'api/users',
+	rooms = 'rooms',
+	messages = 'room/:roomId/messages',
+	auth = 'auth',
+	user = 'users',
 }
 
 export enum socketEvents {

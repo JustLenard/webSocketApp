@@ -1,18 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { Socket, io } from 'socket.io-client'
-import AppSpinner from '../components/AppSpinner'
-import { useAuth } from '../hooks/contextHooks'
+import { ReactNode, useEffect, useState } from 'react'
+import { useAuth, useRooms, useSocket } from '../hooks/contextHooks'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { CreateRoomParams, MessageI, MessageSocketEvent, RoomI } from '../types/types'
-import { socketEvents } from '../utils/constants'
+import { MessageI, MessageSocketEvent } from '../types/types'
 import { handleError } from '../utils/handleAxiosErrors'
-import { getSavedOrGlobalRoom, isInsideOfApplication, saveRoomIdToSessionStorage } from '../utils/helpers'
-import { SocketContext, SocketContextType } from './context/socket.contetx'
-import { useRooms } from '../hooks/contextHooks'
 import { MessagesContext, MessagesContextType } from './context/messages.context'
+import { socketEvents } from '../utils/constants'
 
 interface Props {
-	children: React.ReactNode
+	children: ReactNode
 }
 
 /**
@@ -20,6 +15,7 @@ interface Props {
  */
 const MessagesProvider: React.FC<Props> = ({ children }) => {
 	const { loggedIn } = useAuth()
+	const { appSocket } = useSocket()
 	const { currentRoom } = useRooms()
 	const [messages, setMessages] = useState<MessageI[]>([])
 	const [editingMessageId, setEditingMessageId] = useState<null | number>(null)
@@ -57,6 +53,21 @@ const MessagesProvider: React.FC<Props> = ({ children }) => {
 		} catch (err) {
 			handleError(err)
 		}
+	}
+
+	useEffect(() => {
+		// if (!appSocket || !currentRoom) return
+		if (!appSocket) return
+
+		console.log('pass')
+		appSocket.on(socketEvents.messageAdded, (payload: MessageSocketEvent) => {
+			addNewMessage(payload)
+		})
+	}, [appSocket])
+
+	const addNewMessage = (payload: MessageSocketEvent) => {
+		if (currentRoom?.id !== payload.roomId) return
+		setMessages((prev) => [...prev, payload.message])
 	}
 
 	const contextValue: MessagesContextType = {

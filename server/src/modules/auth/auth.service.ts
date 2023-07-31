@@ -49,9 +49,8 @@ export class AuthService {
 
 	constructor(
 		private usersService: UsersService,
-
 		private jwtService: JwtService,
-		@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>,
+		@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
 		@InjectRepository(RoomEntity) private roomRepository: Repository<RoomEntity>,
 	) {}
 
@@ -92,7 +91,7 @@ export class AuthService {
 		// const hash = await this.hashData(rt)
 		const hash = rt
 
-		await this.userRepostiry
+		await this.userRepository
 			.createQueryBuilder()
 			.update(UserEntity)
 			.set({ refreshToken: hash })
@@ -104,7 +103,7 @@ export class AuthService {
 		/**
 		 * Enforce unique username
 		 **/
-		if (await this.userRepostiry.findOneBy({ username: dto.username }))
+		if (await this.userRepository.findOneBy({ username: dto.username }))
 			throw new ConflictException('Username is already taken')
 
 		/**
@@ -118,7 +117,7 @@ export class AuthService {
 
 		const hash = await this.hashData(dto.password)
 
-		const newUser = await this.userRepostiry
+		const newUser = await this.userRepository
 			.create({
 				username: dto.username,
 				password: hash,
@@ -142,7 +141,7 @@ export class AuthService {
 	}
 
 	async signinLocal(dto: AuthDto, res: Response): Promise<Tokens> {
-		const user = await this.userRepostiry.findOne({
+		const user = await this.userRepository.findOne({
 			where: { username: dto.username },
 		})
 		if (!user) throw new ForbiddenException('Username and password mismatch')
@@ -160,7 +159,7 @@ export class AuthService {
 	}
 
 	async signinAsGuest(res: Response): Promise<Tokens> {
-		const guestUsers = await this.userRepostiry.find({
+		const guestUsers = await this.userRepository.find({
 			where: { accountType: AccountType.guest },
 		})
 
@@ -176,7 +175,7 @@ export class AuthService {
 	}
 
 	async logout(userId: string) {
-		await this.userRepostiry.update(
+		await this.userRepository.update(
 			{
 				id: userId,
 			},
@@ -194,7 +193,7 @@ export class AuthService {
 			this.logger.error('Userid is bad', userId)
 			return
 		}
-		const user = await this.userRepostiry.findOneBy({
+		const user = await this.userRepository.findOneBy({
 			id: userId,
 		})
 

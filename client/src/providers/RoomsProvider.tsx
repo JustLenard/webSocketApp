@@ -27,7 +27,7 @@ const RoomsProvider: React.FC<Props> = ({ children }) => {
 	console.log('This is currentRoom', currentRoom)
 
 	useEffect(() => {
-		if (rooms.length === 0 && accessToken) {
+		if (accessToken) {
 			const getRooms = async () => {
 				try {
 					const response = await privateAxios.get('/rooms')
