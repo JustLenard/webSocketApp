@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { DataSource } from 'typeorm'
 // import { typeOrm } from './config/TypeOrmConfig'
-import typeOrm from './config/TypeOrmConfig'
+import { dataSourceOptions } from './config/TypeOrmConfig'
 
 import { AuthModule } from './modules/auth/auth.module'
 import { MessagesModule } from './modules/messages/messages.module'
@@ -13,8 +13,7 @@ import { SocketModule } from './modules/socket/socket.module'
 import { UsersModule } from './modules/users/users.module'
 import { EventEmitterModule } from '@nestjs/event-emitter'
 import { UserEntity } from './utils/entities/user.entity'
-
-console.log('This is process.env.', process.env.PG_PASSWORD)
+import { WebsocketAdapter } from './modules/socket/socket.adapter'
 
 let envFilePath = '.env.development'
 if (process.env.ENVIRONMENT === 'PRODUCTION') envFilePath = '.env.production'
@@ -24,10 +23,10 @@ if (process.env.ENVIRONMENT === 'PRODUCTION') envFilePath = '.env.production'
 		ConfigModule.forRoot({
 			isGlobal: true,
 			envFilePath,
-			load: [typeOrm],
+			load: [dataSourceOptions],
 		}),
 		EventEmitterModule.forRoot(),
-		TypeOrmModule.forRoot(typeOrm()),
+		TypeOrmModule.forRoot(dataSourceOptions()),
 		UsersModule,
 		AuthModule,
 		OpenAiModule,

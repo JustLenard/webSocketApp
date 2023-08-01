@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { DataSource, Repository } from 'typeorm'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UserEntity } from '../../utils/entities/user.entity'
@@ -8,14 +8,18 @@ import { ShortUser, UserI } from 'src/utils/types/entities.types'
 
 @Injectable()
 export class UsersService {
-	constructor(@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>) {}
+	constructor(
+		@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>,
+	) // private dataSource: DataSource,
+	{}
 
 	async findAll(userId: string): Promise<ShortUser[]> {
-		// const users = await this.userRepostiry.find({where: {
-		// 	id:
-		// }})
 		let users = await this.userRepostiry.find()
 		users = users.filter((user) => user.id !== userId)
+
+		// const userRepository = this.dataSource.getRepository(UserEntity)
+		// const len = await userRepository.findOneBy({ username: 'len' })
+		// console.log('This is len', len)
 
 		return users.map((user) => ({
 			id: user.id,

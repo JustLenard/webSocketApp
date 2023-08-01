@@ -1,20 +1,16 @@
 import { Logger, ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import { AppModule } from './app.module'
-import * as cookieParser from 'cookie-parser'
-import { AtGuard } from './common/guards/at.guard'
-import { WebsocketAdapter } from './modules/socket/socket.adapter'
 import { NestExpressApplication } from '@nestjs/platform-express'
-import { InjectDataSource } from '@nestjs/typeorm'
+import * as cookieParser from 'cookie-parser'
+import { AppModule } from './app.module'
+import { WebsocketAdapter } from './modules/socket/socket.adapter'
+import { dataSource } from './config/TypeOrmConfig'
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule)
 
-	// const userRepository =
-	// const adapter = new WebsocketAdapter(app)
-	// app.useWebSocketAdapter(adapter)
-	const adapter = new WebsocketAdapter(app)
-
+	dataSource.initialize()
+	const adapter = new WebsocketAdapter(app, dataSource)
 	app.useWebSocketAdapter(adapter)
 	app.set('trust proxy', 'loopback')
 	app.setGlobalPrefix('api')

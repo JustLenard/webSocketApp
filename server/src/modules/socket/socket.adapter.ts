@@ -1,5 +1,5 @@
 import { IoAdapter } from '@nestjs/platform-socket.io'
-import { DataSource, Repository, getRepository } from 'typeorm'
+import { DataSource, EntityManager, Repository, getRepository } from 'typeorm'
 // import { Session } from '../utils/typeorm'
 import * as cookieParser from 'cookie-parser'
 import * as cookie from 'cookie'
@@ -10,27 +10,53 @@ import { UserEntity } from 'src/utils/entities/user.entity'
 import { AppModule } from 'src/app.module'
 import { JwtService } from '@nestjs/jwt'
 import { UsersService } from '../users/users.service'
-import { InjectRepository } from '@nestjs/typeorm'
+import { InjectDataSource, InjectRepository, getEntityManagerToken } from '@nestjs/typeorm'
+import { INestApplicationContext } from '@nestjs/common'
 
 export class WebsocketAdapter extends IoAdapter {
 	private jwtService: JwtService = new JwtService()
-	private dataSource: DataSource
+	// constructor(private readonly entityManager: EntityManager) {
+	// 	super()
+	// }
+	constructor(private app: INestApplicationContext, private dataSource: DataSource) {
+		super()
+	}
 
 	// @InjectRepository(UserEntity)
 	// private userRepository: Repository<UserEntity>
 
+	// @InjectDataSource()
+	// dataSource: DataSource
+	// userRepository = getRepository(UserEntity)
+
 	createIOServer(port: number, options?: any) {
 		// console.log('This is this.dataSource', this.dataSource)
-		// const userRepository = this.dataSource.getRepository(UserEntity)
-		// const userRepository = getRepository(UserEntity, 'Users')
+		const userRepository = this.dataSource.manager
+
+		// console.log('This is userRepository', userRepository)
+		// const len = userRepository.find(UserEntity)
+
+		// const len = userRepository.findOneBy({ username: 'len' })
+
+		// console.log('This is len', len)
+		// const userRepository = getEntityManager(UserEntity, 'Users')
+		// getEntityManagerToken()
+
+		// console.log('This is userRepository', this.userRepository)
 
 		const server = super.createIOServer(port, options)
 		console.log('mate')
 
 		server.use(async (socket: AuthenticatedSocket, next) => {
+			// const len = userRepository.findOneBy({ username: 'len' })
+			// console.log('This is len', len)
+
 			// console.log('This is this.userRepository', this.userRepository)
 
 			console.log('Inside Websocket Adapter')
+
+			// console.log('This is userRepository', this.userRepository)
+
 			const accesToken = socket.handshake.headers.authorization.replace('Bearer', '').trim()
 			const decodedToken: JwtPayload = await this.jwtService.verifyAsync(accesToken, {
 				secret: process.env.ACCESS_TOKEN_SECRET,
@@ -41,7 +67,7 @@ export class WebsocketAdapter extends IoAdapter {
 
 			console.log('This is accesToken', accesToken)
 			console.log('This is decodedToken', decodedToken)
-			socket.user = { id: 'mate' } as UserEntity
+			socket.user = { id: '2faa6629-590e-4f6e-aed5-a164606040df' } as UserEntity
 			next()
 		})
 		console.log('fuck man')
