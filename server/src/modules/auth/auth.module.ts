@@ -12,13 +12,7 @@ import { AtStrategy } from './strategies/at.strategy'
 import { RtStrategy } from './strategies/rt.strategy'
 
 @Module({
-	imports: [
-		ConfigModule.forRoot(),
-		PassportModule,
-		UsersModule,
-		TypeOrmModule.forFeature([UserEntity, RoomEntity]),
-		JwtModule.register({}),
-	],
+	imports: [PassportModule, UsersModule, TypeOrmModule.forFeature([UserEntity, RoomEntity]), JwtModule.register({})],
 	controllers: [AuthController],
 	providers: [AuthService, AtStrategy, RtStrategy],
 	exports: [AuthService],

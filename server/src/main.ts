@@ -5,12 +5,16 @@ import * as cookieParser from 'cookie-parser'
 import { AtGuard } from './common/guards/at.guard'
 import { WebsocketAdapter } from './modules/socket/socket.adapter'
 import { NestExpressApplication } from '@nestjs/platform-express'
+import { InjectDataSource } from '@nestjs/typeorm'
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule)
+
+	// const userRepository =
 	// const adapter = new WebsocketAdapter(app)
 	// app.useWebSocketAdapter(adapter)
 	const adapter = new WebsocketAdapter(app)
+
 	app.useWebSocketAdapter(adapter)
 	app.set('trust proxy', 'loopback')
 	app.setGlobalPrefix('api')

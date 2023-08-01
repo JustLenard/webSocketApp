@@ -14,21 +14,30 @@ import { InjectRepository } from '@nestjs/typeorm'
 
 export class WebsocketAdapter extends IoAdapter {
 	private jwtService: JwtService = new JwtService()
+	private dataSource: DataSource
+
+	// @InjectRepository(UserEntity)
+	// private userRepository: Repository<UserEntity>
 
 	createIOServer(port: number, options?: any) {
-		const userRepository = getRepository(UserEntity)
+		// console.log('This is this.dataSource', this.dataSource)
+		// const userRepository = this.dataSource.getRepository(UserEntity)
+		// const userRepository = getRepository(UserEntity, 'Users')
+
 		const server = super.createIOServer(port, options)
 		console.log('mate')
 
 		server.use(async (socket: AuthenticatedSocket, next) => {
+			// console.log('This is this.userRepository', this.userRepository)
+
 			console.log('Inside Websocket Adapter')
 			const accesToken = socket.handshake.headers.authorization.replace('Bearer', '').trim()
 			const decodedToken: JwtPayload = await this.jwtService.verifyAsync(accesToken, {
 				secret: process.env.ACCESS_TOKEN_SECRET,
 			})
 
-			const user = await userRepository.findOneBy({ id: decodedToken.sub })
-			console.log('This is user', user)
+			// const user = await userRepository.findOneBy({ id: decodedToken.sub })
+			// console.log('This is user', user)
 
 			console.log('This is accesToken', accesToken)
 			console.log('This is decodedToken', decodedToken)

@@ -5,13 +5,13 @@ import { NotificationsEntity } from 'src/utils/entities/notifications.entity'
 import { RoomEntity } from 'src/utils/entities/room.entity'
 import { UserEntity } from 'src/utils/entities/user.entity'
 
-export const typeOrm: TypeOrmModuleOptions = {
+export default (): TypeOrmModuleOptions => ({
 	type: 'postgres',
-	host: 'localhost',
-	port: 5432,
-	username: 'postgres',
-	password: 'mysecretpassword',
-	database: 'Users',
+	host: process.env.PG_HOST,
+	port: parseInt(process.env.PG_PORT),
+	username: process.env.PG_USERNAME,
+	password: process.env.PG_PASSWORD,
+	database: process.env.PG_DATABASE,
 	entities: [UserEntity, RoomEntity, MessageEntity, JoinedRoomEntity, NotificationsEntity],
 	synchronize: true,
-}
+})
