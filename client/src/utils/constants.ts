@@ -13,6 +13,18 @@ export enum socketEvents {
 	messagePatched = 'messagePatched',
 	messageDeleted = 'messageDeleted',
 	messages = 'messages',
+
+	/**
+	 * Emited by FrontEnd
+	 **/
+	onRoomJoin = 'onRoomJoin',
+	onRoomLeave = 'onRoomLeave',
+	onTypingStart = 'onTypingStart',
+	onTypingStop = 'onTypingStop',
+	createRoom = 'createRoom',
+	checkIfPrivateChatExists = 'checkIfPrivateChatExists',
+	addMessage = 'addMessage',
+	getMessagesForRoom = 'getMessagesForRoom',
 }
 
 export enum apiEndpoints {

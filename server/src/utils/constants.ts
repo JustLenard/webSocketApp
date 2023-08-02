@@ -23,6 +23,10 @@ export enum socketEvents {
 	/**
 	 * Emited by FrontEnd
 	 **/
+	onRoomJoin = 'onRoomJoin',
+	onRoomLeave = 'onRoomLeave',
+	onTypingStart = 'onTypingStart',
+	onTypingStop = 'onTypingStop',
 	createRoom = 'createRoom',
 	checkIfPrivateChatExists = 'checkIfPrivateChatExists',
 	addMessage = 'addMessage',

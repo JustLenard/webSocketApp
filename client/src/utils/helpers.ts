@@ -6,8 +6,8 @@ export const isInsideOfApplication = () => {
 	return location.pathname !== appRoutes.login && location.pathname !== appRoutes.signUp
 }
 
-export const getReceivingUser = (users: UserI[], userId: string) => {
-	return users.filter((user) => user.id !== userId)[0]
+export const getReceivingUser = (users: UserI[], sendingUserId: string) => {
+	return users.filter((user) => user.id !== sendingUserId)[0]
 }
 
 /**

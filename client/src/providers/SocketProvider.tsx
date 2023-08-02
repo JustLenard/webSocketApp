@@ -1,19 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { PropsWithChildren, useCallback, useEffect, useState } from 'react'
 import { Socket, io } from 'socket.io-client'
 import { useAuth } from '../hooks/contextHooks'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { SocketContext, SocketContextType } from './context/socket.contetx'
+import AppSpinner from '../components/AppSpinner'
+import { isInsideOfApplication } from '../utils/helpers'
 
 const websocketURL = import.meta.env.VITE_PUBLIC_URL
-
-interface Props {
-	children: React.ReactNode
-}
 
 /**
  * Socket provider for the app
  */
-const SocketProvider: React.FC<Props> = ({ children }) => {
+const SocketProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const [appSocket, setAppSocket] = useState<null | Socket>(null)
 
 	const { logOut, loggedIn, accessToken } = useAuth()
@@ -53,6 +50,8 @@ const SocketProvider: React.FC<Props> = ({ children }) => {
 	const contextValue: SocketContextType = {
 		appSocket,
 	}
+
+	if (!appSocket && isInsideOfApplication()) return <AppSpinner />
 
 	return <SocketContext.Provider value={contextValue}>{children}</SocketContext.Provider>
 }

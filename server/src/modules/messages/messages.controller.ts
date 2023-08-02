@@ -47,7 +47,6 @@ export class MessageController {
 	async createMessage(@Body() dto: MessageDto, @GetCurrentUser() user: UserEntity) {
 		const room = await this.roomService.findRoomById(dto.roomId)
 
-		console.log('sending message to room', room)
 		if (!room) throw new BadRequestException('Room does not exist')
 
 		const message = await this.messageService.createMessage(dto, user)

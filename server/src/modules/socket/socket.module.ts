@@ -5,11 +5,12 @@ import { AppGateWay } from './socket.gateway'
 import { WebsocketAdapter } from './socket.adapter'
 import { UserEntity } from 'src/utils/entities/user.entity'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { GatewaySessionManager } from './socket.sessions'
 
 @Global()
 @Module({
 	controllers: [],
-	providers: [AppGateWay],
+	providers: [AppGateWay, GatewaySessionManager],
 	exports: [],
 	imports: [TypeOrmModule.forFeature([UserEntity]), AuthModule, UsersModule],
 })

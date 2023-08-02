@@ -1,7 +1,7 @@
 import Typography from '@mui/joy/Typography'
-import { ReactNode } from 'react'
+import { PropsWithChildren } from 'react'
 
-export const ErrorText: React.FC<{ children: ReactNode }> = ({ children }) => (
+export const ErrorText: React.FC<PropsWithChildren> = ({ children }) => (
 	<Typography color="danger" fontSize="sm" my={'.5rem'}>
 		{children}
 	</Typography>

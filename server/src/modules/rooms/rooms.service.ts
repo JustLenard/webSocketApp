@@ -101,9 +101,6 @@ export class RoomsService implements OnModuleInit {
 	async addLastMessageToRoom(room: RoomEntity, message: MessageEntity) {
 		// room.lastMessage = message
 
-		console.log('This is room', room)
-		console.log('This is lastMessage', message)
-
 		return this.roomRepository.update(room.id, { lastMessage: message })
 		// return this.roomRepository.save(room)
 	}

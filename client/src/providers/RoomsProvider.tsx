@@ -1,23 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { Socket, io } from 'socket.io-client'
-import AppSpinner from '../components/AppSpinner'
-import { useAuth } from '../hooks/contextHooks'
+import React, { PropsWithChildren, useEffect, useState } from 'react'
+import { useAuth, useSocket } from '../hooks/contextHooks'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { CreateRoomParams, MessageI, MessageSocketEvent, RoomI } from '../types/types'
+import { CreateRoomParams, RoomI } from '../types/types'
 import { socketEvents } from '../utils/constants'
 import { handleError } from '../utils/handleAxiosErrors'
-import { getSavedOrGlobalRoom, isInsideOfApplication, saveRoomIdToSessionStorage } from '../utils/helpers'
-import { SocketContext } from './context/socket.contetx'
+import { getSavedOrGlobalRoom, saveRoomIdToSessionStorage } from '../utils/helpers'
 import { RoomsContext, RoomsContextType } from './context/rooms.context'
-
-interface Props {
-	children: React.ReactNode
-}
 
 /**
  * Socket provider for the app
  */
-const RoomsProvider: React.FC<Props> = ({ children }) => {
+const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
+	const { appSocket } = useSocket()
 	const [rooms, setRooms] = useState<RoomI[]>([])
 	const [currentRoom, setCurrentRoom] = useState<RoomI | null>(null)
 
@@ -35,7 +29,9 @@ const RoomsProvider: React.FC<Props> = ({ children }) => {
 					const room = getSavedOrGlobalRoom(response.data)
 					setRooms(response.data)
 					setCurrentRoom(room)
-					if (room) {
+					console.log('This is room', room)
+					if (room && appSocket) {
+						appSocket.emit(socketEvents.onRoomJoin, room.id)
 						saveRoomIdToSessionStorage(room.id)
 					}
 				} catch (err) {
@@ -49,9 +45,12 @@ const RoomsProvider: React.FC<Props> = ({ children }) => {
 	const changeCurrentRoom = (roomId: number) => {
 		const selectedRoom = rooms.find((room) => room.id === roomId)
 
-		if (selectedRoom) {
+		if (selectedRoom && appSocket) {
+			console.log('This is selectedRoom', selectedRoom)
 			setCurrentRoom(selectedRoom)
 			saveRoomIdToSessionStorage(selectedRoom.id)
+
+			appSocket.emit(socketEvents.onRoomJoin, selectedRoom.id)
 		}
 	}
 

@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { PropsWithChildren, ReactNode, useEffect, useState } from 'react'
 import { useAuth, useRooms, useSocket } from '../hooks/contextHooks'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { MessageI, MessageSocketEvent } from '../types/types'
@@ -6,14 +6,10 @@ import { handleError } from '../utils/handleAxiosErrors'
 import { MessagesContext, MessagesContextType } from './context/messages.context'
 import { socketEvents } from '../utils/constants'
 
-interface Props {
-	children: ReactNode
-}
-
 /**
  * Messages provider for the app
  */
-const MessagesProvider: React.FC<Props> = ({ children }) => {
+const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const { loggedIn } = useAuth()
 	const { appSocket } = useSocket()
 	const { currentRoom } = useRooms()
@@ -59,14 +55,17 @@ const MessagesProvider: React.FC<Props> = ({ children }) => {
 		// if (!appSocket || !currentRoom) return
 		if (!appSocket) return
 
-		console.log('pass')
 		appSocket.on(socketEvents.messageAdded, (payload: MessageSocketEvent) => {
+			console.log('This is payload', payload)
 			addNewMessage(payload)
 		})
-	}, [appSocket])
+	}, [])
 
+	console.log('This is currentRoom outside', currentRoom)
 	const addNewMessage = (payload: MessageSocketEvent) => {
+		console.log('This is currentRoom', currentRoom)
 		if (currentRoom?.id !== payload.roomId) return
+		console.log('setting new messages')
 		setMessages((prev) => [...prev, payload.message])
 	}
 

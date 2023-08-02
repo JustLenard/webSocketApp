@@ -35,3 +35,8 @@ export type CreateRoomEvent = {
 	room: RoomEntity
 	creatorId: string
 }
+
+export type CreateMessageResponse = {
+	message: MessageEntity
+	conversation: RoomEntity
+}

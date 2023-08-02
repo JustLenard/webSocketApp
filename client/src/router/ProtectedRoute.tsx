@@ -1,13 +1,10 @@
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../hooks/contextHooks'
 import { appRoutes } from './Root'
-
-interface Props {
-	children: React.ReactElement
-}
+import { PropsWithChildren } from 'react'
 
 // Wrapper for a route to make it protected.
-const ProtectedRoute: React.FC<Props> = ({ children }) => {
+const ProtectedRoute: React.FC<PropsWithChildren> = ({ children }) => {
 	const location = useLocation()
 	const { loggedIn } = useAuth()
 

@@ -18,7 +18,7 @@ import { RoomEntity } from '../../utils/entities/room.entity'
 import { AccountType, UserEntity } from '../../utils/entities/user.entity'
 import { UsersService } from '../users/users.service'
 import { AuthDto } from './auth.dto'
-import { selectRandomArrayElement } from 'src/utils/utils'
+import { selectRandomArrayElement } from 'src/utils/helpers'
 import { UserI } from 'src/utils/types/entities.types'
 
 @Injectable()

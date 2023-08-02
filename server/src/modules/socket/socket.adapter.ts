@@ -20,9 +20,11 @@ export class WebsocketAdapter extends IoAdapter {
 			this.logger.log('Aplying midlleware to socket')
 
 			const accesToken = socket.handshake.headers.authorization.replace('Bearer', '').trim()
+			this.logger.log('Decoding token')
 			const decodedToken: JwtPayload = await this.jwtService.verifyAsync(accesToken, {
 				secret: process.env.ACCESS_TOKEN_SECRET,
 			})
+			this.logger.log('Token decoded', decodedToken)
 
 			const user = await userRepository.findOneBy({ id: decodedToken.sub })
 

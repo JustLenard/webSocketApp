@@ -1,17 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { useAuth } from '../hooks/contextHooks'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { UserI } from '../types/types'
 import { UserContext } from './context/user.context'
-
-interface Props {
-	children: React.ReactNode
-}
 
 /**
  * Socket provider for the app
  */
-const UserProvider: React.FC<Props> = ({ children }) => {
+const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const [user, setUser] = useState(null)
 	const [loading, setLoading] = useState(true)
 
