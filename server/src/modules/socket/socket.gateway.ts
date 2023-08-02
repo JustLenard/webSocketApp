@@ -1,15 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import { OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
-import { Server, Socket } from 'socket.io'
-import { UserEntity } from 'src/utils/entities/user.entity'
-import { CreateMessageEvent, CreateRoomEvent, JwtPayload } from 'src/utils/types/types'
+import { Server } from 'socket.io'
+import { AuthenticatedSocket } from 'src/utils/interfaces'
+import { CreateMessageEvent, CreateRoomEvent } from 'src/utils/types/types'
+import { appEmitters, socketEvents } from '../../utils/constants'
 import { AuthService } from '../auth/auth.service'
 import { UsersService } from '../users/users.service'
-import { appEmitters, socketEvents } from '../../utils/constants'
-import { AuthenticatedSocket } from 'src/utils/interfaces'
 
-// @WebSocketGateway({ namespace: '/ws', cors: true })
 @WebSocketGateway({
 	cors: {
 		origin: ['http://localhost:5173'],
@@ -26,30 +24,8 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	server: Server
 	private logger: Logger = new Logger('Chat')
 
-	// afterInit(server: Server) {
-	// 	console.log('WebSocket server initialized')
-	// }
-
 	async handleConnection(socket: AuthenticatedSocket) {
-		console.log('This is socket.user', socket.user)
-		// console.log('This is socket.user', socket.user)
-		// try {
-		// 	const accesToken = socket.handshake.headers.authorization.replace('Bearer', '').trim()
-		// 	const decodedToken: JwtPayload = await this.authService.verifyJwt(accesToken)
-		// 	this.logger.log('Looking for user in db')
-		// 	const user: UserEntity = await this.userService.findById(decodedToken.sub)
-		// 	user.socketId = socket.id
-		// 	await user.save()
-		// 	if (!user) {
-		// 		this.logger.log('User does not exist')
-		// 		await this.userService.removeUserSocketId(user.id)
-		// 		return this.handleDisconnect(socket)
-		// 	} else {
-		// 		await this.userService.updateUserSocketId(user.id, socket.id)
-		// 		socket.user = user
-		// 	}
-		// } catch (err) {
-		// 	return this.handleDisconnect(socket)		f // }
+		this.logger.log(`New socket connected ${socket.id}`)
 	}
 
 	handleDisconnect(socket: AuthenticatedSocket) {
