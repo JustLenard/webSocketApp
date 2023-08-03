@@ -3,11 +3,16 @@ import { NestFactory } from '@nestjs/core'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import * as cookieParser from 'cookie-parser'
 import { AppModule } from './app.module'
-import { dataSource } from './config/TypeOrmConfig'
+import { dataSource } from './config/dataSourceOptions'
 import { WebsocketAdapter } from './modules/socket/socket.adapter'
+import { ConfigService } from '@nestjs/config'
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule)
+
+	const configService = app.get(ConfigService)
+	const allowedOrigins: string[] = configService.get('ALLOWED_ORIGIN').split(',')
+
 	await dataSource.initialize()
 
 	app.set('trust proxy', 'loopback')
@@ -17,7 +22,7 @@ async function bootstrap() {
 	app.useWebSocketAdapter(adapter)
 
 	app.enableCors({
-		origin: ['http://localhost:5173'],
+		origin: allowedOrigins,
 		allowedHeaders: [
 			'Origin',
 			'X-Requested-With',
