@@ -22,19 +22,12 @@ const ConversationsListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, 
 
 	return (
 		<>
-			<ListItemButton onClick={handleClick} selected={currentRoom.id === id} sx={{ border: '2px solid cyan' }}>
-				<ListItem>
+			<ListItemButton onClick={handleClick} selected={currentRoom.id === id} sx={{ width: 'inherit' }}>
+				<ListItem sx={{ width: 'inherit' }}>
 					<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
 						<Avatar />
 					</ListItemDecorator>
-					<ListItemContent
-						sx={{
-							// width: '100%',
-							width: 'inherit',
-
-							border: '1px solid gray',
-						}}
-					>
+					<ListItemContent>
 						<Typography>{conversationName}</Typography>
 						<Typography level="body2" noWrap>
 							{lastMessage?.text}

@@ -14,7 +14,7 @@ const LeftMenu = () => {
 	if (!rooms) return <AppSpinner text="Left menu" />
 
 	return (
-		<Grid container height={'100%'} direction={'column'} p={'.5rem'} bgcolor={'Menu'} border={'2px solid orange'}>
+		<Grid container height={'100%'} direction={'column'} p={'.5rem'} bgcolor={'Menu'}>
 			<Typography level="h4" mb={'1rem'} p={'1rem'}>
 				Conversations
 			</Typography>
@@ -24,17 +24,17 @@ const LeftMenu = () => {
 				display={'inline-block'}
 				direction={'column'}
 				maxWidth={''}
-				border={'2px solid red'}
 				width={'inherit'}
 			>
 				<List
 					variant={'outlined'}
 					sx={{
+						width: 'inherit',
 						minWidth: 240,
 						borderRadius: 'sm',
 						boxShadow: 'sm',
 						paddingLeft: 0,
-						'--ListItem-paddingLeft': 0,
+						'--ListItem-paddingX': 0,
 						'--ListItem-paddingY': 0,
 						'--ListDivider-gap': '0px',
 						'& [role="button"]': {},
