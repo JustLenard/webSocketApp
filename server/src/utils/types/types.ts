@@ -20,8 +20,7 @@ export type CreateMessageParams = {
 
 export type CreateMessageEvent = {
 	message: MessageEntity
-	room: RoomEntity
-	user: UserEntity
+	roomId: number
 }
 
 export type CreateRoomParams = {

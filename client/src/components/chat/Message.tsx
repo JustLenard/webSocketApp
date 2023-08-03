@@ -24,18 +24,18 @@ interface Props {
 }
 
 export const Message: React.FC<Props> = ({ message, prev }) => {
-	const getCond = prev ? prev.user.id === message.user.id : false
+	const showUserInfo = prev ? prev.user.id !== message.user.id : true
 
 	return (
 		<Box sx={{ flexGrow: 1, px: 3, mt: '.25rem' }}>
 			<Stack spacing={2} direction="row" alignItems="center">
-				{!getCond && (
+				{showUserInfo && (
 					<div style={{ width: '40px' }}>
 						<Avatar>{message.user.username[0]}</Avatar>
 					</div>
 				)}
 				<Stack width={'100%'}>
-					{!getCond && (
+					{showUserInfo && (
 						<Stack direction={'row'} gap={1} alignContent={'center'}>
 							<Typography color="info" noWrap>
 								{message.user.username}
@@ -45,14 +45,14 @@ export const Message: React.FC<Props> = ({ message, prev }) => {
 						</Stack>
 					)}
 
-					<SImpleMessage message={message} cond={getCond} />
+					<SImpleMessage message={message} showUserInfo={showUserInfo} />
 				</Stack>
 			</Stack>
 		</Box>
 	)
 }
 
-const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message, cond }) => {
+const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({ message, showUserInfo }) => {
 	const { currentRoom } = useRooms()
 	const { editingMessageId, setEditingMessageId, getMessagesForRoom } = useMessages()
 	const { user } = useUser()
@@ -60,11 +60,9 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 	const [edit, setEdit] = useState<null | string>(null)
 	const [modal, setModal] = useState(false)
 
-	const [localMesasge, setLocalMessage] = useState<null | MessageI>(message)
+	// const [localMesasge, setLocalMessage] = useState<null | MessageI>(message)
 
-	const [actionsVisible, setActionsVisible] = useState(true)
-
-	const marginLeft = cond ? '56px' : 0
+	const marginLeft = showUserInfo ? 0 : '56px'
 
 	const handleKeypress = async (e: React.KeyboardEvent<HTMLDivElement>) => {
 		if (!currentRoom) return
@@ -75,7 +73,7 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 					text: edit,
 				})
 				console.log('This is response', response)
-				setLocalMessage(response.data)
+				// setLocalMessage(response.data)
 			} catch (err) {
 				handleError(err)
 			}
@@ -88,27 +86,26 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 		if (!currentRoom) return
 		try {
 			const response = await privateAxios.delete(`room/${currentRoom.id}/messages/${message.id}`)
-			console.log('This is response', response)
 
-			if (response.data === 'ok') {
-				getMessagesForRoom(currentRoom.id)
-			}
+			// if (response.data === 'ok') {
+			// 	getMessagesForRoom(currentRoom.id)
+			// }
 		} catch (err) {
 			handleError(err)
 		}
 	}
 
 	useEffect(() => {
-		if (editingMessageId !== null && editingMessageId !== localMesasge?.id) {
+		if (editingMessageId !== null && editingMessageId !== message?.id) {
 			setEdit(null)
 		}
 	}, [editingMessageId])
 
-	if (!localMesasge) return null
+	if (!message) return null
 
 	const turnEditModeOn = () => {
-		setEdit(localMesasge.text)
-		setEditingMessageId(localMesasge.id)
+		setEdit(message.text)
+		setEditingMessageId(message.id)
 	}
 
 	const isMessageOwner = user ? user.id === message.user.id : false
@@ -132,7 +129,7 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 					/>
 				) : (
 					<>
-						<Typography sx={{ marginLeft: marginLeft }}>{localMesasge.text}</Typography>
+						<Typography sx={{ marginLeft: marginLeft }}>{message.text}</Typography>
 
 						<Stack direction={'row'} className="buttons-wrapper">
 							{/* <Typography>{moment(message.updated_at).startOf('hour').fromNow()}</Typography> */}
@@ -141,28 +138,28 @@ const SImpleMessage: React.FC<{ message: MessageI; cond: boolean }> = ({ message
 							{/* <Typography>{moment(message.updated_at).format('L')}</Typography> */}
 							{isMessageOwner && (
 								<>
-									<Tooltip title="Edit">
-										<IconButton
-											size="small"
-											onClick={turnEditModeOn}
-											sx={{
-												height: '1.5rem',
-											}}
-										>
-											<ModeEditIcon fontSize="small" />
-										</IconButton>
-									</Tooltip>
-									<Tooltip title="Delete">
-										<IconButton
-											size="small"
-											onClick={() => setModal(true)}
-											sx={{
-												height: '1.5rem',
-											}}
-										>
-											<DeleteIcon fontSize="small" />
-										</IconButton>
-									</Tooltip>
+									{/* <Tooltip title="Edit"> */}
+									<IconButton
+										size="small"
+										onClick={turnEditModeOn}
+										sx={{
+											height: '1.5rem',
+										}}
+									>
+										<ModeEditIcon fontSize="small" />
+									</IconButton>
+									{/* </Tooltip> */}
+									{/* <Tooltip title="Delete"> */}
+									<IconButton
+										size="small"
+										onClick={() => setModal(true)}
+										sx={{
+											height: '1.5rem',
+										}}
+									>
+										<DeleteIcon fontSize="small" />
+									</IconButton>
+									{/* </Tooltip> */}
 								</>
 							)}
 						</Stack>

@@ -15,8 +15,6 @@ const ChatContainer = () => {
 	const { user } = useUser()
 	const [isRecipientTyping, setIsRecipientTyping] = useState(false)
 
-	console.log('This is currentRoom', currentRoom)
-
 	useEffect(() => {
 		console.log('This is !appSocket', !appSocket)
 		if (!appSocket) return

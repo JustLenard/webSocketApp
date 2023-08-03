@@ -101,7 +101,7 @@ const ProfileListItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 			<ListItem onClick={handleClick}>
 				<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
 					{/* <Avatar size="sm">{username[0].toUpperCase()}</Avatar> */}
-					<Avatar src="/static/images/avatar/1.jpg" />
+					<Avatar />
 				</ListItemDecorator>
 
 				<ListItemContent>

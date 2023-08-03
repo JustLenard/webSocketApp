@@ -44,14 +44,18 @@ export class MessageController {
 	@UseGuards(AtGuard)
 	@Post()
 	@HttpCode(HttpStatus.CREATED)
-	async createMessage(@Body() dto: MessageDto, @GetCurrentUser() user: UserEntity) {
-		const room = await this.roomService.findRoomById(dto.roomId)
+	async createMessage(
+		@Body() dto: MessageDto,
+		@GetCurrentUser() user: UserEntity,
+		@Param('roomId', ParseIntPipe) roomId: number,
+	) {
+		const room = await this.roomService.findRoomById(roomId)
 
 		if (!room) throw new BadRequestException('Room does not exist')
 
 		const message = await this.messageService.createMessage(dto, user)
 
-		this.eventEmitter.emit(appEmitters.messageCreate, { message, room, user })
+		this.eventEmitter.emit(appEmitters.messageCreate, { message, roomId })
 
 		return message
 	}
@@ -67,8 +71,7 @@ export class MessageController {
 	) {
 		const message = await this.messageService.patchMessage(messageId, dto.text, user.id)
 		message.user = { id: message.user.id, username: message.user.username } as UserEntity
-		const room = await this.roomService.findRoomById(roomId)
-		this.eventEmitter.emit(appEmitters.messageEdit, { message, room, user })
+		this.eventEmitter.emit(appEmitters.messagePatch, { message, roomId })
 		return message
 	}
 
@@ -80,10 +83,12 @@ export class MessageController {
 		@Param('roomId', ParseIntPipe) roomId: number,
 		@GetCurrentUser() user: UserEntity,
 	) {
+		console.log('This is roomId', roomId)
+		console.log('This is user.id', user.id)
+		console.log('This is messageId', messageId)
 		const message = await this.messageService.deleteMessage(messageId, user.id, roomId)
 		message.user = { id: message.user.id, username: message.user.username } as UserEntity
-		const room = await this.roomService.findRoomById(roomId)
-		this.eventEmitter.emit(appEmitters.messageDelete, { message, room, user })
+		this.eventEmitter.emit(appEmitters.messageDelete, { message, roomId })
 		return 'ok'
 	}
 }

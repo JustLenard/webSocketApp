@@ -35,7 +35,7 @@ export enum socketEvents {
 
 export enum appEmitters {
 	messageCreate = 'message.create',
-	messageEdit = 'message.edit',
+	messagePatch = 'message.patch',
 	messageDelete = 'message.delete',
 
 	roomCreate = 'room.create',

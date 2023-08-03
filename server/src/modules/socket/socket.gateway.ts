@@ -88,34 +88,6 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		client.to(`room-${roomId}`).emit('onTypingStop')
 	}
 
-	// @OnEvent('message.delete')
-	// async handleMessageDelete(payload) {
-	// 	console.log('Inside message.delete')
-	// 	console.log(payload)
-	// 	const conversation = await this.conversationService.findById(payload.conversationId)
-	// 	if (!conversation) return
-	// 	const { creator, recipient } = conversation
-	// 	const recipientSocket =
-	// 		creator.id === payload.userId
-	// 			? this.sessions.getUserSocket(recipient.id)
-	// 			: this.sessions.getUserSocket(creator.id)
-	// 	if (recipientSocket) recipientSocket.emit('onMessageDelete', payload)
-	// }
-
-	// @OnEvent('message.update')
-	// async handleMessageUpdate(message: Message) {
-	// 	const {
-	// 		author,
-	// 		conversation: { creator, recipient },
-	// 	} = message
-	// 	console.log(message)
-	// 	const recipientSocket =
-	// 		author.id === creator.id
-	// 			? this.sessions.getUserSocket(recipient.id)
-	// 			: this.sessions.getUserSocket(creator.id)
-	// 	if (recipientSocket) recipientSocket.emit('onMessageUpdate', message)
-	// }
-
 	/**
 	 * Events
 	 **/
@@ -140,11 +112,26 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@OnEvent(appEmitters.messageCreate)
 	handleMessageCreate(payload: CreateMessageEvent) {
-		const { message, room } = payload
+		const { message, roomId } = payload
 
-		this.logger.log('Emitting message')
+		this.server.to(`room-${roomId}`).emit(socketEvents.messageAdded, { message, roomId })
+	}
 
-		this.server.to(`room-${room.id}`).emit(socketEvents.messageAdded, { message, roomId: room.id })
+	@OnEvent(appEmitters.messagePatch)
+	async handleMessageUpdate(payload: CreateMessageEvent) {
+		const { message, roomId } = payload
+
+		this.server.to(`room-${roomId}`).emit(socketEvents.messagePatched, { message, roomId })
+	}
+
+	@OnEvent(appEmitters.messageDelete)
+	async handleMessageDelete(payload: CreateMessageEvent) {
+		this.logger.log(`Deleting message with id: ${payload.message.id}`)
+
+		const { message, roomId } = payload
+
+		this.server.to(`room-${roomId}`).emit(socketEvents.messageDeleted, { message, roomId })
+		// this.server.to(`room-${roomId}`)
 	}
 
 	// @OnEvent(appEmitters.messageEdit)

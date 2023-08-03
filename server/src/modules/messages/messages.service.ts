@@ -65,7 +65,7 @@ export class MessageService {
 		if (!message) {
 			throw new BadRequestException('Cannot delete message')
 		}
-		await this.roomService.rollBackLastMessage(roomId)
+		await this.roomService.setNewLastMesasgeIfNeeded(roomId, message)
 		await this.messageRepository.delete({ id: messageId })
 
 		return message

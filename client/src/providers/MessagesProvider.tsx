@@ -55,12 +55,29 @@ const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		if (!appSocket) return
 
 		appSocket.on(socketEvents.messageAdded, (payload: MessageSocketEvent) => {
+			console.log('trigger add ')
 			setMessages((prev) => [...prev, payload.message])
 		})
+		appSocket.on(socketEvents.messagePatched, (payload: MessageSocketEvent) => {
+			console.log('trigger patch ')
+			const index = messages.findIndex((elem) => elem.id === payload.message.id)
+			console.log('This is index', index)
+			const newMessages = [...messages]
+			newMessages.splice(index, 1, payload.message)
+			console.log('This is newMessages', newMessages)
+			setMessages([...newMessages])
+		})
+		appSocket.on(socketEvents.messageDeleted, (payload: MessageSocketEvent) => {
+			const newMessages = messages.filter((item) => item.id !== payload.message.id)
+			setMessages(newMessages)
+		})
+
 		return () => {
 			appSocket.off(socketEvents.messageAdded)
+			appSocket.off(socketEvents.messageDeleted)
+			appSocket.off(socketEvents.messagePatched)
 		}
-	}, [currentRoom])
+	}, [currentRoom, messages])
 
 	const contextValue: MessagesContextType = {
 		getMessagesForRoom,
