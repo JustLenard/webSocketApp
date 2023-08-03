@@ -141,16 +141,10 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	@OnEvent(appEmitters.messageCreate)
 	handleMessageCreate(payload: CreateMessageEvent) {
 		const { message, room } = payload
-		console.log('This is message', message)
+
+		this.logger.log('Emitting message')
 
 		this.server.to(`room-${room.id}`).emit(socketEvents.messageAdded, { message, roomId: room.id })
-
-		// for (const user of room.users) {
-		// 	if (user.socketId && user.socketId !== sender.socketId) {
-		// 		this.logger.log('Sending message to', user.socketId)
-		// 		this.server.to(user.socketId).emit(socketEvents.messageAdded, { message, roomId: room.id })
-		// 	}
-		// }
 	}
 
 	// @OnEvent(appEmitters.messageEdit)

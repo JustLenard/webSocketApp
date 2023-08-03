@@ -38,7 +38,7 @@ const SocketProvider: React.FC<PropsWithChildren> = ({ children }) => {
 			createSocket()
 		} else {
 			/**
-			 * @todo figure this shit out
+			 * @todo figure thi	s shit out
 			 **/
 			// getAccesToken()
 		}

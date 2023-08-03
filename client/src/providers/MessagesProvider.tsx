@@ -45,29 +45,22 @@ const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 				text: messageContent,
 			})
 
-			setMessages((prev) => [...prev, response.data])
+			// setMessages((prev) => [...prev, response.data])
 		} catch (err) {
 			handleError(err)
 		}
 	}
 
 	useEffect(() => {
-		// if (!appSocket || !currentRoom) return
 		if (!appSocket) return
 
 		appSocket.on(socketEvents.messageAdded, (payload: MessageSocketEvent) => {
-			console.log('This is payload', payload)
-			addNewMessage(payload)
+			setMessages((prev) => [...prev, payload.message])
 		})
-	}, [])
-
-	console.log('This is currentRoom outside', currentRoom)
-	const addNewMessage = (payload: MessageSocketEvent) => {
-		console.log('This is currentRoom', currentRoom)
-		if (currentRoom?.id !== payload.roomId) return
-		console.log('setting new messages')
-		setMessages((prev) => [...prev, payload.message])
-	}
+		return () => {
+			appSocket.off(socketEvents.messageAdded)
+		}
+	}, [currentRoom])
 
 	const contextValue: MessagesContextType = {
 		getMessagesForRoom,

@@ -64,8 +64,8 @@ const ChatContainer = () => {
 			</Grid>
 			<Grid p={'1rem'}>
 				<ChatInput />
-				<Typography level="body3" ml={'1rem'}>
-					{isRecipientTyping ? `${recipient.username} is typing...` : ''}
+				<Typography level="body3" ml={'1rem'} height={'20px'}>
+					{isRecipientTyping ? `${recipient.username} is typing...` : ' '}
 				</Typography>
 			</Grid>
 		</Grid>

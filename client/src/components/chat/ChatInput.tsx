@@ -29,7 +29,7 @@ const ChatInput: React.FC<Props> = () => {
 	const { sendMessage } = useMessages()
 
 	const handleMessageSubmit: SubmitHandler<ChatForm> = (formData) => {
-		sendMessage(formData.message)
+		sendMessage(formData.message.trim())
 
 		resetField('message')
 	}
@@ -46,7 +46,7 @@ const ChatInput: React.FC<Props> = () => {
 				// console.log('User stopped typing')
 				appSocket.emit(socketEvents.onTypingStop, currentRoom.id)
 				setIsTyping(false)
-			}, 2000),
+			}, 10000),
 		)
 	}
 	return (
