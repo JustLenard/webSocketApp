@@ -13,6 +13,11 @@ export enum socketEvents {
 	messagePatched = 'messagePatched',
 	messageDeleted = 'messageDeleted',
 	messages = 'messages',
+	/**
+	 * Connection
+	 **/
+	userConnected = 'userConnected',
+	userDisconnected = 'userDisconnected',
 
 	/**
 	 * Emited by FrontEnd

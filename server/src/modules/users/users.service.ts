@@ -1,30 +1,35 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { DataSource, Repository } from 'typeorm'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UserEntity } from '../../utils/entities/user.entity'
 import { ShortUser, UserI } from 'src/utils/types/entities.types'
+import { GatewaySessionManager } from '../socket/socket.sessions'
 
 @Injectable()
 export class UsersService {
 	constructor(
 		@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>, // private dataSource: DataSource,
+		@Inject(GatewaySessionManager) private sessions: GatewaySessionManager,
 	) {}
 
-	async findAll(userId: string): Promise<ShortUser[]> {
-		let users = await this.userRepostiry.find()
-		users = users.filter((user) => user.id !== userId)
-
-		// const userRepository = this.dataSource.getRepository(UserEntity)
-		// const len = await userRepository.findOneBy({ username: 'len' })
-		// console.log('This is len', len)
+	async findAll(): Promise<ShortUser[]> {
+		const users = await this.userRepostiry.find()
+		// users = users.filter((user) => user.id !== userId)
 
 		return users.map((user) => ({
 			id: user.id,
 			username: user.username,
-			online: user.socketId || user.accountType === 'bot' ? true : false,
+			online: this.getOnlineStatus(user),
 		}))
+	}
+
+	getOnlineStatus(user: UserEntity) {
+		if (user.accountType === 'bot') return true
+		const userSocket = this.sessions.getUserSocket(user.id)
+		if (userSocket) return true
+		return false
 	}
 
 	async findById(id: string) {

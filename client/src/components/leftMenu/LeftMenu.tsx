@@ -18,14 +18,7 @@ const LeftMenu = () => {
 			<Typography level="h4" mb={'1rem'} p={'1rem'}>
 				Conversations
 			</Typography>
-			<Grid
-				item
-				overflow={'scroll'}
-				display={'inline-block'}
-				direction={'column'}
-				maxWidth={''}
-				width={'inherit'}
-			>
+			<Grid item overflow={'scroll'} display={'inline-block'} width={'inherit'}>
 				<List
 					variant={'outlined'}
 					sx={{

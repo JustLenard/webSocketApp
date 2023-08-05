@@ -41,12 +41,24 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	async handleConnection(socket: AuthenticatedSocket) {
 		this.logger.log(`New socket connected ${socket.id}`)
 		this.sessions.setUserSocket(socket.user.id, socket)
+
+		this.server.emit(socketEvents.userConnected, {
+			id: socket.user.id,
+			username: socket.user.username,
+			online: true,
+		})
 	}
 
 	handleDisconnect(socket: AuthenticatedSocket) {
 		// this.userService.removeUserSocketId(socket.user.id)
 		this.logger.log(`Disconecting socket ${socket.id}`)
 		this.sessions.removeUserSocket(socket.user.id)
+
+		this.server.emit(socketEvents.userDisconnected, {
+			id: socket.user.id,
+			username: socket.user.username,
+			online: false,
+		})
 	}
 
 	// @OnEvent('conversation.create')
@@ -66,7 +78,6 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage(socketEvents.onRoomLeave)
 	onConversationLeave(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
-		console.log('onConversationLeave')
 		client.leave(`room-${roomId}`)
 		console.log(client.rooms)
 		client.to(`room-${roomId}`).emit('userLeave')
@@ -74,7 +85,6 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage(socketEvents.onTypingStart)
 	onTypingStart(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
-		console.log('onTypingStart')
 		console.log(roomId)
 		console.log(client.rooms)
 		client.to(`room-${roomId}`).emit('onTypingStart')
@@ -82,7 +92,6 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage(socketEvents.onTypingStop)
 	onTypingStop(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
-		console.log('onTypingStop')
 		console.log(roomId)
 		console.log(client.rooms)
 		client.to(`room-${roomId}`).emit('onTypingStop')
@@ -91,7 +100,6 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	/**
 	 * Events
 	 **/
-
 	// @OnEvent(appEmitters.messageCreate)
 	// handleMessageCreateEvent(payload: CreateMessageResponse) {
 	// 	console.log('Inside message.create')

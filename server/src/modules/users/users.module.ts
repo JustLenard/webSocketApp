@@ -3,6 +3,8 @@ import { UsersService } from './users.service'
 import { UsersController } from './users.controller'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UserEntity } from '../../utils/entities/user.entity'
+import { SocketModule } from '../socket/socket.module'
+import { GatewaySessionManager } from '../socket/socket.sessions'
 
 @Module({
 	controllers: [UsersController],

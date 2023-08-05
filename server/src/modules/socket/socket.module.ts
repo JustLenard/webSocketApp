@@ -11,7 +11,7 @@ import { GatewaySessionManager } from './socket.sessions'
 @Module({
 	controllers: [],
 	providers: [AppGateWay, GatewaySessionManager],
-	exports: [],
 	imports: [TypeOrmModule.forFeature([UserEntity]), AuthModule, UsersModule],
+	exports: [GatewaySessionManager],
 })
 export class SocketModule {}
