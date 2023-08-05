@@ -1,4 +1,3 @@
-import { JoinedRoomEntity } from 'src/utils/entities/joinedRoom.entity'
 import { MessageEntity } from 'src/utils/entities/message.entity'
 import { NotificationsEntity } from 'src/utils/entities/notifications.entity'
 import { RoomEntity } from 'src/utils/entities/room.entity'
@@ -16,7 +15,7 @@ export const dataSourceOptions = (): DataSourceOptions => {
 		username: process.env.PG_USERNAME,
 		password: process.env.PG_PASSWORD,
 		database: process.env.PG_DATABASE,
-		entities: [UserEntity, RoomEntity, MessageEntity, JoinedRoomEntity, NotificationsEntity],
+		entities: [UserEntity, RoomEntity, MessageEntity, NotificationsEntity],
 		synchronize: true,
 	}
 }

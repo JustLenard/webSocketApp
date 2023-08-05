@@ -24,15 +24,11 @@ export class NotificationsEntity {
 	@JoinColumn()
 	message: MessageEntity
 
-	@ManyToMany(() => UserEntity, (user) => user.notifications)
-	// @JoinColumn()
-	createdFor: UserEntity[]
-
 	@ManyToMany(() => UserEntity, (user) => user.readNotifications)
 	readBy: UserEntity[]
 
 	@ManyToOne(() => RoomEntity, (room) => room.notifications)
-	// @JoinColumn()
+	@JoinColumn()
 	room: RoomEntity
 
 	@CreateDateColumn()

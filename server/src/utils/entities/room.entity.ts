@@ -11,7 +11,6 @@ import {
 } from 'typeorm'
 import { MessageEntity } from './message.entity'
 import { UserEntity } from 'src/utils/entities/user.entity'
-import { JoinedRoomEntity } from './joinedRoom.entity'
 import { NotificationsEntity } from './notifications.entity'
 
 @Entity('Rooms')
@@ -35,9 +34,6 @@ export class RoomEntity extends BaseEntity {
 	@OneToOne(() => MessageEntity, { nullable: true })
 	@JoinColumn({ name: 'Last_Message_Sent' })
 	lastMessage: MessageEntity
-
-	@OneToMany(() => JoinedRoomEntity, (joinedRoom) => joinedRoom.room)
-	joinedUsers: JoinedRoomEntity[]
 
 	@Column()
 	isGroupChat: boolean

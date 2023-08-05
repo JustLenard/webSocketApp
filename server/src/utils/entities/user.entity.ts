@@ -2,7 +2,6 @@ import { Global } from '@nestjs/common'
 import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { RoomEntity } from './room.entity'
 import { MessageEntity } from './message.entity'
-import { JoinedRoomEntity } from './joinedRoom.entity'
 import { NotificationsEntity } from './notifications.entity'
 
 export enum AccountType {
@@ -43,12 +42,6 @@ export class UserEntity extends BaseEntity {
 
 	@OneToMany(() => MessageEntity, (message) => message.user)
 	messages: MessageEntity[]
-
-	@OneToMany(() => JoinedRoomEntity, (joinedRoom) => joinedRoom.room)
-	joinedRooms: JoinedRoomEntity[]
-
-	@ManyToMany(() => NotificationsEntity, (notif) => notif.createdFor)
-	notifications: NotificationsEntity[]
 
 	@ManyToMany(() => NotificationsEntity, (notif) => notif.readBy)
 	readNotifications: NotificationsEntity[]
