@@ -24,8 +24,6 @@ import { MessageService } from './messages.service'
 import { Routes, appEmitters } from 'src/utils/constants'
 import { UpdateMessageDto } from './dto/update-message.dto'
 
-// @Controller('/api/messages')
-
 @Controller(Routes.messages)
 export class MessageController {
 	constructor(
@@ -37,7 +35,10 @@ export class MessageController {
 	@UseGuards(AtGuard)
 	@Get()
 	@HttpCode(HttpStatus.OK)
-	findMessagesForRoom(@Param('roomId', ParseIntPipe) roomId: number): Promise<MessageI[]> {
+	findMessagesForRoom(
+		@Param('roomId', ParseIntPipe) roomId: number,
+		@GetCurrentUser() user: UserEntity,
+	): Promise<MessageI[]> {
 		return this.messageService.findMessagesForRoom(roomId)
 	}
 
@@ -83,9 +84,6 @@ export class MessageController {
 		@Param('roomId', ParseIntPipe) roomId: number,
 		@GetCurrentUser() user: UserEntity,
 	) {
-		console.log('This is roomId', roomId)
-		console.log('This is user.id', user.id)
-		console.log('This is messageId', messageId)
 		const message = await this.messageService.deleteMessage(messageId, user.id, roomId)
 		message.user = { id: message.user.id, username: message.user.username } as UserEntity
 		this.eventEmitter.emit(appEmitters.messageDelete, { message, roomId })

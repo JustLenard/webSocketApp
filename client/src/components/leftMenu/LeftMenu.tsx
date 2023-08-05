@@ -5,9 +5,6 @@ import AppSpinner from '../AppSpinner'
 import ConversationsListItem from './ConversationsListItem'
 import { useRooms } from '../../hooks/contextHooks'
 
-const longText =
-	'Exercitation non ea enim elit do minim eu qui voluptate reprehenderit commodo. Eu laborum culpa quis veniam consectetur eu occaecat non aliqua incididunt. Irure non sit occaecat consectetur adipisicing exercitation est cupidatat veniam. Excepteur anim labore incididunt eu commodo velit culpa ipsum tempor. Laboris tempor eu deserunt occaecat qui esse. Proident ex proident sit et incididunt. Minim Lorem velit consequat mollit id irure exercitation culpa dolore nostrud fugiat eu cillum.'
-
 const LeftMenu = () => {
 	const { rooms } = useRooms()
 

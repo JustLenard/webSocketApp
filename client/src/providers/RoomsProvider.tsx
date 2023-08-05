@@ -20,28 +20,6 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
 	console.log('This is currentRoom', currentRoom)
 
-	useEffect(() => {
-		if (accessToken) {
-			const getRooms = async () => {
-				try {
-					const response = await privateAxios.get('/rooms')
-
-					const room = getSavedOrGlobalRoom(response.data)
-					setRooms(response.data)
-					setCurrentRoom(room)
-					console.log('This is room', room)
-					if (room && appSocket) {
-						appSocket.emit(socketEvents.onRoomJoin, room.id)
-						saveRoomIdToSessionStorage(room.id)
-					}
-				} catch (err) {
-					handleError(err)
-				}
-			}
-			getRooms()
-		}
-	}, [loggedIn, accessToken])
-
 	const changeCurrentRoom = (roomId: number) => {
 		const selectedRoom = rooms.find((room) => room.id === roomId)
 
@@ -71,6 +49,38 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 			handleError(err)
 		}
 	}
+
+	useEffect(() => {
+		if (accessToken) {
+			const getRooms = async () => {
+				try {
+					const response = await privateAxios.get('/rooms')
+
+					const room = getSavedOrGlobalRoom(response.data)
+					setRooms(response.data)
+					setCurrentRoom(room)
+					console.log('This is room', room)
+					if (room && appSocket) {
+						appSocket.emit(socketEvents.onRoomJoin, room.id)
+						saveRoomIdToSessionStorage(room.id)
+					}
+				} catch (err) {
+					handleError(err)
+				}
+			}
+			getRooms()
+		}
+	}, [loggedIn, accessToken])
+
+	useEffect(() => {
+		if (!appSocket) return
+		appSocket.on(socketEvents.createRoom, (room: RoomI) => {
+			setRooms((prev) => [room, ...prev])
+		})
+		return () => {
+			appSocket.off(socketEvents.createRoom)
+		}
+	}, [appSocket, rooms])
 
 	const contextValue: RoomsContextType = {
 		rooms,

@@ -28,6 +28,8 @@ export class RoomControler {
 
 		if (!privateChat) {
 			const newRoom = await this.roomService.createRoom(dto, user)
+			newRoom.users = newRoom.users.map((user) => ({ id: user.id, username: user.username } as UserEntity))
+
 			this.eventEmitter.emit(appEmitters.roomCreate, { room: newRoom, creatorId: user.id })
 			return newRoom
 		}

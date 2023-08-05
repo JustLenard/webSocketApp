@@ -32,11 +32,6 @@ export class UserEntity extends BaseEntity {
 	@Column({ type: 'enum', enum: AccountType, default: AccountType.default })
 	accountType: AccountType
 
-	@Column({
-		nullable: true,
-	})
-	socketId: string
-
 	@ManyToMany(() => RoomEntity, (room) => room.users)
 	rooms: RoomEntity[]
 

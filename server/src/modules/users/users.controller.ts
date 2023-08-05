@@ -27,16 +27,4 @@ export class UsersController {
 	findOne(@Param('id') id: string) {
 		return this.usersService.findById(id)
 	}
-
-	@UseGuards(AtGuard)
-	@Patch(':id')
-	update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-		return this.usersService.update(id, updateUserDto)
-	}
-
-	@UseGuards(AtGuard)
-	@Delete(':id')
-	remove(@Param('id') id: string) {
-		return this.usersService.remove(id)
-	}
 }
