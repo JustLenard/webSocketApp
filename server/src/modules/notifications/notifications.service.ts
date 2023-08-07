@@ -41,7 +41,7 @@ export class NotificationsService {
 		return userNotifications
 	}
 
-	getNotificationsForRoom(user: UserEntity, room: RoomEntity) {
+	async getNotificationsForRoom(user: UserEntity, roomId: number) {
 		const userNotifications = this.notifRepository
 			.createQueryBuilder('notification')
 			.leftJoinAndSelect('notification.creator', 'creator')
@@ -50,16 +50,26 @@ export class NotificationsService {
 			.leftJoinAndSelect('notification.createdFor', 'createdFor')
 			.leftJoinAndSelect('notification.room', 'room')
 			.where('createdFor.id = :userId', { userId: user.id })
+			.andWhere('room.id = :roomId', {
+				roomId,
+			})
 			.andWhere('(readBy.id != :userId OR readBy.id IS NULL OR readBy.id = :emptyUuid)', {
 				userId: user.id,
 				emptyUuid: '00000000-0000-0000-0000-000000000000',
 			})
-			.andWhere('room.id = :roomId', {
-				roomId: room.id,
-			})
 			.orderBy('notification.created_at', 'DESC')
 			.getMany()
 
+		console.log('This is userNotifications length', (await userNotifications).length)
+
 		return userNotifications
+	}
+
+	async markNotificationsAsReadForRoom(user: UserEntity, roomId: number) {
+		const notifications = await this.getNotificationsForRoom(user, roomId)
+		notifications.forEach((notif) => {
+			notif.readBy = [...notif.readBy, user]
+			this.notifRepository.save(notif)
+		})
 	}
 }

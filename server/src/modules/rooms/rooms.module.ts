@@ -6,11 +6,12 @@ import { RoomEntity } from 'src/utils/entities/room.entity'
 import { MessageEntity } from 'src/utils/entities/message.entity'
 import { UserEntity } from 'src/utils/entities/user.entity'
 import { NotificationsEntity } from 'src/utils/entities/notifications.entity'
+import { NotificationsService } from '../notifications/notifications.service'
 
 @Module({
 	imports: [TypeOrmModule.forFeature([RoomEntity, MessageEntity, UserEntity, NotificationsEntity])],
 	controllers: [RoomControler],
-	providers: [RoomsService],
+	providers: [RoomsService, NotificationsService],
 	exports: [RoomsService],
 })
 export class RoomsModule {}

@@ -47,6 +47,7 @@ export type RoomI = {
 	description?: string
 	users: UserI[]
 	lastMessage: null | MessageI
+	notifications: Notification[]
 }
 
 export type PostRoomI = {

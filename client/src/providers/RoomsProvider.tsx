@@ -8,7 +8,7 @@ import { getSavedOrGlobalRoom, saveRoomIdToSessionStorage } from '../utils/helpe
 import { RoomsContext, RoomsContextType } from './context/rooms.context'
 
 /**
- * Socket provider for the app
+ * Rooms provider for the app
  */
 const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const { appSocket } = useSocket()
@@ -25,10 +25,21 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
 		if (selectedRoom && appSocket) {
 			console.log('This is selectedRoom', selectedRoom)
-			setCurrentRoom(selectedRoom)
-			saveRoomIdToSessionStorage(selectedRoom.id)
 
+			currentRoom && appSocket.emit(socketEvents.onRoomLeave, currentRoom.id)
 			appSocket.emit(socketEvents.onRoomJoin, selectedRoom.id)
+
+			if (selectedRoom.notifications.length !== 0) {
+				appSocket.emit(socketEvents.markNotificationsAsRead, selectedRoom.id, (res: string) => {
+					setCurrentRoom({
+						...selectedRoom,
+						notifications: [],
+					})
+				})
+			} else {
+				setCurrentRoom(selectedRoom)
+			}
+			saveRoomIdToSessionStorage(selectedRoom.id)
 		}
 	}
 

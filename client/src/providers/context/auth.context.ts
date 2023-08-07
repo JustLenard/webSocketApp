@@ -1,10 +1,10 @@
 import { createContext } from 'react'
 
-export interface IContext {
+export type AuthorizationContextType = {
 	loggedIn: boolean
 	accessToken: string | null
 	logOut: () => void
 	login: (accToken: string) => void
 }
 
-export const AuthContext = createContext<IContext>({ accessToken: null } as IContext)
+export const AuthContext = createContext<AuthorizationContextType>({ accessToken: null } as AuthorizationContextType)

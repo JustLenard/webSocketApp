@@ -6,7 +6,7 @@ import { isInsideOfApplication } from '../utils/helpers'
 import { appRoutes } from '../router/Root'
 import { handleError } from '../utils/handleAxiosErrors'
 import { LOGGED_IN_KEY_NAME } from '../utils/constants'
-import { AuthContext, IContext } from './context/auth.context'
+import { AuthContext, AuthorizationContextType } from './context/auth.context'
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const [accessToken, setAccessToken] = useState<string | null>(null)
@@ -72,7 +72,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		sessionStorage.setItem(LOGGED_IN_KEY_NAME, 'true')
 	}
 
-	const contextValue: IContext = {
+	const contextValue: AuthorizationContextType = {
 		accessToken,
 		loggedIn,
 		logOut,

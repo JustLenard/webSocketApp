@@ -16,6 +16,8 @@ import { appEmitters, socketEvents } from '../../utils/constants'
 import { AuthService } from '../auth/auth.service'
 import { UsersService } from '../users/users.service'
 import { GatewaySessionManager } from './socket.sessions'
+import { RoomsService } from '../rooms/rooms.service'
+import { NotificationsService } from '../notifications/notifications.service'
 
 @WebSocketGateway({
 	cors: {
@@ -28,8 +30,11 @@ import { GatewaySessionManager } from './socket.sessions'
 @Injectable()
 export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor(
-		private authService: AuthService,
-		private userService: UsersService,
+		// private authService: AuthService,
+		// private userService: UsersService,
+		private roomService: RoomsService,
+		private notifService: NotificationsService,
+
 		@Inject(GatewaySessionManager)
 		private sessions: GatewaySessionManager,
 	) {}
@@ -38,29 +43,41 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	server: Server
 	private logger: Logger = new Logger('Chat')
 
-	async handleConnection(socket: AuthenticatedSocket) {
-		this.logger.log(`New socket connected ${socket.id}`)
-		this.sessions.setUserSocket(socket.user.id, socket)
+	/**
+	 * Connection Events
+	 **/
+	async handleConnection(client: AuthenticatedSocket) {
+		const userRoomNames = (await this.roomService.getRoomsForUser(client.user.id)).map(
+			(room) => `roomNotifications-${room.id}`,
+		)
+
+		client.join(userRoomNames)
+
+		this.logger.log(`New client connected ${client.id}`)
+		this.sessions.setUserSocket(client.user.id, client)
 
 		this.server.emit(socketEvents.userConnected, {
-			id: socket.user.id,
-			username: socket.user.username,
+			id: client.user.id,
+			username: client.user.username,
 			online: true,
 		})
 	}
 
-	handleDisconnect(socket: AuthenticatedSocket) {
-		// this.userService.removeUserSocketId(socket.user.id)
-		this.logger.log(`Disconecting socket ${socket.id}`)
-		this.sessions.removeUserSocket(socket.user.id)
+	handleDisconnect(client: AuthenticatedSocket) {
+		// this.userService.removeUserSocketId(client.user.id)
+		this.logger.log(`Disconecting client ${client.id}`)
+		this.sessions.removeUserSocket(client.user.id)
 
 		this.server.emit(socketEvents.userDisconnected, {
-			id: socket.user.id,
-			username: socket.user.username,
+			id: client.user.id,
+			username: client.user.username,
 			online: false,
 		})
 	}
 
+	/**
+	 * Message events
+	 **/
 	@SubscribeMessage(socketEvents.onRoomJoin)
 	onConversationJoin(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
 		console.log(`${client.user?.id} joined a Conversation of ID: ${roomId}`)
@@ -91,7 +108,16 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	/**
-	 * Events
+	 * Notification Events
+	 **/
+	@SubscribeMessage(socketEvents.markNotificationsAsRead)
+	markNotificationsAsRead(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
+		this.notifService.markNotificationsAsReadForRoom(client.user, roomId)
+		return 'ok'
+	}
+
+	/**
+	 * Internal app events
 	 **/
 	@OnEvent(appEmitters.messageCreate)
 	handleMessageCreate(payload: CreateMessageEvent) {
@@ -131,7 +157,7 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		const recipient = room.users.filter((user) => user.id !== creatorId)
 
 		const recipientSockets = recipient.map((item) => this.sessions.getUserSocket(item.id))
-		recipientSockets.forEach((socket) => socket.emit(socketEvents.createRoom, room))
+		recipientSockets.forEach((client) => client.emit(socketEvents.createRoom, room))
 
 		console.log('This is recipientSockets', recipientSockets)
 

@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { useAuth } from '../hooks/contextHooks'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { UserContext } from './context/user.context'
+import { UserContext, UserContextType } from './context/user.context'
 
 /**
  * Socket provider for the app
@@ -29,7 +29,7 @@ const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		if (accessToken) getMyInfo()
 	}, [accessToken])
 
-	const contextValue = {
+	const contextValue: UserContextType = {
 		user,
 	}
 

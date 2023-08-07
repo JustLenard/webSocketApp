@@ -1,4 +1,4 @@
-import { Avatar, ListDivider, ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/joy'
+import { Avatar, Badge, ListDivider, ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/joy'
 import { ListItemButton } from '@mui/material'
 import { useSocket } from '../../hooks/contextHooks'
 import { useUser } from '../../hooks/contextHooks'
@@ -7,7 +7,15 @@ import { getReceivingUser } from '../../utils/helpers'
 import AppSpinner from '../AppSpinner'
 import { useRooms } from '../../hooks/contextHooks'
 
-const ConversationsListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, description, lastMessage }) => {
+const ConversationsListItem: React.FC<RoomI> = ({
+	id,
+	isGroupChat,
+	name,
+	users,
+	description,
+	lastMessage,
+	notifications,
+}) => {
 	const { currentRoom, changeCurrentRoom } = useRooms()
 	const { user } = useUser()
 
@@ -28,7 +36,10 @@ const ConversationsListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, 
 						<Avatar />
 					</ListItemDecorator>
 					<ListItemContent>
-						<Typography>{conversationName}</Typography>
+						<Badge color="danger" badgeContent={notifications.length}>
+							<Typography>{conversationName}</Typography>
+						</Badge>
+
 						<Typography level="body2" noWrap>
 							{lastMessage?.text}
 						</Typography>

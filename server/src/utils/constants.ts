@@ -35,8 +35,7 @@ export enum socketEvents {
 	onTypingStop = 'onTypingStop',
 	createRoom = 'createRoom',
 	checkIfPrivateChatExists = 'checkIfPrivateChatExists',
-	addMessage = 'addMessage',
-	getMessagesForRoom = 'getMessagesForRoom',
+	markNotificationsAsRead = 'markNotificationsAsRead',
 }
 
 export enum appEmitters {
