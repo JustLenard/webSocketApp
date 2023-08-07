@@ -8,7 +8,7 @@ import { GatewaySessionManager } from '../socket/socket.sessions'
 @Injectable()
 export class UsersService {
 	constructor(
-		@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>, // private dataSource: DataSource,
+		@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>,
 		@Inject(GatewaySessionManager) private sessions: GatewaySessionManager,
 	) {}
 

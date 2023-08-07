@@ -70,17 +70,17 @@ export type ISentMessage = {
 	room: number
 }
 
-export type JoinedRoomI = {
-	id?: number
-	socketId: string
-	user: UserI
-	room: RoomI
-}
-
 export type UserI = {
 	id: string
 	username: string
 	online: boolean
+}
+
+export type Notification = {
+	id: number
+	creator: UserI
+	message: MessageI
+	room: RoomI
 }
 
 /**

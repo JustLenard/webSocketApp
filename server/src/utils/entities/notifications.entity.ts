@@ -2,6 +2,7 @@ import {
 	CreateDateColumn,
 	Entity,
 	JoinColumn,
+	JoinTable,
 	ManyToMany,
 	ManyToOne,
 	OneToOne,
@@ -17,15 +18,21 @@ export class NotificationsEntity {
 	@PrimaryGeneratedColumn()
 	id: number
 
-	@ManyToOne(() => UserEntity, (user) => user.createNotifications)
+	@ManyToOne(() => UserEntity, (user) => user.createdNotifications, { createForeignKeyConstraints: false })
+	@JoinColumn()
 	creator: UserEntity
 
-	@OneToOne(() => MessageEntity)
+	@OneToOne(() => MessageEntity, { createForeignKeyConstraints: false })
 	@JoinColumn()
 	message: MessageEntity
 
 	@ManyToMany(() => UserEntity, (user) => user.readNotifications)
+	@JoinTable()
 	readBy: UserEntity[]
+
+	@ManyToMany(() => UserEntity, (user) => user.readNotifications)
+	@JoinTable()
+	createdFor: UserEntity[]
 
 	@ManyToOne(() => RoomEntity, (room) => room.notifications)
 	@JoinColumn()

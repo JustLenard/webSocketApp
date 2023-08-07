@@ -23,12 +23,15 @@ import { MessageDto } from './dto/create-message.dto'
 import { MessageService } from './messages.service'
 import { Routes, appEmitters } from 'src/utils/constants'
 import { UpdateMessageDto } from './dto/update-message.dto'
+import { NotificationsService } from '../notifications/notifications.service'
 
 @Controller(Routes.messages)
 export class MessageController {
 	constructor(
 		private messageService: MessageService,
 		private roomService: RoomsService,
+		private notifService: NotificationsService,
+
 		private readonly eventEmitter: EventEmitter2,
 	) {}
 
@@ -54,7 +57,11 @@ export class MessageController {
 
 		if (!room) throw new BadRequestException('Room does not exist')
 
-		const message = await this.messageService.createMessage(dto, user)
+		const message = await this.messageService.createMessage(dto, user, room)
+		// console.log('This is message', message)
+		// console.log('This is room', room)
+
+		this.notifService.createNotification(message, room)
 
 		this.eventEmitter.emit(appEmitters.messageCreate, { message, roomId })
 

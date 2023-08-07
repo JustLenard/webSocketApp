@@ -4,6 +4,7 @@ import MessagesProvider from './MessagesProvider'
 import RoomsProvider from './RoomsProvider'
 import SocketProvider from './SocketProvider'
 import UserProvider from './UserProvider'
+import NotificationsProvider from './NotificationsProvider'
 
 const AppProviders: React.FC<PropsWithChildren> = ({ children }) => {
 	return (
@@ -11,7 +12,9 @@ const AppProviders: React.FC<PropsWithChildren> = ({ children }) => {
 			<SocketProvider>
 				<UserProvider>
 					<RoomsProvider>
-						<MessagesProvider>{children}</MessagesProvider>
+						<NotificationsProvider>
+							<MessagesProvider>{children}</MessagesProvider>
+						</NotificationsProvider>
 					</RoomsProvider>
 				</UserProvider>
 			</SocketProvider>

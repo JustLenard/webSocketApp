@@ -9,6 +9,7 @@ export enum Routes {
 	messages = 'room/:roomId/messages',
 	auth = 'auth',
 	user = 'users',
+	noitificaitons = 'notifications',
 }
 
 export enum socketEvents {

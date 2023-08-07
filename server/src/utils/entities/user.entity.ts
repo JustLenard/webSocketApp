@@ -46,6 +46,9 @@ export class UserEntity extends BaseEntity {
 	@ManyToMany(() => NotificationsEntity, (notif) => notif.readBy)
 	readNotifications: NotificationsEntity[]
 
+	@ManyToMany(() => NotificationsEntity, (notif) => notif.createdFor)
+	unreadNotifications: NotificationsEntity[]
+
 	@OneToMany(() => NotificationsEntity, (notif) => notif.creator)
-	createNotifications: NotificationsEntity[]
+	createdNotifications: NotificationsEntity[]
 }

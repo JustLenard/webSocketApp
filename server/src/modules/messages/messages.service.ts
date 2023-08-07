@@ -7,6 +7,7 @@ import { UserEntity } from 'src/utils/entities/user.entity'
 import { MessageEntity } from 'src/utils/entities/message.entity'
 import { MessageDto } from './dto/create-message.dto'
 import { RoomsService } from '../rooms/rooms.service'
+import { RoomEntity } from 'src/utils/entities/room.entity'
 
 @Injectable()
 export class MessageService {
@@ -18,10 +19,10 @@ export class MessageService {
 		private roomService: RoomsService,
 	) {}
 
-	async createMessage(message: MessageDto, user: UserEntity): Promise<MessageEntity> {
-		const room = await this.roomService.findRoomById(message.roomId)
+	async createMessage(message: MessageDto, user: UserEntity, room: RoomEntity): Promise<MessageEntity> {
+		// const room = await this.roomService.findRoomById(message.roomId)
 
-		if (!room) throw new BadRequestException('Room does not exist')
+		// if (!room) throw new BadRequestException('Room does not exist')
 
 		const newMessage = this.messageRepository.create({
 			text: message.text,

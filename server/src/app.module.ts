@@ -12,6 +12,7 @@ import { OpenAiModule } from './modules/open-ai/open-ai.module'
 import { RoomsModule } from './modules/rooms/rooms.module'
 import { SocketModule } from './modules/socket/socket.module'
 import { UsersModule } from './modules/users/users.module'
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 console.log(process.env.HOST)
 
@@ -33,6 +34,7 @@ if (process.env.ENVIRONMENT === 'PRODUCTION') envFilePath = '.env.production'
 		SocketModule,
 		MessagesModule,
 		RoomsModule,
+		NotificationsModule,
 	],
 })
 export class AppModule {
