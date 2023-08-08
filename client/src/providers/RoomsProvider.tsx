@@ -29,16 +29,19 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 			currentRoom && appSocket.emit(socketEvents.onRoomLeave, currentRoom.id)
 			appSocket.emit(socketEvents.onRoomJoin, selectedRoom.id)
 
-			if (selectedRoom.notifications.length !== 0) {
-				appSocket.emit(socketEvents.markNotificationsAsRead, selectedRoom.id, (res: string) => {
-					setCurrentRoom({
-						...selectedRoom,
-						notifications: [],
-					})
-				})
-			} else {
-				setCurrentRoom(selectedRoom)
-			}
+			// if (selectedRoom.notifications.length !== 0) {
+			// 	console.log('Marking notificaitons as read')
+			// 	appSocket.emit(socketEvents.markNotificationsAsRead, selectedRoom.id, (res: string) => {
+			// 		setCurrentRoom({
+			// 			...selectedRoom,
+			// 			notifications: [],
+			// 		})
+			// 	})
+			// } else {
+			// 	setCurrentRoom(selectedRoom)
+			// }
+			setCurrentRoom(selectedRoom)
+
 			saveRoomIdToSessionStorage(selectedRoom.id)
 		}
 	}

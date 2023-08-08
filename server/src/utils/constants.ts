@@ -4,6 +4,9 @@ export const NUMBERS = [...Array(10)].map((_, i) => i.toString())
 export const GLOBAL_ROOM_NAME = 'Global'
 export const REFRESH_TOKEN = 'refreshToken'
 
+export const MESSAGE_ROOM = 'room'
+export const NOTIFICATIONS_ROOM = 'notificationsRoom'
+
 export enum Routes {
 	rooms = 'rooms',
 	messages = 'room/:roomId/messages',
@@ -20,6 +23,7 @@ export enum socketEvents {
 	messagePatched = 'messagePatched',
 	messageDeleted = 'messageDeleted',
 	messages = 'messages',
+	newNotification = 'newNotification',
 	/**
 	 * Connection
 	 **/
@@ -42,6 +46,8 @@ export enum appEmitters {
 	messageCreate = 'message.create',
 	messagePatch = 'message.patch',
 	messageDelete = 'message.delete',
+
+	notificationsCreate = 'notifications.create',
 
 	roomCreate = 'room.create',
 }

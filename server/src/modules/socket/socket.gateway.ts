@@ -11,13 +11,14 @@ import {
 } from '@nestjs/websockets'
 import { Server } from 'socket.io'
 import { AuthenticatedSocket } from 'src/utils/interfaces'
-import { CreateMessageEvent, CreateRoomEvent } from 'src/utils/types/types'
+import { CreateMessageEvent, CreateNotificationEvent, CreateRoomEvent } from 'src/utils/types/types'
 import { appEmitters, socketEvents } from '../../utils/constants'
 import { AuthService } from '../auth/auth.service'
 import { UsersService } from '../users/users.service'
 import { GatewaySessionManager } from './socket.sessions'
 import { RoomsService } from '../rooms/rooms.service'
 import { NotificationsService } from '../notifications/notifications.service'
+import { createMessageRoomName, createNotifRoomName } from 'src/utils/helpers'
 
 @WebSocketGateway({
 	cors: {
@@ -47,8 +48,8 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	 * Connection Events
 	 **/
 	async handleConnection(client: AuthenticatedSocket) {
-		const userRoomNames = (await this.roomService.getRoomsForUser(client.user.id)).map(
-			(room) => `roomNotifications-${room.id}`,
+		const userRoomNames = (await this.roomService.getRoomsForUser(client.user.id)).map((room) =>
+			createNotifRoomName(room.id),
 		)
 
 		client.join(userRoomNames)
@@ -81,30 +82,30 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	@SubscribeMessage(socketEvents.onRoomJoin)
 	onConversationJoin(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
 		console.log(`${client.user?.id} joined a Conversation of ID: ${roomId}`)
-		client.join(`room-${roomId}`)
+		client.join(createMessageRoomName(roomId))
 		console.log(client.rooms)
-		client.to(`room-${roomId}`).emit('userJoin')
+		client.to(createMessageRoomName(roomId)).emit(socketEvents.onRoomJoin)
 	}
 
 	@SubscribeMessage(socketEvents.onRoomLeave)
 	onConversationLeave(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
-		client.leave(`room-${roomId}`)
+		client.leave(createMessageRoomName(roomId))
 		console.log(client.rooms)
-		client.to(`room-${roomId}`).emit('userLeave')
+		client.to(createMessageRoomName(roomId)).emit(socketEvents.onRoomLeave)
 	}
 
 	@SubscribeMessage(socketEvents.onTypingStart)
 	onTypingStart(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
 		console.log(roomId)
 		console.log(client.rooms)
-		client.to(`room-${roomId}`).emit('onTypingStart')
+		client.to(createMessageRoomName(roomId)).emit(socketEvents.onTypingStart)
 	}
 
 	@SubscribeMessage(socketEvents.onTypingStop)
 	onTypingStop(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
 		console.log(roomId)
 		console.log(client.rooms)
-		client.to(`room-${roomId}`).emit('onTypingStop')
+		client.to(createMessageRoomName(roomId)).emit(socketEvents.onTypingStop)
 	}
 
 	/**
@@ -119,18 +120,25 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	/**
 	 * Internal app events
 	 **/
+	@OnEvent(appEmitters.notificationsCreate)
+	hadnleNotificationCreate(payload: CreateNotificationEvent) {
+		const { notification, roomId } = payload
+
+		this.server.to(`roomNotifications-${roomId}`).emit(socketEvents.newNotification, { notification, roomId })
+	}
+
 	@OnEvent(appEmitters.messageCreate)
 	handleMessageCreate(payload: CreateMessageEvent) {
 		const { message, roomId } = payload
 
-		this.server.to(`room-${roomId}`).emit(socketEvents.messageAdded, { message, roomId })
+		this.server.to(createMessageRoomName(roomId)).emit(socketEvents.messageAdded, { message, roomId })
 	}
 
 	@OnEvent(appEmitters.messagePatch)
 	async handleMessageUpdate(payload: CreateMessageEvent) {
 		const { message, roomId } = payload
 
-		this.server.to(`room-${roomId}`).emit(socketEvents.messagePatched, { message, roomId })
+		this.server.to(createMessageRoomName(roomId)).emit(socketEvents.messagePatched, { message, roomId })
 	}
 
 	@OnEvent(appEmitters.messageDelete)
@@ -139,8 +147,8 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 		const { message, roomId } = payload
 
-		this.server.to(`room-${roomId}`).emit(socketEvents.messageDeleted, { message, roomId })
-		// this.server.to(`room-${roomId}`)
+		this.server.to(createMessageRoomName(roomId)).emit(socketEvents.messageDeleted, { message, roomId })
+		// this.server.to(createMessageRoomName(roomId))
 	}
 
 	// @OnEvent('conversation.create')

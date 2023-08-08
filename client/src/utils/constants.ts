@@ -4,6 +4,8 @@ export const DIGITS = [...Array(10)].map((_, i) => i.toString())
 export const GLOBAL_ROOM_NAME = 'Global'
 export const LOGGED_IN_KEY_NAME = 'loggedIn'
 export const CURRENT_ROOM_KEY_NAME = 'currentRoom'
+export const MESSAGE_ROOM = 'room'
+export const NOTIFICATIONS_ROOM = 'notificationsRoom'
 
 export enum socketEvents {
 	/**
@@ -13,6 +15,7 @@ export enum socketEvents {
 	messagePatched = 'messagePatched',
 	messageDeleted = 'messageDeleted',
 	messages = 'messages',
+	newNotification = 'newNotification',
 	/**
 	 * Connection
 	 **/

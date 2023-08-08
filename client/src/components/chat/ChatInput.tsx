@@ -46,7 +46,7 @@ const ChatInput: React.FC<Props> = () => {
 				// console.log('User stopped typing')
 				appSocket.emit(socketEvents.onTypingStop, currentRoom.id)
 				setIsTyping(false)
-			}, 10000),
+			}, 1000),
 		)
 	}
 	return (

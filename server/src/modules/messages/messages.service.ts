@@ -20,18 +20,12 @@ export class MessageService {
 	) {}
 
 	async createMessage(message: MessageDto, user: UserEntity, room: RoomEntity): Promise<MessageEntity> {
-		// const room = await this.roomService.findRoomById(message.roomId)
-
-		// if (!room) throw new BadRequestException('Room does not exist')
-
 		const newMessage = this.messageRepository.create({
 			text: message.text,
 			room,
 			user,
 		})
-		await this.messageRepository.save(newMessage)
-		await this.roomService.addLastMessageToRoom(room, newMessage)
-		return newMessage
+		return this.messageRepository.save(newMessage)
 	}
 
 	async findMessagesForRoom(roomId: number): Promise<any[]> {

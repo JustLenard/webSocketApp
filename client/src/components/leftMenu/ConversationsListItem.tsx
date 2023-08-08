@@ -2,10 +2,12 @@ import { Avatar, Badge, ListDivider, ListItem, ListItemContent, ListItemDecorato
 import { ListItemButton } from '@mui/material'
 import { useSocket } from '../../hooks/contextHooks'
 import { useUser } from '../../hooks/contextHooks'
-import { RoomI } from '../../types/types'
-import { getReceivingUser } from '../../utils/helpers'
+import { NotificationT, RoomI } from '../../types/types'
+import { createNotifRoomName, getReceivingUser } from '../../utils/helpers'
 import AppSpinner from '../AppSpinner'
 import { useRooms } from '../../hooks/contextHooks'
+import { useEffect, useState } from 'react'
+import { socketEvents } from '../../utils/constants'
 
 const ConversationsListItem: React.FC<RoomI> = ({
 	id,
@@ -16,8 +18,13 @@ const ConversationsListItem: React.FC<RoomI> = ({
 	lastMessage,
 	notifications,
 }) => {
+	const { appSocket } = useSocket()
 	const { currentRoom, changeCurrentRoom } = useRooms()
 	const { user } = useUser()
+	const [roomNotificationsAmount, setRoomNotificaitonsAmount] = useState(notifications.length)
+	const [lastMessageText, setLastMessageText] = useState(
+		notifications.length === 0 ? lastMessage?.text : notifications[0].message.text,
+	)
 
 	const handleClick = () => {
 		changeCurrentRoom(id)
@@ -28,6 +35,26 @@ const ConversationsListItem: React.FC<RoomI> = ({
 	const receivingUser = getReceivingUser(users, user.id)
 	const conversationName = isGroupChat ? name : receivingUser.username
 
+	useEffect(() => {
+		if (!appSocket) return
+		if (currentRoom.id === id) {
+			appSocket.emit(socketEvents.markNotificationsAsRead, id, (res: string) => {
+				if (res === 'ok') setRoomNotificaitonsAmount(0)
+			})
+		}
+		return () => {
+			appSocket.off(socketEvents.markNotificationsAsRead)
+		}
+	}, [appSocket, currentRoom])
+
+	useEffect(() => {
+		if (!appSocket) return
+		appSocket.on(createNotifRoomName(id), (notif: NotificationT) => {
+			setLastMessageText(notif.message.text)
+			setRoomNotificaitonsAmount((prev) => prev + 1)
+		})
+	}, [appSocket])
+
 	return (
 		<>
 			<ListItemButton onClick={handleClick} selected={currentRoom.id === id} sx={{ width: 'inherit' }}>
@@ -36,12 +63,12 @@ const ConversationsListItem: React.FC<RoomI> = ({
 						<Avatar />
 					</ListItemDecorator>
 					<ListItemContent>
-						<Badge color="danger" badgeContent={notifications.length}>
+						<Badge color="danger" badgeContent={roomNotificationsAmount}>
 							<Typography>{conversationName}</Typography>
 						</Badge>
 
 						<Typography level="body2" noWrap>
-							{lastMessage?.text}
+							{lastMessageText}
 						</Typography>
 					</ListItemContent>
 				</ListItem>

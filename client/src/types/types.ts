@@ -47,7 +47,7 @@ export type RoomI = {
 	description?: string
 	users: UserI[]
 	lastMessage: null | MessageI
-	notifications: Notification[]
+	notifications: NotificationT[]
 }
 
 export type PostRoomI = {
@@ -77,7 +77,7 @@ export type UserI = {
 	online: boolean
 }
 
-export type Notification = {
+export type NotificationT = {
 	id: number
 	creator: UserI
 	message: MessageI

@@ -4,7 +4,7 @@ import { MessageEntity } from 'src/utils/entities/message.entity'
 import { NotificationsEntity } from 'src/utils/entities/notifications.entity'
 import { RoomEntity } from 'src/utils/entities/room.entity'
 import { UserEntity } from 'src/utils/entities/user.entity'
-import { In, Repository } from 'typeorm'
+import { Repository } from 'typeorm'
 
 @Injectable()
 export class NotificationsService {
@@ -18,12 +18,11 @@ export class NotificationsService {
 			readBy: [],
 			createdFor: room.users.filter((user) => user.id !== message.user.id),
 		})
-
-		await this.notifRepository.save(newNotification)
+		return this.notifRepository.save(newNotification)
 	}
 
 	getUserNotifications(user: UserEntity) {
-		const userNotifications = this.notifRepository
+		return this.notifRepository
 			.createQueryBuilder('notification')
 			.leftJoinAndSelect('notification.creator', 'creator')
 			.leftJoinAndSelect('notification.message', 'message')
@@ -37,12 +36,10 @@ export class NotificationsService {
 			})
 			.orderBy('notification.created_at', 'DESC')
 			.getMany()
-
-		return userNotifications
 	}
 
 	async getNotificationsForRoom(user: UserEntity, roomId: number) {
-		const userNotifications = this.notifRepository
+		return this.notifRepository
 			.createQueryBuilder('notification')
 			.leftJoinAndSelect('notification.creator', 'creator')
 			.leftJoinAndSelect('notification.message', 'message')
@@ -59,10 +56,6 @@ export class NotificationsService {
 			})
 			.orderBy('notification.created_at', 'DESC')
 			.getMany()
-
-		console.log('This is userNotifications length', (await userNotifications).length)
-
-		return userNotifications
 	}
 
 	async markNotificationsAsReadForRoom(user: UserEntity, roomId: number) {

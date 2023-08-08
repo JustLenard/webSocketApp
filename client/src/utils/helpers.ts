@@ -1,5 +1,5 @@
 import { RoomI, UserI } from '../types/types'
-import { CURRENT_ROOM_KEY_NAME, GLOBAL_ROOM_NAME } from './constants'
+import { CURRENT_ROOM_KEY_NAME, GLOBAL_ROOM_NAME, MESSAGE_ROOM, NOTIFICATIONS_ROOM } from './constants'
 import { appRoutes } from '../router/Root'
 
 export const isInsideOfApplication = () => {
@@ -10,9 +10,6 @@ export const getReceivingUser = (users: UserI[], sendingUserId: string) => {
 	return users.filter((user) => user.id !== sendingUserId)[0]
 }
 
-/**
- * Rooms utils
- **/
 export const getCurrentRoomFromSessionStorage = () => {
 	const res = sessionStorage.getItem(CURRENT_ROOM_KEY_NAME)
 
@@ -37,4 +34,12 @@ export const getSavedOrGlobalRoom = (rooms: RoomI[]) => {
 
 export const saveRoomIdToSessionStorage = (roomId: number) => {
 	return sessionStorage.setItem(CURRENT_ROOM_KEY_NAME, roomId.toString())
+}
+
+export const createMessageRoomName = (roomId: number) => {
+	return `${MESSAGE_ROOM}-${roomId}`
+}
+
+export const createNotifRoomName = (roomId: number) => {
+	return `${NOTIFICATIONS_ROOM}-${roomId}`
 }

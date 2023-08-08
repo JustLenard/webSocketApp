@@ -38,10 +38,7 @@ export class MessageController {
 	@UseGuards(AtGuard)
 	@Get()
 	@HttpCode(HttpStatus.OK)
-	findMessagesForRoom(
-		@Param('roomId', ParseIntPipe) roomId: number,
-		@GetCurrentUser() user: UserEntity,
-	): Promise<MessageI[]> {
+	findMessagesForRoom(@Param('roomId', ParseIntPipe) roomId: number): Promise<MessageI[]> {
 		return this.messageService.findMessagesForRoom(roomId)
 	}
 
@@ -58,12 +55,12 @@ export class MessageController {
 		if (!room) throw new BadRequestException('Room does not exist')
 
 		const message = await this.messageService.createMessage(dto, user, room)
-		// console.log('This is message', message)
-		// console.log('This is room', room)
+		await this.roomService.addLastMessageToRoom(room, message)
 
-		this.notifService.createNotification(message, room)
+		const notif = this.notifService.createNotification(message, room)
 
 		this.eventEmitter.emit(appEmitters.messageCreate, { message, roomId })
+		this.eventEmitter.emit(appEmitters.notificationsCreate, { notif, roomId })
 
 		return message
 	}

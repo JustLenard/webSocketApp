@@ -1,8 +1,8 @@
 import { createContext } from 'react'
-import { Notification } from '../../types/types'
+import { NotificationT } from '../../types/types'
 
 export type NotificationsContextType = {
-	notifications: Notification[]
+	notifications: NotificationT[]
 }
 
 export const NotificationsContext = createContext<NotificationsContextType>({

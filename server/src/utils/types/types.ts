@@ -1,4 +1,5 @@
 import { MessageEntity } from '../entities/message.entity'
+import { NotificationsEntity } from '../entities/notifications.entity'
 import { RoomEntity } from '../entities/room.entity'
 import { UserEntity } from '../entities/user.entity'
 
@@ -20,6 +21,11 @@ export type CreateMessageParams = {
 
 export type CreateMessageEvent = {
 	message: MessageEntity
+	roomId: number
+}
+
+export type CreateNotificationEvent = {
+	notification: NotificationsEntity
 	roomId: number
 }
 
