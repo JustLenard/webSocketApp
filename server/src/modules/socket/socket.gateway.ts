@@ -83,28 +83,22 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	onConversationJoin(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
 		console.log(`${client.user?.id} joined a Conversation of ID: ${roomId}`)
 		client.join(createMessageRoomName(roomId))
-		console.log(client.rooms)
 		client.to(createMessageRoomName(roomId)).emit(socketEvents.onRoomJoin)
 	}
 
 	@SubscribeMessage(socketEvents.onRoomLeave)
 	onConversationLeave(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
 		client.leave(createMessageRoomName(roomId))
-		console.log(client.rooms)
 		client.to(createMessageRoomName(roomId)).emit(socketEvents.onRoomLeave)
 	}
 
 	@SubscribeMessage(socketEvents.onTypingStart)
 	onTypingStart(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
-		console.log(roomId)
-		console.log(client.rooms)
 		client.to(createMessageRoomName(roomId)).emit(socketEvents.onTypingStart)
 	}
 
 	@SubscribeMessage(socketEvents.onTypingStop)
 	onTypingStop(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
-		console.log(roomId)
-		console.log(client.rooms)
 		client.to(createMessageRoomName(roomId)).emit(socketEvents.onTypingStop)
 	}
 
@@ -123,22 +117,22 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	@OnEvent(appEmitters.notificationsCreate)
 	hadnleNotificationCreate(payload: CreateNotificationEvent) {
 		const { notification, roomId } = payload
+		console.log('This is payload', payload)
 
-		this.server.to(`roomNotifications-${roomId}`).emit(socketEvents.newNotification, { notification, roomId })
+		this.server.to(createNotifRoomName(roomId)).emit(socketEvents.newNotification, payload)
 	}
 
 	@OnEvent(appEmitters.messageCreate)
 	handleMessageCreate(payload: CreateMessageEvent) {
 		const { message, roomId } = payload
 
-		this.server.to(createMessageRoomName(roomId)).emit(socketEvents.messageAdded, { message, roomId })
+		this.server.to(createMessageRoomName(roomId)).emit(socketEvents.messageAdded, payload)
 	}
 
 	@OnEvent(appEmitters.messagePatch)
 	async handleMessageUpdate(payload: CreateMessageEvent) {
 		const { message, roomId } = payload
-
-		this.server.to(createMessageRoomName(roomId)).emit(socketEvents.messagePatched, { message, roomId })
+		this.server.to(createMessageRoomName(roomId)).emit(socketEvents.messagePatched, payload)
 	}
 
 	@OnEvent(appEmitters.messageDelete)

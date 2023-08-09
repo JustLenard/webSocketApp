@@ -91,3 +91,8 @@ export type MessageSocketEvent = {
 	message: MessageI
 	roomId: number
 }
+
+export type NotificationSocketEvent = {
+	notif: NotificationT
+	roomId: number
+}

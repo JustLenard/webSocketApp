@@ -24,10 +24,12 @@ export class NotificationsService {
 	getUserNotifications(user: UserEntity) {
 		return this.notifRepository
 			.createQueryBuilder('notification')
-			.leftJoinAndSelect('notification.creator', 'creator')
+			.leftJoin('notification.creator', 'creator')
+			.addSelect(['creator.id', 'creator.username'])
 			.leftJoinAndSelect('notification.message', 'message')
 			.leftJoinAndSelect('notification.readBy', 'readBy')
-			.leftJoinAndSelect('notification.createdFor', 'createdFor')
+			.leftJoin('notification.createdFor', 'createdFor')
+			.addSelect(['createdFor.id', 'createdFor.username'])
 			.leftJoinAndSelect('notification.room', 'room')
 			.where('createdFor.id = :userId', { userId: user.id })
 			.andWhere('(readBy.id != :userId OR readBy.id IS NULL OR readBy.id = :emptyUuid)', {
@@ -41,10 +43,12 @@ export class NotificationsService {
 	async getNotificationsForRoom(user: UserEntity, roomId: number) {
 		return this.notifRepository
 			.createQueryBuilder('notification')
-			.leftJoinAndSelect('notification.creator', 'creator')
+			.leftJoin('notification.creator', 'creator')
+			.addSelect(['creator.id', 'creator.username'])
 			.leftJoinAndSelect('notification.message', 'message')
 			.leftJoinAndSelect('notification.readBy', 'readBy')
-			.leftJoinAndSelect('notification.createdFor', 'createdFor')
+			.leftJoin('notification.createdFor', 'createdFor')
+			.addSelect(['createdFor.id', 'createdFor.username'])
 			.leftJoinAndSelect('notification.room', 'room')
 			.where('createdFor.id = :userId', { userId: user.id })
 			.andWhere('room.id = :roomId', {

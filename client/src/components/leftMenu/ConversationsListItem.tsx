@@ -2,7 +2,7 @@ import { Avatar, Badge, ListDivider, ListItem, ListItemContent, ListItemDecorato
 import { ListItemButton } from '@mui/material'
 import { useSocket } from '../../hooks/contextHooks'
 import { useUser } from '../../hooks/contextHooks'
-import { NotificationT, RoomI } from '../../types/types'
+import { NotificationSocketEvent, NotificationT, RoomI } from '../../types/types'
 import { createNotifRoomName, getReceivingUser } from '../../utils/helpers'
 import AppSpinner from '../AppSpinner'
 import { useRooms } from '../../hooks/contextHooks'
@@ -49,8 +49,10 @@ const ConversationsListItem: React.FC<RoomI> = ({
 
 	useEffect(() => {
 		if (!appSocket) return
-		appSocket.on(createNotifRoomName(id), (notif: NotificationT) => {
-			setLastMessageText(notif.message.text)
+		appSocket.on(socketEvents.newNotification, (payload: NotificationSocketEvent) => {
+			if (payload.roomId !== id) return
+			console.log('This is payload', payload)
+			setLastMessageText(payload.notif.message.text)
 			setRoomNotificaitonsAmount((prev) => prev + 1)
 		})
 	}, [appSocket])
