@@ -25,7 +25,7 @@ export type CreateMessageEvent = {
 }
 
 export type CreateNotificationEvent = {
-	notification: NotificationsEntity
+	notif: NotificationsEntity
 	roomId: number
 }
 

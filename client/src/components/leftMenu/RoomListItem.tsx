@@ -1,23 +1,13 @@
 import { Avatar, Badge, ListDivider, ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/joy'
 import { ListItemButton } from '@mui/material'
-import { useSocket } from '../../hooks/contextHooks'
-import { useUser } from '../../hooks/contextHooks'
-import { NotificationSocketEvent, NotificationT, RoomI } from '../../types/types'
-import { createNotifRoomName, getReceivingUser } from '../../utils/helpers'
-import AppSpinner from '../AppSpinner'
-import { useRooms } from '../../hooks/contextHooks'
 import { useEffect, useState } from 'react'
+import { useRooms, useSocket, useUser } from '../../hooks/contextHooks'
+import { NotificationSocketEvent, RoomI } from '../../types/types'
 import { socketEvents } from '../../utils/constants'
+import { getReceivingUser } from '../../utils/helpers'
+import AppSpinner from '../AppSpinner'
 
-const ConversationsListItem: React.FC<RoomI> = ({
-	id,
-	isGroupChat,
-	name,
-	users,
-	description,
-	lastMessage,
-	notifications,
-}) => {
+const RoomListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, description, lastMessage, notifications }) => {
 	const { appSocket } = useSocket()
 	const { currentRoom, changeCurrentRoom } = useRooms()
 	const { user } = useUser()
@@ -42,20 +32,21 @@ const ConversationsListItem: React.FC<RoomI> = ({
 				if (res === 'ok') setRoomNotificaitonsAmount(0)
 			})
 		}
-		return () => {
-			appSocket.off(socketEvents.markNotificationsAsRead)
-		}
-	}, [appSocket, currentRoom])
-
-	useEffect(() => {
-		if (!appSocket) return
 		appSocket.on(socketEvents.newNotification, (payload: NotificationSocketEvent) => {
 			if (payload.roomId !== id) return
-			console.log('This is payload', payload)
 			setLastMessageText(payload.notif.message.text)
-			setRoomNotificaitonsAmount((prev) => prev + 1)
+			if (user.id !== payload.notif.creator.id && currentRoom.id !== payload.notif.room.id) {
+				setRoomNotificaitonsAmount((prev) => prev + 1)
+			} else {
+				appSocket.emit(socketEvents.markNotificationsAsRead, id)
+			}
 		})
-	}, [appSocket])
+
+		return () => {
+			appSocket.off(socketEvents.markNotificationsAsRead)
+			appSocket.off(socketEvents.newNotification)
+		}
+	}, [appSocket, currentRoom])
 
 	return (
 		<>
@@ -80,4 +71,4 @@ const ConversationsListItem: React.FC<RoomI> = ({
 	)
 }
 
-export default ConversationsListItem
+export default RoomListItem

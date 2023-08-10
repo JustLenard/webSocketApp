@@ -60,7 +60,7 @@ export class MessageController {
 		const notif = await this.notifService.createNotification(message, room)
 
 		this.eventEmitter.emit(appEmitters.messageCreate, { message, roomId })
-		this.eventEmitter.emit(appEmitters.notificationsCreate, { notif, roomId })
+		this.eventEmitter.emit(appEmitters.notificationsCreate, { notif, roomId, userId: user.id })
 
 		return message
 	}

@@ -2,7 +2,7 @@ import { List, Typography } from '@mui/joy'
 import { Grid } from '@mui/material'
 import { useSocket } from '../../hooks/contextHooks'
 import AppSpinner from '../AppSpinner'
-import ConversationsListItem from './ConversationsListItem'
+import RoomListItem from './RoomListItem'
 import { useRooms } from '../../hooks/contextHooks'
 
 const LeftMenu = () => {
@@ -31,7 +31,7 @@ const LeftMenu = () => {
 					}}
 				>
 					{rooms.map((room, i) => (
-						<ConversationsListItem {...room} key={room.id} />
+						<RoomListItem {...room} key={room.id} />
 					))}
 				</List>
 			</Grid>
