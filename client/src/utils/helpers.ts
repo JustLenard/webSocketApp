@@ -1,6 +1,18 @@
 import { RoomI, UserI } from '../types/types'
 import { CURRENT_ROOM_KEY_NAME, GLOBAL_ROOM_NAME, MESSAGE_ROOM, NOTIFICATIONS_ROOM } from './constants'
 import { appRoutes } from '../router/Root'
+import { ColorPaletteProp } from '@mui/joy'
+
+export const getRandomInt = (max: number, min = 0) => {
+	min = Math.ceil(min)
+	max = Math.floor(max)
+	return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+export const selectRandomArrayElement = (elements: any[]) => {
+	const randomNumber = getRandomInt(elements.length - 1)
+	return elements[randomNumber]
+}
 
 export const isInsideOfApplication = () => {
 	return location.pathname !== appRoutes.login && location.pathname !== appRoutes.signUp
@@ -42,4 +54,13 @@ export const createMessageRoomName = (roomId: number) => {
 
 export const createNotifRoomName = (roomId: number) => {
 	return `${NOTIFICATIONS_ROOM}-${roomId}`
+}
+
+export const getSubstring = (initialString: string, end = 2) => {
+	return initialString.slice(0, end).toUpperCase()
+}
+
+export const getRandomColorPalletteProp = (): ColorPaletteProp => {
+	const colors = ['primary', 'neutral', 'danger', 'info', 'success', 'warning']
+	return selectRandomArrayElement(colors)
 }

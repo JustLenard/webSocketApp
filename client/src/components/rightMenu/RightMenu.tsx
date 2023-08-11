@@ -7,6 +7,7 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { useUser } from '../../hooks/contextHooks'
 import { CreateRoomParams, UserI } from '../../types/types'
 import { socketEvents } from '../../utils/constants'
+import AppAvatar from '../avatar/AppAvatar'
 
 const RightMenu = () => {
 	const { appSocket } = useSocket()
@@ -123,8 +124,7 @@ const ProfileListItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 		<>
 			<ListItem onClick={handleClick}>
 				<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
-					{/* <Avatar size="sm">{username[0].toUpperCase()}</Avatar> */}
-					<Avatar />
+					<AppAvatar username={username} />
 				</ListItemDecorator>
 
 				<ListItemContent>

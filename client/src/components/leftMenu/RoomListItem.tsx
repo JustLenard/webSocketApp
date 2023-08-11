@@ -1,4 +1,4 @@
-import { Avatar, Badge, ListDivider, ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/joy'
+import { Badge, ListDivider, ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/joy'
 import { ListItemButton } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useRooms, useSocket, useUser } from '../../hooks/contextHooks'
@@ -6,6 +6,7 @@ import { NotificationSocketEvent, RoomI } from '../../types/types'
 import { socketEvents } from '../../utils/constants'
 import { getReceivingUser } from '../../utils/helpers'
 import AppSpinner from '../AppSpinner'
+import AppAvatar from '../avatar/AppAvatar'
 
 const RoomListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, description, lastMessage, notifications }) => {
 	const { appSocket } = useSocket()
@@ -53,7 +54,7 @@ const RoomListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, descripti
 			<ListItemButton onClick={handleClick} selected={currentRoom.id === id} sx={{ width: 'inherit' }}>
 				<ListItem sx={{ width: 'inherit' }}>
 					<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
-						<Avatar />
+						<AppAvatar username={receivingUser.username} />
 					</ListItemDecorator>
 					<ListItemContent>
 						<Badge color="danger" badgeContent={roomNotificationsAmount}>
