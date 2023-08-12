@@ -54,7 +54,7 @@ const RoomListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, descripti
 			<ListItemButton onClick={handleClick} selected={currentRoom.id === id} sx={{ width: 'inherit' }}>
 				<ListItem sx={{ width: 'inherit' }}>
 					<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
-						<AppAvatar username={receivingUser.username} />
+						<AppAvatar username={conversationName} />
 					</ListItemDecorator>
 					<ListItemContent>
 						<Badge color="danger" badgeContent={roomNotificationsAmount}>

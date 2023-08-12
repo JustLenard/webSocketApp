@@ -65,7 +65,7 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	}
 
 	useEffect(() => {
-		if (accessToken) {
+		if (accessToken && appSocket) {
 			const getRooms = async () => {
 				try {
 					const response = await privateAxios.get('/rooms')
@@ -74,7 +74,7 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 					setRooms(response.data)
 					setCurrentRoom(room)
 					console.log('This is room', room)
-					if (room && appSocket) {
+					if (room) {
 						appSocket.emit(socketEvents.onRoomJoin, room.id)
 						saveRoomIdToSessionStorage(room.id)
 					}
@@ -84,7 +84,7 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 			}
 			getRooms()
 		}
-	}, [loggedIn, accessToken])
+	}, [loggedIn, accessToken, appSocket])
 
 	useEffect(() => {
 		if (!appSocket) return
