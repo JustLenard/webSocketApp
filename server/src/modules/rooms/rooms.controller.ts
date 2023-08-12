@@ -46,7 +46,7 @@ export class RoomControler {
 			newRoom.users = newRoom.users.map((user) => ({ id: user.id, username: user.username } as UserEntity))
 
 			this.eventEmitter.emit(appEmitters.roomCreate, { room: newRoom, creatorId: user.id })
-			return newRoom
+			return { ...newRoom, notifications: [] }
 		}
 
 		this.logger.warn('Room already exists. Aborting')

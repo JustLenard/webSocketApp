@@ -23,7 +23,7 @@ const LeftMenu = () => {
 						minWidth: 240,
 						borderRadius: 'sm',
 						boxShadow: 'sm',
-						paddingLeft: 0,
+						// paddingLeft: 0,
 						'--ListItem-paddingX': 0,
 						'--ListItem-paddingY': 0,
 						'--ListDivider-gap': '0px',

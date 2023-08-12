@@ -152,10 +152,13 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	@OnEvent(appEmitters.roomCreate)
 	async roomCreate(payload: CreateRoomEvent) {
 		const { room, creatorId } = payload
+		console.log('This is room', room)
 
-		const recipient = room.users.filter((user) => user.id !== creatorId)
+		const recipients = room.users.filter((user) => user.id !== creatorId)
+		console.log('This is recipients', recipients)
 
-		const recipientSockets = recipient.map((item) => this.sessions.getUserSocket(item.id))
+		const recipientSockets = recipients.map((user) => this.sessions.getUserSocket(user.id))
+		console.log('This is recipientSockets', recipientSockets)
 		recipientSockets.forEach((client) => client.emit(socketEvents.createRoom, room))
 
 		console.log('This is recipientSockets', recipientSockets)

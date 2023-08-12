@@ -14,32 +14,16 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const { appSocket } = useSocket()
 	const [rooms, setRooms] = useState<RoomI[]>([])
 	const [currentRoom, setCurrentRoom] = useState<RoomI | null>(null)
-
 	const { login, logOut, loggedIn, accessToken } = useAuth()
 	const { privateAxios } = useAxiosPrivate()
-
-	console.log('This is currentRoom', currentRoom)
 
 	const changeCurrentRoom = (roomId: number) => {
 		const selectedRoom = rooms.find((room) => room.id === roomId)
 
 		if (selectedRoom && appSocket) {
-			console.log('This is selectedRoom', selectedRoom)
-
 			currentRoom && appSocket.emit(socketEvents.onRoomLeave, currentRoom.id)
 			appSocket.emit(socketEvents.onRoomJoin, selectedRoom.id)
 
-			// if (selectedRoom.notifications.length !== 0) {
-			// 	console.log('Marking notificaitons as read')
-			// 	appSocket.emit(socketEvents.markNotificationsAsRead, selectedRoom.id, (res: string) => {
-			// 		setCurrentRoom({
-			// 			...selectedRoom,
-			// 			notifications: [],
-			// 		})
-			// 	})
-			// } else {
-			// 	setCurrentRoom(selectedRoom)
-			// }
 			setCurrentRoom(selectedRoom)
 
 			saveRoomIdToSessionStorage(selectedRoom.id)
@@ -49,8 +33,6 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const createNewRoom = async (newRoom: CreateRoomParams) => {
 		try {
 			const response = await privateAxios.post('/rooms', newRoom)
-
-			console.log('This is response.data', response.data)
 
 			if (typeof response.data === 'number') {
 				if (currentRoom?.id !== response.data) return changeCurrentRoom(response.data)
@@ -73,7 +55,6 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 					const room = getSavedOrGlobalRoom(response.data)
 					setRooms(response.data)
 					setCurrentRoom(room)
-					console.log('This is room', room)
 					if (room) {
 						appSocket.emit(socketEvents.onRoomJoin, room.id)
 						saveRoomIdToSessionStorage(room.id)

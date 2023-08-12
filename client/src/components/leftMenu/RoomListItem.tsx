@@ -67,7 +67,6 @@ const RoomListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, descripti
 					</ListItemContent>
 				</ListItem>
 			</ListItemButton>
-			<ListDivider inset={'context'} />
 		</>
 	)
 }
