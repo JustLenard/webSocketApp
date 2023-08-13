@@ -43,10 +43,10 @@ export class AuthController {
 	@Post('/refresh')
 	@HttpCode(HttpStatus.OK)
 	async refresh(
-		@GetCurrentUserData('refreshToken') refreshToken: string,
+		@GetCurrentUserData('refreshTokenFromRequest') refreshToken: string,
 		@GetCurrentUser() user: UserEntity,
 		@Res({ passthrough: true }) res: Response,
 	) {
-		return this.authService.refresh(user.id, refreshToken, res)
+		return this.authService.refresh(user, refreshToken, res)
 	}
 }

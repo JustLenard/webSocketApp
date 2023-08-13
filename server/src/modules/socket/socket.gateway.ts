@@ -37,7 +37,7 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		private notifService: NotificationsService,
 
 		@Inject(GatewaySessionManager)
-		private sessions: GatewaySessionManager,
+		private readonly sessions: GatewaySessionManager,
 	) {}
 
 	@WebSocketServer()

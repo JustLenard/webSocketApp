@@ -32,6 +32,7 @@ const useAxiosPrivate = () => {
 					// modifiedRequest.sent = true // Update the sent property
 					prevRequest.sent = true
 					const newAccessToken = await refresh()
+					console.log('This is newAccessToken', newAccessToken)
 					prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
 					return appAxios(prevRequest)
 				}

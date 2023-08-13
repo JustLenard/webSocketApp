@@ -65,7 +65,8 @@ export class AuthService {
 				},
 				{
 					secret: process.env.ACCESS_TOKEN_SECRET,
-					expiresIn: 60 * 15,
+					// expiresIn: 60 * 15,
+					expiresIn: 5,
 				},
 			),
 			this.jwtService.signAsync(
@@ -88,8 +89,9 @@ export class AuthService {
 	}
 
 	async updateRtHash(userId: string, rt: string) {
-		// const hash = await this.hashData(rt)
-		const hash = rt
+		const hash = await this.hashData(rt)
+		// const hash = rt
+		console.log('This is hash', hash)
 
 		await this.userRepository
 			.createQueryBuilder()
@@ -121,7 +123,6 @@ export class AuthService {
 			.create({
 				username: dto.username,
 				password: hash,
-				// rooms: [globalRoom],
 			})
 			.save()
 
@@ -186,36 +187,23 @@ export class AuthService {
 		return 'ok'
 	}
 
-	async refresh(userId: string, rt: string, res: Response) {
+	async refresh(user: UserEntity, rt: string, res: Response) {
 		this.logger.log('Refreshing token')
 
-		if (!userId) {
-			this.logger.error('Userid is bad', userId)
-			return
-		}
-		const user = await this.userRepository.findOneBy({
-			id: userId,
-		})
-
-		// console.log('This is user.refreshToken', user.refreshToken)
 		if (!user || !user.refreshToken) throw new ForbiddenException('Access Denied')
 
 		this.logger.log('Verifying refresh token')
-		// const rtMatches = await argon2.verify(user.refreshToken, rt)
-		const rtMatches = user.refreshToken === rt
+		try {
+			const rtMatches = await argon2.verify(user.refreshToken, rt)
 
-		if (!rtMatches) throw new UnauthorizedException('Unauthorized')
-		this.logger.log('Refresh token matches')
-
+			if (!rtMatches) throw new UnauthorizedException('Unauthorized')
+			this.logger.log('Refresh token matches')
+		} catch {
+			throw new UnauthorizedException('Unauthorized')
+		}
 		const tokens = await this.getTokens(user.id, user.username)
 		await this.updateRtHash(user.id, tokens.refreshToken)
 		this.logger.log('Tokens updated')
-
-		// res.cookie('refreshToken', tokens.refreshToken, {
-		// 	httpOnly: true,
-		// 	secure: false,
-		// 	domain: 'localhost',
-		// })
 
 		this.setCookie(res, tokens.refreshToken)
 
@@ -236,7 +224,7 @@ export class AuthService {
 		return res.cookie(cookieName, value, {
 			httpOnly: true,
 			secure: false,
-			domain: 'localhost',
+			domain: process.env.DOMAIN,
 			sameSite: 'strict',
 		})
 	}

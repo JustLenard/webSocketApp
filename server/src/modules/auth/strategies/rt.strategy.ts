@@ -33,7 +33,7 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
 
 		return {
 			...user,
-			refreshToken,
+			refreshTokenFromRequest: refreshToken,
 		}
 	}
 }

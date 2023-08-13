@@ -16,6 +16,10 @@ export class GatewaySessionManager implements IGatewaySessionManager {
 		return this.sessions.get(id)
 	}
 
+	test(param: string | undefined): string | undefined {
+		return param
+	}
+
 	setUserSocket(userId: string, socket: AuthenticatedSocket) {
 		this.sessions.set(userId, socket)
 	}

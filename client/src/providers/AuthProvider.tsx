@@ -42,12 +42,12 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
 		const initialLaoad = async () => {
 			if (loggedIn && accessToken === null && isInsideOfApplication()) {
-				// setLoading(true)
+				setLoading(true)
 				await getAccessToken()
 			} else if (!loggedIn && isInsideOfApplication()) {
 				location.assign(appRoutes.login)
 			}
-			// setLoading(false)
+			setLoading(false)
 		}
 
 		initialLaoad()
@@ -55,7 +55,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
 	const logOut = () => {
 		try {
-			const response = privateAxios.post('/logout')
+			const response = privateAxios.post('/auth/logout')
 		} catch (err) {
 			handleError(err)
 		}
@@ -66,7 +66,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	}
 
 	const login = (accessToken: string) => {
-		console.log('This is accessToken in login', accessToken)
 		setAccessToken(accessToken)
 		setLoggedIn(true)
 		sessionStorage.setItem(LOGGED_IN_KEY_NAME, 'true')
@@ -79,7 +78,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		login,
 	}
 
-	// if (loading) return <AppSpinner />
+	if (loading) return <AppSpinner text="AuthProvider" />
 
 	return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 }

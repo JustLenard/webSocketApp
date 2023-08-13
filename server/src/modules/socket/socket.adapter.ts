@@ -1,5 +1,5 @@
 import { IoAdapter } from '@nestjs/platform-socket.io'
-import { Logger } from '@nestjs/common'
+import { ForbiddenException, Logger } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { dataSource } from 'src/config/dataSourceOptions'
 import { UserEntity } from 'src/utils/entities/user.entity'
@@ -20,16 +20,20 @@ export class WebsocketAdapter extends IoAdapter {
 			this.logger.log('Aplying midlleware to socket')
 
 			const accesToken = socket.handshake.headers.authorization.replace('Bearer', '').trim()
-			this.logger.log('Decoding token')
-			const decodedToken: JwtPayload = await this.jwtService.verifyAsync(accesToken, {
-				secret: process.env.ACCESS_TOKEN_SECRET,
-			})
-			this.logger.log(`Token decoded belongs to user ${decodedToken.username}, id: ${decodedToken.sub}`)
+			this.logger.log(`Decoding token ${accesToken}`)
+			try {
+				const decodedToken: JwtPayload = await this.jwtService.verifyAsync(accesToken, {
+					secret: process.env.ACCESS_TOKEN_SECRET,
+				})
+				this.logger.log(`Token decoded belongs to user ${decodedToken.username}, id: ${decodedToken.sub}`)
 
-			const user = await userRepository.findOneBy({ id: decodedToken.sub })
+				const user = await userRepository.findOneBy({ id: decodedToken.sub })
 
-			socket.user = user
-			next()
+				socket.user = user
+				next()
+			} catch (err) {
+				throw new ForbiddenException('Smething went wrong')
+			}
 		})
 		return server
 	}
