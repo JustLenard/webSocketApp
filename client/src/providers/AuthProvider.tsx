@@ -29,7 +29,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		console.log('This is isInsideOfApplication()', isInsideOfApplication())
 
 		const getAccessToken = async () => {
-			console.log('bruh')
 			const newAccesToken = await refresh()
 
 			if (newAccesToken) {
@@ -45,7 +44,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 				setLoading(true)
 				await getAccessToken()
 			} else if (!loggedIn && isInsideOfApplication()) {
-				location.assign(appRoutes.login)
+				// location.assign(appRoutes.login)
 			}
 			setLoading(false)
 		}

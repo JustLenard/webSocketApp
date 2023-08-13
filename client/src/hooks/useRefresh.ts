@@ -1,19 +1,16 @@
-import { appAxios } from '../api/axios'
+import { baseAxios } from '../api/axios'
+import { appRoutes } from '../router/Root'
 import { handleError } from '../utils/handleAxiosErrors'
-import { useAuth } from './contextHooks'
 
 const useRefreshToken = () => {
-	const { login, logOut } = useAuth()
-
 	const refresh = async () => {
 		try {
-			const response = await appAxios.post('/auth/refresh', {
-				withCredentials: true,
-			})
+			const response = await baseAxios.post('/auth/refresh')
 
 			return response.data.accessToken
 		} catch (err) {
 			handleError(err)
+			location.assign(appRoutes.login)
 		}
 	}
 	return refresh

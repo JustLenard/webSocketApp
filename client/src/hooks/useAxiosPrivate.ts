@@ -25,19 +25,26 @@ const useAxiosPrivate = () => {
 		const responseIntercept = appAxios.interceptors.response.use(
 			(response) => response,
 			async (error) => {
-				const prevRequest = error?.config
+				const prevRequest = { ...error?.config }
 
-				if (error?.response?.status === 403 && !prevRequest?.sent) {
+				const { sent, method } = prevRequest
+				console.log('This is sent', sent)
+				console.log('This is method', method)
+
+				console.log('This is prevRequest at start', prevRequest)
+				console.log('This is prevRequest?.method', prevRequest?.method)
+				console.log('This is prevRequest?.sent', prevRequest?.sent)
+
+				if (error?.response?.status === 401 && !prevRequest?.sent) {
 					// const modifiedRequest = { ...prevRequest } // Create a new object based on prevRequest
 					// modifiedRequest.sent = true // Update the sent property
-					prevRequest.sent = true
+					console.log('This is prevRequest.sent', prevRequest.sent)
+					prevRequest.sent = 'true'
+					console.log('This is prevRequest with sent', prevRequest)
 					const newAccessToken = await refresh()
 					console.log('This is newAccessToken', newAccessToken)
 					prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
 					return appAxios(prevRequest)
-				}
-				if (error?.response?.status === 401) {
-					return location.assign(appRoutes.login)
 				}
 				return Promise.reject(error)
 			},

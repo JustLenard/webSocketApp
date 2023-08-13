@@ -76,7 +76,8 @@ export class AuthService {
 				},
 				{
 					secret: process.env.REFRESH_TOKEN_SECRET,
-					expiresIn: 60 * 60 * 24 * 7,
+					expiresIn: 60 * 60 * 24 * 7, // 1 week
+
 					// expiresIn: 5,
 				},
 			),
@@ -90,8 +91,6 @@ export class AuthService {
 
 	async updateRtHash(userId: string, rt: string) {
 		const hash = await this.hashData(rt)
-		// const hash = rt
-		console.log('This is hash', hash)
 
 		await this.userRepository
 			.createQueryBuilder()
@@ -190,7 +189,7 @@ export class AuthService {
 	async refresh(user: UserEntity, rt: string, res: Response) {
 		this.logger.log('Refreshing token')
 
-		if (!user || !user.refreshToken) throw new ForbiddenException('Access Denied')
+		if (!user || !user.refreshToken) throw new UnauthorizedException('Unauthorized')
 
 		this.logger.log('Verifying refresh token')
 		try {
