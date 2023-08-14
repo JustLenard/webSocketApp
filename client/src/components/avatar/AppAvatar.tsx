@@ -1,5 +1,5 @@
 import { Avatar } from '@mui/joy'
-import { getRandomColorPalletteProp, getSubstring } from '../../utils/helpers'
+import { getColorPalletteProp, getSubstring } from '../../utils/helpers'
 
 type Props = {
 	username: string
@@ -8,7 +8,7 @@ type Props = {
 
 const AppAvatar: React.FC<Props> = ({ src, username }) => {
 	return (
-		<Avatar color={getRandomColorPalletteProp()} src={src}>
+		<Avatar color={getColorPalletteProp(username)} src={src}>
 			{getSubstring(username)}
 		</Avatar>
 	)

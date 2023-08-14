@@ -1,7 +1,15 @@
 import { RoomI, UserI } from '../types/types'
-import { CURRENT_ROOM_KEY_NAME, GLOBAL_ROOM_NAME, MESSAGE_ROOM, NOTIFICATIONS_ROOM } from './constants'
+import {
+	ALPHABET,
+	CURRENT_ROOM_KEY_NAME,
+	GLOBAL_ROOM_NAME,
+	MESSAGE_ROOM,
+	MUI_COLORS,
+	NOTIFICATIONS_ROOM,
+} from './constants'
 import { appRoutes } from '../router/Root'
 import { ColorPaletteProp } from '@mui/joy'
+import { colorMap } from './letterToColorMap'
 
 export const getRandomInt = (max: number, min = 0) => {
 	min = Math.ceil(min)
@@ -60,7 +68,8 @@ export const getSubstring = (initialString: string, end = 2) => {
 	return initialString.slice(0, end).toUpperCase()
 }
 
-export const getRandomColorPalletteProp = (): ColorPaletteProp => {
-	const colors = ['primary', 'neutral', 'danger', 'info', 'success', 'warning']
-	return selectRandomArrayElement(colors)
+export const getColorPalletteProp = (yourString: string): ColorPaletteProp => {
+	if (!ALPHABET.includes(yourString[0])) return 'neutral'
+
+	return colorMap.get(yourString[0]) ?? 'neutral'
 }
