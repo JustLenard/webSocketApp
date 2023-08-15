@@ -1,5 +1,4 @@
-import styled from '@emotion/styled'
-import { CircularProgress, Skeleton, Stack } from '@mui/material'
+import { CircularProgress, Skeleton, Stack, styled } from '@mui/material'
 
 interface Props {
 	amount?: number
@@ -54,7 +53,7 @@ const AppSpinner: React.FC<Props> = ({ text, contained = false, amount = 2, circ
 	)
 }
 
-const SpinnerContainer = styled.div`
+const SpinnerContainer = styled('div')`
 	/* border: 1px solid;
 	position: fixed;
 	z-index: 1;

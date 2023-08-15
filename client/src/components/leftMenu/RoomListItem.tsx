@@ -61,7 +61,7 @@ const RoomListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, descripti
 							<Typography>{conversationName}</Typography>
 						</Badge>
 
-						<Typography level="body2" noWrap>
+						<Typography level="body-sm" noWrap>
 							{lastMessageText}
 						</Typography>
 					</ListItemContent>

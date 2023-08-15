@@ -55,14 +55,14 @@ const ChatContainer = () => {
 					padding: '1rem',
 				}}
 			>
-				<Typography level="h5">{currentRoom.name}</Typography>
+				<Typography level="title-md">{currentRoom.name}</Typography>
 			</Grid>
 			<Grid item xs overflow={'scroll'}>
 				<MessagesContainer />
 			</Grid>
 			<Grid p={'1rem'}>
 				<ChatInput />
-				<Typography level="body3" ml={'1rem'} height={'20px'}>
+				<Typography level="body-md" ml={'1rem'} height={'20px'}>
 					{isRecipientTyping ? `${recipient.username} is typing...` : ' '}
 				</Typography>
 			</Grid>

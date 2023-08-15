@@ -6,17 +6,25 @@ import Stack from '@mui/joy/Stack'
 import Typography from '@mui/joy/Typography'
 import { styled } from '@mui/joy/styles'
 import { IconButton, Input, Tooltip } from '@mui/material'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import moment from 'moment'
 import { useEffect, useState } from 'react'
 import { useMessages, useRooms, useUser } from '../../hooks/contextHooks'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { MessageI } from '../../types/types'
 import { handleError } from '../../utils/handleAxiosErrors'
 import ResponsiveModal from '../modal/ConfirmationModal'
+import AppAvatar from '../avatar/AppAvatar'
 
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 dayjs.extend(relativeTime)
+
+console.log(timezone)
+console.log(utc)
 
 interface Props {
 	message: MessageI
@@ -31,17 +39,21 @@ export const Message: React.FC<Props> = ({ message, prev }) => {
 			<Stack spacing={2} direction="row" alignItems="center">
 				{showUserInfo && (
 					<div style={{ width: '40px' }}>
-						<Avatar>{message.user.username[0]}</Avatar>
+						<AppAvatar username={message.user.username} />
 					</div>
 				)}
 				<Stack width={'100%'}>
 					{showUserInfo && (
 						<Stack direction={'row'} gap={1} alignContent={'center'}>
-							<Typography color="info" noWrap>
+							<Typography color="neutral" noWrap>
 								{message.user.username}
 							</Typography>
 							{/* <Typography>{moment(message.updated_at).format('L')}</Typography> */}
-							<Typography>{moment(message.updated_at).startOf('day').fromNow()}</Typography>
+							{/* <Typography>{moment(message.updated_at).startOf('day').fromNow()}</Typography> */}
+							// Assuming message.updated_at is in UTC const utcTimestamp = message.updated_at; // Convert
+							UTC timestamp to user's local timezone const localTimestamp = ;
+							<Typography>{dayjs(message.updated_at).fromNow()}</Typography>
+							{/* <Typography>{dayjs.utc(utcTimestamp).tz(dayjs.tz.guess()).fromNow()}</Typography> */}
 						</Stack>
 					)}
 
@@ -121,8 +133,6 @@ const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({
 						}}
 						autoFocus
 						fullWidth
-						// variant="soft"
-						// size="sm"
 						value={edit}
 						onChange={(e) => setEdit(e.target.value)}
 						onKeyDownCapture={(e) => handleKeypress(e)}
@@ -191,13 +201,5 @@ const StyledStack = styled(Stack)`
 		}
 	}
 `
-
-const Fancy: React.FC<{ message: MessageI }> = ({ message }) => {
-	return (
-		<Box sx={{ flexGrow: 1, px: 3 }}>
-			<Typography sx={{ marginLeft: '56px' }}>{message.text}</Typography>
-		</Box>
-	)
-}
 
 export default Message

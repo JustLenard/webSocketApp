@@ -4,7 +4,7 @@ import { appRoutes } from './Root'
 import { PropsWithChildren } from 'react'
 
 // Wrapper for a route to make it protected.
-const ProtectedRoute: React.FC<PropsWithChildren> = ({ children }) => {
+const ProtectedRoute: React.FC<any> = ({ children }) => {
 	const location = useLocation()
 	const { loggedIn } = useAuth()
 
