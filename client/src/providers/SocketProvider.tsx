@@ -15,11 +15,11 @@ const SocketProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
 	const { logOut, loggedIn, accessToken } = useAuth()
 
-	const createSocket = useCallback(() => {
+	const createSocketConnection = useCallback(() => {
 		console.log('creating new socket')
 		const socket: Socket = io(`${websocketURL}`, {
 			reconnection: true, // enable automatic reconnect
-			reconnectionAttempts: 1, // maximum number of reconnection attempts
+			reconnectionAttempts: 3, // maximum number of reconnection attempts
 			reconnectionDelay: 1000, // delay between reconnection attempts (in ms)
 			transportOptions: {
 				polling: {
@@ -35,23 +35,15 @@ const SocketProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	useEffect(() => {
 		if (loggedIn && accessToken) {
 			console.log('Creating socket connection')
-			createSocket()
-		} else {
-			/**
-			 * @todo figure thi	s shit out
-			 **/
-			// getAccesToken()
+			createSocketConnection()
 		}
-		return () => {
-			appSocket?.disconnect()
-		}
-	}, [createSocket, loggedIn, accessToken])
+	}, [createSocketConnection, loggedIn, accessToken])
 
 	const contextValue: SocketContextType = {
 		appSocket,
 	}
 
-	if (!appSocket && isInsideOfApplication()) return <AppSpinner />
+	if (!appSocket && isInsideOfApplication() && accessToken) return <AppSpinner text="Creating webSocket connection" />
 
 	return <SocketContext.Provider value={contextValue}>{children}</SocketContext.Provider>
 }

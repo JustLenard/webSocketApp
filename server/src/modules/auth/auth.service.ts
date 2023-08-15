@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as argon2 from 'argon2'
 import { Response } from 'express'
-import { ALPHABET, NUMBERS } from 'src/utils/constants'
+import { ALPHABET, NUMBERS, REFRESH_TOKEN } from 'src/utils/constants'
 import { Tokens } from 'src/utils/types/types'
 import { Repository } from 'typeorm'
 import { RoomEntity } from '../../utils/entities/room.entity'
@@ -194,6 +194,9 @@ export class AuthService {
 		this.logger.log('Verifying refresh token')
 		try {
 			const rtMatches = await argon2.verify(user.refreshToken, rt)
+			console.log('This is rtMatches', rtMatches)
+			console.log('This is user.refreshToken', user.refreshToken)
+			console.log('This is rt', rt)
 
 			if (!rtMatches) throw new UnauthorizedException('Unauthorized')
 			this.logger.log('Refresh token matches')
@@ -219,7 +222,7 @@ export class AuthService {
 		return null
 	}
 
-	async setCookie(res: Response, value: string, cookieName = 'refreshToken') {
+	async setCookie(res: Response, value: string, cookieName = REFRESH_TOKEN) {
 		return res.cookie(cookieName, value, {
 			httpOnly: true,
 			secure: false,

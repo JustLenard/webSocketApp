@@ -31,7 +31,6 @@ export class MessageController {
 		private messageService: MessageService,
 		private roomService: RoomsService,
 		private notifService: NotificationsService,
-
 		private readonly eventEmitter: EventEmitter2,
 	) {}
 
@@ -39,10 +38,6 @@ export class MessageController {
 	@Get()
 	@HttpCode(HttpStatus.OK)
 	async findMessagesForRoom(@Param('roomId', ParseIntPipe) roomId: number): Promise<MessageI[]> {
-		console.log(
-			'This is this.messageService.findMessagesForRoom(roomId)',
-			await this.messageService.findMessagesForRoom(roomId),
-		)
 		return this.messageService.findMessagesForRoom(roomId)
 	}
 

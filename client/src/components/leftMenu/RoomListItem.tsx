@@ -21,7 +21,7 @@ const RoomListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, descripti
 		changeCurrentRoom(id)
 	}
 
-	if (!currentRoom || !user) return <AppSpinner circle={false} />
+	if (!currentRoom || !user) return <AppSpinner circle={false} text="Rooms" />
 
 	const receivingUser = getReceivingUser(users, user.id)
 	const conversationName = isGroupChat ? name : receivingUser.username

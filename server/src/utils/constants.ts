@@ -50,4 +50,6 @@ export enum appEmitters {
 	notificationsCreate = 'notifications.create',
 
 	roomCreate = 'room.create',
+
+	disconnectUser = 'user.disconnet',
 }

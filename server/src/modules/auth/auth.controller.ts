@@ -8,11 +8,12 @@ import { AuthDto } from './auth.dto'
 import { AuthService } from './auth.service'
 import { UserEntity } from 'src/utils/entities/user.entity'
 import { Tokens } from 'src/utils/types/types'
-import { Routes } from 'src/utils/constants'
+import { Routes, appEmitters } from 'src/utils/constants'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 
 @Controller(Routes.auth)
 export class AuthController {
-	constructor(private readonly authService: AuthService) {}
+	constructor(private readonly authService: AuthService, private readonly eventEmitter: EventEmitter2) {}
 
 	@Post('/signup')
 	@HttpCode(HttpStatus.CREATED)
@@ -36,6 +37,7 @@ export class AuthController {
 	@Post('/logout')
 	@HttpCode(HttpStatus.OK)
 	logout(@GetCurrentUser() user: UserEntity) {
+		this.eventEmitter.emit(appEmitters.disconnectUser, user.id)
 		return this.authService.logout(user.id)
 	}
 

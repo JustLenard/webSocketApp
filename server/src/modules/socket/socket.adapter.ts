@@ -32,7 +32,8 @@ export class WebsocketAdapter extends IoAdapter {
 				socket.user = user
 				next()
 			} catch (err) {
-				throw new ForbiddenException('Smething went wrong')
+				this.logger.log('Received invalid token')
+				socket.disconnect()
 			}
 		})
 		return server

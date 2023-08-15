@@ -56,6 +56,7 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 		this.logger.log(`New client connected ${client.id}`)
 		this.sessions.setUserSocket(client.user.id, client)
+		// console.log('This is this.sessions.', this.sessions.getSockets())
 
 		this.server.emit(socketEvents.userConnected, {
 			id: client.user.id,
@@ -65,7 +66,6 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	handleDisconnect(client: AuthenticatedSocket) {
-		// this.userService.removeUserSocketId(client.user.id)
 		this.logger.log(`Disconecting client ${client.id}`)
 		this.sessions.removeUserSocket(client.user.id)
 
@@ -139,15 +139,7 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		const { message, roomId } = payload
 
 		this.server.to(createMessageRoomName(roomId)).emit(socketEvents.messageDeleted, { message, roomId })
-		// this.server.to(createMessageRoomName(roomId))
 	}
-
-	// @OnEvent('conversation.create')
-	// handleConversationCreateEvent(payload: Conversation) {
-	// 	console.log('Inside conversation.create')
-	// 	const recipientSocket = this.sessions.getUserSocket(payload.recipient.id)
-	// 	if (recipientSocket) recipientSocket.emit('onConversation', payload)
-	// }
 
 	@OnEvent(appEmitters.roomCreate)
 	async roomCreate(payload: CreateRoomEvent) {
@@ -162,12 +154,11 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		recipientSockets.forEach((client) => client.emit(socketEvents.createRoom, room))
 
 		console.log('This is recipientSockets', recipientSockets)
+	}
 
-		// for (const user of room.users) {
-		// 	if (user.socketId && user.id !== creatorId) {
-		// 		this.logger.log('Sending message to', user.socketId)
-		// 		this.server.to(user.socketId).emit(socketEvents.createRoom, room)
-		// 	}
-		// }
+	@OnEvent(appEmitters.disconnectUser)
+	disconnectUser(userId: string) {
+		const userSocket = this.sessions.getUserSocket(userId)
+		if (userSocket) this.handleDisconnect(userSocket)
 	}
 }
