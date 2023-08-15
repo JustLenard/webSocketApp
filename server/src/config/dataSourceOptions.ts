@@ -17,6 +17,9 @@ export const dataSourceOptions = (): DataSourceOptions => {
 		database: process.env.PG_DATABASE,
 		entities: [UserEntity, RoomEntity, MessageEntity, NotificationsEntity],
 		synchronize: true,
+		extra: {
+			timezone: 'UTC', // Set the appropriate timezone here
+		},
 	}
 }
 

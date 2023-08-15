@@ -10,6 +10,7 @@ import {
 import { appRoutes } from '../router/Root'
 import { ColorPaletteProp } from '@mui/joy'
 import { colorMap } from './letterToColorMap'
+import dayjs from 'dayjs'
 
 export const getRandomInt = (max: number, min = 0) => {
 	min = Math.ceil(min)
@@ -72,4 +73,8 @@ export const getColorPalletteProp = (yourString: string): ColorPaletteProp => {
 	if (!ALPHABET.includes(yourString[0])) return 'neutral'
 
 	return colorMap.get(yourString[0]) ?? 'neutral'
+}
+
+export const utcTimeToHumanTime = (date: Date) => {
+	return dayjs.utc(date).tz(dayjs.tz.guess()).fromNow()
 }

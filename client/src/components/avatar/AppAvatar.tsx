@@ -7,7 +7,6 @@ type Props = {
 }
 
 const AppAvatar: React.FC<Props> = ({ src, username }) => {
-	console.log('This is getColorPalletteProp(username)', getColorPalletteProp(username))
 	return (
 		<Avatar color={getColorPalletteProp(username)} src={src}>
 			{getSubstring(username)}

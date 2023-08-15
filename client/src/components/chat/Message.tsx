@@ -1,30 +1,18 @@
 import DeleteIcon from '@mui/icons-material/Delete'
 import ModeEditIcon from '@mui/icons-material/ModeEdit'
-import Avatar from '@mui/joy/Avatar'
 import Box from '@mui/joy/Box'
 import Stack from '@mui/joy/Stack'
 import Typography from '@mui/joy/Typography'
 import { styled } from '@mui/joy/styles'
-import { IconButton, Input, Tooltip } from '@mui/material'
+import { IconButton, Input } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useMessages, useRooms, useUser } from '../../hooks/contextHooks'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { MessageI } from '../../types/types'
 import { handleError } from '../../utils/handleAxiosErrors'
-import ResponsiveModal from '../modal/ConfirmationModal'
+import { utcTimeToHumanTime } from '../../utils/helpers'
 import AppAvatar from '../avatar/AppAvatar'
-
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
-dayjs.extend(relativeTime)
-
-console.log(timezone)
-console.log(utc)
+import ResponsiveModal from '../modal/ConfirmationModal'
 
 interface Props {
 	message: MessageI
@@ -48,12 +36,7 @@ export const Message: React.FC<Props> = ({ message, prev }) => {
 							<Typography color="neutral" noWrap>
 								{message.user.username}
 							</Typography>
-							{/* <Typography>{moment(message.updated_at).format('L')}</Typography> */}
-							{/* <Typography>{moment(message.updated_at).startOf('day').fromNow()}</Typography> */}
-							// Assuming message.updated_at is in UTC const utcTimestamp = message.updated_at; // Convert
-							UTC timestamp to user's local timezone const localTimestamp = ;
-							<Typography>{dayjs(message.updated_at).fromNow()}</Typography>
-							{/* <Typography>{dayjs.utc(utcTimestamp).tz(dayjs.tz.guess()).fromNow()}</Typography> */}
+							<Typography>{utcTimeToHumanTime(message.updated_at)}</Typography>
 						</Stack>
 					)}
 
@@ -72,8 +55,6 @@ const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({
 	const [edit, setEdit] = useState<null | string>(null)
 	const [modal, setModal] = useState(false)
 
-	// const [localMesasge, setLocalMessage] = useState<null | MessageI>(message)
-
 	const marginLeft = showUserInfo ? 0 : '56px'
 
 	const handleKeypress = async (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -85,7 +66,6 @@ const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({
 					text: edit,
 				})
 				console.log('This is response', response)
-				// setLocalMessage(response.data)
 			} catch (err) {
 				handleError(err)
 			}
@@ -97,11 +77,7 @@ const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({
 	const handleDelete = async () => {
 		if (!currentRoom) return
 		try {
-			const response = await privateAxios.delete(`room/${currentRoom.id}/messages/${message.id}`)
-
-			// if (response.data === 'ok') {
-			// 	getMessagesForRoom(currentRoom.id)
-			// }
+			await privateAxios.delete(`room/${currentRoom.id}/messages/${message.id}`)
 		} catch (err) {
 			handleError(err)
 		}
@@ -142,10 +118,8 @@ const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({
 						<Typography sx={{ marginLeft: marginLeft }}>{message.text}</Typography>
 
 						<Stack direction={'row'} className="buttons-wrapper">
-							{/* <Typography>{moment(message.updated_at).startOf('hour').fromNow()}</Typography> */}
-							<Typography>{dayjs(message.updated_at).fromNow()}</Typography>
+							<Typography>{utcTimeToHumanTime(message.updated_at)}</Typography>
 
-							{/* <Typography>{moment(message.updated_at).format('L')}</Typography> */}
 							{isMessageOwner && (
 								<>
 									{/* <Tooltip title="Edit"> */}

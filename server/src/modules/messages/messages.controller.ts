@@ -38,7 +38,11 @@ export class MessageController {
 	@UseGuards(AtGuard)
 	@Get()
 	@HttpCode(HttpStatus.OK)
-	findMessagesForRoom(@Param('roomId', ParseIntPipe) roomId: number): Promise<MessageI[]> {
+	async findMessagesForRoom(@Param('roomId', ParseIntPipe) roomId: number): Promise<MessageI[]> {
+		console.log(
+			'This is this.messageService.findMessagesForRoom(roomId)',
+			await this.messageService.findMessagesForRoom(roomId),
+		)
 		return this.messageService.findMessagesForRoom(roomId)
 	}
 
