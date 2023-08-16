@@ -70,7 +70,7 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	useEffect(() => {
 		if (!appSocket) return
 		appSocket.on(socketEvents.createRoom, (room: RoomI) => {
-			setRooms((prev) => [room, ...prev])
+			setRooms((prev) => [{ ...room, notifications: [] }, ...prev])
 		})
 		return () => {
 			appSocket.off(socketEvents.createRoom)

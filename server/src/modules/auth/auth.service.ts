@@ -12,14 +12,13 @@ import { InjectRepository } from '@nestjs/typeorm'
 import * as argon2 from 'argon2'
 import { Response } from 'express'
 import { ALPHABET, NUMBERS, REFRESH_TOKEN } from 'src/utils/constants'
+import { selectRandomArrayElement } from 'src/utils/helpers'
 import { Tokens } from 'src/utils/types/types'
 import { Repository } from 'typeorm'
 import { RoomEntity } from '../../utils/entities/room.entity'
 import { AccountType, UserEntity } from '../../utils/entities/user.entity'
 import { UsersService } from '../users/users.service'
 import { AuthDto } from './auth.dto'
-import { selectRandomArrayElement } from 'src/utils/helpers'
-import { UserI } from 'src/utils/types/entities.types'
 
 @Injectable()
 export class AuthService {
@@ -194,9 +193,6 @@ export class AuthService {
 		this.logger.log('Verifying refresh token')
 		try {
 			const rtMatches = await argon2.verify(user.refreshToken, rt)
-			console.log('This is rtMatches', rtMatches)
-			console.log('This is user.refreshToken', user.refreshToken)
-			console.log('This is rt', rt)
 
 			if (!rtMatches) throw new UnauthorizedException('Unauthorized')
 			this.logger.log('Refresh token matches')

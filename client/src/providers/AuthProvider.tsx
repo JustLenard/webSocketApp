@@ -12,39 +12,29 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const [accessToken, setAccessToken] = useState<string | null>(null)
 	const [loggedIn, setLoggedIn] = useState<boolean>(sessionStorage.getItem(LOGGED_IN_KEY_NAME) === 'true')
 	const [loading, setLoading] = useState(false)
-
-	// console.log('This is accessToken', accessToken)
-	console.log('This is loggedIn', loggedIn)
-	// console.log('This is loading', loading)
+	const [loggingOut, setLoggingOut] = useState(false)
 
 	const refresh = useRefreshToken()
-
-	// console.log('This is refresh', refresh)
 	const { privateAxios } = useAxiosPrivate()
 
 	/**
 	 * Get access token if user still has valid refresh token
 	 **/
 	useEffect(() => {
-		console.log('This is isInsideOfApplication()', isInsideOfApplication())
-
 		const getAccessToken = async () => {
-			console.log('getAccessToken')
-
 			const newAccesToken = await refresh()
 
 			if (newAccesToken) {
-				setAccessToken(newAccesToken)
-
 				return newAccesToken
 			}
 			return logOut()
 		}
 
 		const initialLaoad = async () => {
-			if (loggedIn && accessToken === null && isInsideOfApplication()) {
+			if (accessToken === null && isInsideOfApplication()) {
 				setLoading(true)
-				await getAccessToken()
+				const accessToken: string | undefined = await getAccessToken()
+				accessToken && login(accessToken)
 			}
 			setLoading(false)
 		}
@@ -52,18 +42,27 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		initialLaoad()
 	}, [])
 
-	const logOut = () => {
-		try {
-			const response = privateAxios.post('/auth/logout')
-		} catch (err) {
-			handleError(err)
-		}
-
+	/**
+	 * Logout user
+	 **/
+	const logOut = async () => {
+		setLoggingOut(true)
+		location.assign(appRoutes.login)
 		setAccessToken(null)
 		setLoggedIn(false)
 		sessionStorage.removeItem(LOGGED_IN_KEY_NAME)
+
+		try {
+			await privateAxios.post('/auth/logout')
+		} catch (err) {
+			handleError(err)
+		}
+		setLoggingOut(false)
 	}
 
+	/**
+	 * Login user
+	 **/
 	const login = (accessToken: string) => {
 		setAccessToken(accessToken)
 		setLoggedIn(true)
@@ -76,6 +75,8 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		logOut,
 		login,
 	}
+
+	if (loggingOut) return <AppSpinner text="Logging out" />
 
 	if (loading || (!accessToken && isInsideOfApplication())) return <AppSpinner text="Authentificating" />
 

@@ -33,6 +33,8 @@ const SocketProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	}, [logOut])
 
 	useEffect(() => {
+		console.log('This is accessToken', accessToken)
+		console.log('This is loggedIn', loggedIn)
 		if (loggedIn && accessToken) {
 			console.log('Creating socket connection')
 			createSocketConnection()

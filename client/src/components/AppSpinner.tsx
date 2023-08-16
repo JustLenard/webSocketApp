@@ -8,7 +8,6 @@ interface Props {
 }
 
 const AppSpinner: React.FC<Props> = ({ text, contained = false, amount = 2, circle = true }) => {
-	debugger
 	if (contained) return <ContainedSpinner text={text} />
 
 	if (circle) return <WholePageSpinner text={text} />
