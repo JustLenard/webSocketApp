@@ -29,6 +29,10 @@ const router = createBrowserRouter([
 			</ProtectedRoute>
 		),
 	},
+	{
+		path: '*',
+		element: <div>Not FOund</div>,
+	},
 ])
 
 const Root = () => {

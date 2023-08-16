@@ -48,9 +48,17 @@ export class RoomsService implements OnModuleInit {
 			.createQueryBuilder('room')
 			.leftJoin('room.users', 'users')
 			.where('users.id = :userId', { userId: userId })
-			.leftJoinAndSelect('room.lastMessage', 'lastMessge')
+			.leftJoinAndSelect('room.lastMessage', 'lastMessage')
+			.leftJoinAndSelect('lastMessage.user', 'messageUser')
 			.leftJoin('room.users', 'allUsers')
-			.select(['room', 'allUsers.id', 'allUsers.username', 'lastMessge'])
+			.select([
+				'room',
+				'allUsers.id',
+				'allUsers.username',
+				'lastMessage',
+				'messageUser.id',
+				'messageUser.username',
+			])
 			.getMany()
 	}
 

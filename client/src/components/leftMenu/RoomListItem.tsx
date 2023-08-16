@@ -1,21 +1,22 @@
-import { Badge, ListDivider, ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/joy'
-import { ListItemButton } from '@mui/material'
+import { Badge, Box, ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/joy'
+import { ListItemButton, Stack } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useRooms, useSocket, useUser } from '../../hooks/contextHooks'
-import { NotificationSocketEvent, RoomI } from '../../types/types'
+import { NotificationSocketEvent, NotificationT, RoomI, UserI } from '../../types/types'
 import { socketEvents } from '../../utils/constants'
-import { getReceivingUser } from '../../utils/helpers'
+import { getReceivingUser, utcTimeToHumanTime } from '../../utils/helpers'
 import AppSpinner from '../AppSpinner'
 import AppAvatar from '../avatar/AppAvatar'
+import AppBadge from '../AppBadge'
 
 const RoomListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, description, lastMessage, notifications }) => {
 	const { appSocket } = useSocket()
 	const { currentRoom, changeCurrentRoom } = useRooms()
 	const { user } = useUser()
+
 	const [roomNotificationsAmount, setRoomNotificaitonsAmount] = useState(notifications.length)
-	const [lastMessageText, setLastMessageText] = useState(
-		notifications.length === 0 ? lastMessage?.text : notifications[0].message.text,
-	)
+	const [author, setAuthor] = useState(lastMessage && user && createAuthor(lastMessage.user, user))
+	const [lastMessageSnippet, setLastMessageSnippet] = useState(lastMessage && lastMessage)
 
 	const handleClick = () => {
 		changeCurrentRoom(id)
@@ -35,7 +36,10 @@ const RoomListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, descripti
 		}
 		appSocket.on(socketEvents.newNotification, (payload: NotificationSocketEvent) => {
 			if (payload.roomId !== id) return
-			setLastMessageText(payload.notif.message.text)
+
+			setLastMessageSnippet(payload.notif.message)
+			setAuthor(createAuthor(payload.notif.creator, user))
+
 			if (user.id !== payload.notif.creator.id && currentRoom.id !== payload.notif.room.id) {
 				setRoomNotificaitonsAmount((prev) => prev + 1)
 			} else {
@@ -57,18 +61,34 @@ const RoomListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, descripti
 						<AppAvatar username={conversationName} />
 					</ListItemDecorator>
 					<ListItemContent>
-						<Badge color="danger" badgeContent={roomNotificationsAmount}>
-							<Typography>{conversationName}</Typography>
-						</Badge>
+						<Stack justifyContent={'space-between'} flexDirection={'row'}>
+							<Typography display={'inline-block'}>{conversationName}</Typography>
+							<span>
+								<Typography display={'inline-block'} textAlign={'end'} level="body-sm">
+									{lastMessage && utcTimeToHumanTime(lastMessage.updated_at)}
+								</Typography>
 
-						<Typography level="body-sm" noWrap>
-							{lastMessageText}
+								<AppBadge badgeContent={roomNotificationsAmount} />
+							</span>
+						</Stack>
+
+						<Typography>
+							<Typography color="neutral" level="body-md" noWrap>
+								{author}
+							</Typography>
+							<Typography noWrap level="body-sm">
+								{lastMessageSnippet?.text}
+							</Typography>
 						</Typography>
 					</ListItemContent>
 				</ListItem>
 			</ListItemButton>
 		</>
 	)
+}
+
+const createAuthor = (author: UserI, user: UserI) => {
+	return author.username === user.username ? 'You: ' : `${author.username}: `
 }
 
 export default RoomListItem

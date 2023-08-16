@@ -5,6 +5,4 @@ export type UserContextType = {
 	user: UserI | null
 }
 
-export const UserContext = createContext<UserContextType>({
-	user: null,
-} as UserContextType)
+export const UserContext = createContext<UserContextType>({} as UserContextType)
