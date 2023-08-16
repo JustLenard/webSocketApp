@@ -65,7 +65,7 @@ const RightMenu = () => {
 				Users
 			</Typography>
 			<Grid item overflow={'scroll'}>
-				<Typography level="title-sm" mb={'1rem'}>{`Online - (${onlineUsers.length})`}</Typography>
+				<Typography level="title-md" mb={'1rem'}>{`Online - (${onlineUsers.length})`}</Typography>
 				{onlineUsers.length !== 0 && (
 					<List
 						variant={'outlined'}
@@ -80,7 +80,7 @@ const RightMenu = () => {
 						))}
 					</List>
 				)}
-				<Typography level="title-sm" mb={'1rem'}>{`Offline - (${offlineUsers.length})`}</Typography>
+				<Typography level="title-md" my={'1rem'}>{`Offline - (${offlineUsers.length})`}</Typography>
 				{offlineUsers.length !== 0 && (
 					<List
 						variant={'outlined'}

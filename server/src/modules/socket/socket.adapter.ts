@@ -33,7 +33,9 @@ export class WebsocketAdapter extends IoAdapter {
 				next()
 			} catch (err) {
 				this.logger.log('Received invalid token')
+				socket.emit('badToken', 'mate')
 				socket.disconnect()
+				
 			}
 		})
 		return server

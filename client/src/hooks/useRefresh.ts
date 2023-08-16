@@ -1,6 +1,7 @@
 import { baseAxios } from '../api/axios'
 import { appRoutes } from '../router/Root'
 import { handleError } from '../utils/handleAxiosErrors'
+import { useAuth } from './contextHooks'
 
 const useRefreshToken = () => {
 	const refresh = async () => {
