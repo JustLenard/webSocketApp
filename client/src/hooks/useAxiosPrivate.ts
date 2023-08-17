@@ -6,7 +6,7 @@ import { appRoutes } from '../router/Root'
 
 const useAxiosPrivate = () => {
 	const refresh = useRefreshToken()
-	const { accessToken } = useAuth()
+	const { accessToken, setNewToken } = useAuth()
 
 	useEffect(() => {
 		const requestIntercept = appAxios.interceptors.request.use(
@@ -42,6 +42,8 @@ const useAxiosPrivate = () => {
 					prevRequest.sent = 'true'
 					console.log('This is prevRequest with sent', prevRequest)
 					const newAccessToken = await refresh()
+					setNewToken(newAccessToken)
+
 					console.log('This is newAccessToken', newAccessToken)
 					prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
 					return appAxios(prevRequest)

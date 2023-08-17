@@ -4,8 +4,9 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { CreateRoomParams, RoomI } from '../types/types'
 import { socketEvents } from '../utils/constants'
 import { handleError } from '../utils/handleAxiosErrors'
-import { getSavedOrGlobalRoom, saveRoomIdToSessionStorage } from '../utils/helpers'
+import { getSavedOrGlobalRoom, isInsideOfApplication, saveRoomIdToSessionStorage } from '../utils/helpers'
 import { RoomsContext, RoomsContextType } from './context/rooms.context'
+import AppSpinner from '../components/AppSpinner'
 
 /**
  * Rooms provider for the app
@@ -14,7 +15,6 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const { appSocket } = useSocket()
 	const [rooms, setRooms] = useState<RoomI[]>([])
 	const [currentRoom, setCurrentRoom] = useState<RoomI | null>(null)
-	const { login, logOut, loggedIn, accessToken } = useAuth()
 	const { privateAxios } = useAxiosPrivate()
 
 	const changeCurrentRoom = (roomId: number) => {
@@ -46,26 +46,30 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		}
 	}
 
-	useEffect(() => {
-		if (accessToken && appSocket) {
-			const getRooms = async () => {
-				try {
-					const response = await privateAxios.get('/rooms')
+	console.log('RErender')
 
-					const room = getSavedOrGlobalRoom(response.data)
-					setRooms(response.data)
-					setCurrentRoom(room)
-					if (room) {
-						appSocket.emit(socketEvents.onRoomJoin, room.id)
-						saveRoomIdToSessionStorage(room.id)
-					}
-				} catch (err) {
-					handleError(err)
+	useEffect(() => {
+		if (!appSocket) return
+		console.log('getting rooms')
+		const getRooms = async () => {
+			// debugger
+			try {
+				const response = await privateAxios.get('/rooms')
+
+				const room = getSavedOrGlobalRoom(response.data)
+				setRooms(response.data)
+				console.log('This is response.data', response.data)
+				setCurrentRoom(room)
+				if (room) {
+					appSocket.emit(socketEvents.onRoomJoin, room.id)
+					saveRoomIdToSessionStorage(room.id)
 				}
+			} catch (err) {
+				handleError(err)
 			}
-			getRooms()
 		}
-	}, [loggedIn, accessToken, appSocket])
+		getRooms()
+	}, [])
 
 	useEffect(() => {
 		if (!appSocket) return
@@ -76,6 +80,9 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 			appSocket.off(socketEvents.createRoom)
 		}
 	}, [appSocket, rooms])
+
+	console.log('This is rooms', rooms)
+	if (rooms.length === 0 && isInsideOfApplication()) return <AppSpinner text="Getting rooms" />
 
 	const contextValue: RoomsContextType = {
 		rooms,

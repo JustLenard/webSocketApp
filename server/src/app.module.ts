@@ -14,8 +14,6 @@ import { SocketModule } from './modules/socket/socket.module'
 import { UsersModule } from './modules/users/users.module'
 import { NotificationsModule } from './modules/notifications/notifications.module'
 
-console.log(process.env.HOST)
-
 let envFilePath = '.env.development'
 if (process.env.ENVIRONMENT === 'PRODUCTION') envFilePath = '.env.production'
 

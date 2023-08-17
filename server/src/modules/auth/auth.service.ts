@@ -53,7 +53,7 @@ export class AuthService {
 		@InjectRepository(RoomEntity) private roomRepository: Repository<RoomEntity>,
 	) {}
 
-	private logger: Logger = new Logger('Chat')
+	private logger: Logger = new Logger('Auth Service')
 
 	async getTokens(userId: string, username: string): Promise<Tokens> {
 		const [at, rt] = await Promise.all([

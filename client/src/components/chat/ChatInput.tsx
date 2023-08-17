@@ -38,12 +38,10 @@ const ChatInput: React.FC<Props> = () => {
 		if (!appSocket || !currentRoom) return
 
 		setIsTyping(true)
-		// console.log('User is typing')
 		appSocket.emit(socketEvents.onTypingStart, currentRoom.id)
 		clearTimeout(timer)
 		setTimer(
 			setTimeout(() => {
-				// console.log('User stopped typing')
 				appSocket.emit(socketEvents.onTypingStop, currentRoom.id)
 				setIsTyping(false)
 			}, 1000),

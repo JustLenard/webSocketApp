@@ -10,15 +10,14 @@ import {
 	WebSocketServer,
 } from '@nestjs/websockets'
 import { Server } from 'socket.io'
+import { AccountType } from 'src/utils/entities/user.entity'
+import { createMessageRoomName, createNotifRoomName } from 'src/utils/helpers'
 import { AuthenticatedSocket } from 'src/utils/interfaces'
 import { CreateMessageEvent, CreateNotificationEvent, CreateRoomEvent } from 'src/utils/types/types'
 import { appEmitters, socketEvents } from '../../utils/constants'
-import { AuthService } from '../auth/auth.service'
-import { UsersService } from '../users/users.service'
-import { GatewaySessionManager } from './socket.sessions'
-import { RoomsService } from '../rooms/rooms.service'
 import { NotificationsService } from '../notifications/notifications.service'
-import { createMessageRoomName, createNotifRoomName } from 'src/utils/helpers'
+import { RoomsService } from '../rooms/rooms.service'
+import { GatewaySessionManager } from './socket.sessions'
 
 @WebSocketGateway({
 	cors: {
@@ -35,14 +34,13 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		// private userService: UsersService,
 		private roomService: RoomsService,
 		private notifService: NotificationsService,
-
 		@Inject(GatewaySessionManager)
 		private readonly sessions: GatewaySessionManager,
 	) {}
 
 	@WebSocketServer()
 	server: Server
-	private logger: Logger = new Logger('Chat')
+	private logger: Logger = new Logger('WS Gateway')
 
 	/**
 	 * Connection Events
@@ -56,7 +54,7 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 		this.logger.log(`New client connected ${client.id}`)
 		this.sessions.setUserSocket(client.user.id, client)
-		// console.log('This is this.sessions.', this.sessions.getSockets())
+		console.log('This is this.sessions.', this.sessions.getSockets())
 
 		this.server.emit(socketEvents.userConnected, {
 			id: client.user.id,
@@ -81,7 +79,7 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	 **/
 	@SubscribeMessage(socketEvents.onRoomJoin)
 	onConversationJoin(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
-		console.log(`${client.user?.id} joined a Conversation of ID: ${roomId}`)
+		this.logger.log(`${client.user?.id} joined a Conversation of ID: ${roomId}`)
 		client.join(createMessageRoomName(roomId))
 		client.to(createMessageRoomName(roomId)).emit(socketEvents.onRoomJoin)
 	}
@@ -115,20 +113,20 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	 * Internal app events
 	 **/
 	@OnEvent(appEmitters.notificationsCreate)
-	hadnleNotificationCreate(payload: CreateNotificationEvent) {
+	handleNotificationCreate(payload: CreateNotificationEvent) {
 		this.server.to(createNotifRoomName(payload.roomId)).emit(socketEvents.newNotification, payload)
 	}
 
 	@OnEvent(appEmitters.messageCreate)
 	handleMessageCreate(payload: CreateMessageEvent) {
-		const { message, roomId } = payload
+		const { roomId } = payload
 
 		this.server.to(createMessageRoomName(roomId)).emit(socketEvents.messageAdded, payload)
 	}
 
 	@OnEvent(appEmitters.messagePatch)
 	async handleMessageUpdate(payload: CreateMessageEvent) {
-		const { message, roomId } = payload
+		const { roomId } = payload
 		this.server.to(createMessageRoomName(roomId)).emit(socketEvents.messagePatched, payload)
 	}
 
@@ -146,10 +144,23 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		const { room, creatorId } = payload
 		console.log('This is room', room)
 
-		const recipients = room.users.filter((user) => user.id !== creatorId)
+		const recipients = room.users.filter((user) => user.id !== creatorId && user.accountType !== AccountType.bot)
 		console.log('This is recipients', recipients)
 
-		const recipientSockets = recipients.map((user) => this.sessions.getUserSocket(user.id))
+		/**
+		 * Find all the sockets with the associated recepient (user)
+		 **/
+		const recipientSockets: AuthenticatedSocket[] = []
+		recipients.forEach((user) => {
+			const socket = this.sessions.getUserSocket(user.id)
+			if (socket) recipientSockets.push(socket)
+		})
+
+		/**
+		 * Make the socketets connect to the newly created room
+		 **/
+		recipientSockets.forEach((socket) => socket.join(createNotifRoomName(room.id)))
+
 		console.log('This is recipientSockets', recipientSockets)
 		recipientSockets.forEach((client) => client.emit(socketEvents.createRoom, room))
 

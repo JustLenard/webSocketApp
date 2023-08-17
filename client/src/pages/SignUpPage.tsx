@@ -28,7 +28,7 @@ const SignUpPage: React.FC = () => {
 	})
 
 	const navigate = useNavigate()
-	const { login } = useAuth()
+	const { loginUser: login } = useAuth()
 	const [manualErrors, setManualErrors] = useState<string | null | string[]>(null)
 
 	const onSubmit: SubmitHandler<SignUpForm> = async (data) => {

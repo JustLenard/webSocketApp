@@ -26,7 +26,7 @@ const LoginPage: React.FC = () => {
 	const [manualErrors, setManualErrors] = useState<string | null | string[]>(null)
 	const location = useLocation()
 	const navigate = useNavigate()
-	const { loggedIn, login } = useAuth()
+	const { loggedIn, loginUser } = useAuth()
 	const {
 		register,
 		handleSubmit,
@@ -45,7 +45,7 @@ const LoginPage: React.FC = () => {
 	const onSubmit: SubmitHandler<LogInCredentials> = async (credentials) => {
 		try {
 			const response = await appAxios.post('/auth/signin', credentials)
-			login(response.data.accessToken)
+			loginUser(response.data.accessToken)
 		} catch (err) {
 			if (isAxiosError(err)) {
 				setManualErrors(err.response?.data.message)
@@ -56,7 +56,7 @@ const LoginPage: React.FC = () => {
 	const logInAsGuest = async () => {
 		try {
 			const response = await appAxios.post('/auth/guest')
-			login(response.data.accessToken)
+			loginUser(response.data.accessToken)
 		} catch (err) {
 			if (isAxiosError(err)) {
 				setManualErrors(err.response?.data.message)

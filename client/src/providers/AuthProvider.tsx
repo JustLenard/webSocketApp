@@ -2,15 +2,15 @@ import { PropsWithChildren, ReactNode, createContext, useEffect, useState } from
 import AppSpinner from '../components/AppSpinner'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import useRefreshToken from '../hooks/useRefresh'
-import { isInsideOfApplication } from '../utils/helpers'
+import { isInsideOfApplication, showSpinner } from '../utils/helpers'
 import { appRoutes } from '../router/Root'
 import { handleError } from '../utils/handleAxiosErrors'
-import { LOGGED_IN_KEY_NAME } from '../utils/constants'
+import { LOGGED_IN_KEY_NAME, TRUE } from '../utils/constants'
 import { AuthContext, AuthorizationContextType } from './context/auth.context'
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const [accessToken, setAccessToken] = useState<string | null>(null)
-	const [loggedIn, setLoggedIn] = useState<boolean>(sessionStorage.getItem(LOGGED_IN_KEY_NAME) === 'true')
+	const [loggedIn, setLoggedIn] = useState<boolean>(sessionStorage.getItem(LOGGED_IN_KEY_NAME) === TRUE)
 	const [loading, setLoading] = useState(false)
 	const [loggingOut, setLoggingOut] = useState(false)
 
@@ -27,25 +27,24 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 			if (newAccesToken) {
 				return newAccesToken
 			}
-			return logOut()
+			return logOutUser
 		}
 
 		const initialLaoad = async () => {
 			if (accessToken === null && isInsideOfApplication()) {
 				setLoading(true)
 				const accessToken: string | undefined = await getAccessToken()
-				accessToken && login(accessToken)
+				accessToken && loginUser(accessToken)
+				setLoading(false)
 			}
-			setLoading(false)
 		}
-
 		initialLaoad()
 	}, [])
 
 	/**
 	 * Logout user
 	 **/
-	const logOut = async () => {
+	const logOutUser = async () => {
 		setLoggingOut(true)
 		location.assign(appRoutes.login)
 		setAccessToken(null)
@@ -60,25 +59,32 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		setLoggingOut(false)
 	}
 
+	const setNewToken = (newToken: string) => {
+		setAccessToken(newToken)
+	}
+
 	/**
 	 * Login user
 	 **/
-	const login = (accessToken: string) => {
+	const loginUser = (accessToken: string) => {
 		setAccessToken(accessToken)
+		console.log('This is accessToken on Login', accessToken)
 		setLoggedIn(true)
-		sessionStorage.setItem(LOGGED_IN_KEY_NAME, 'true')
+		sessionStorage.setItem(LOGGED_IN_KEY_NAME, TRUE)
 	}
 
 	const contextValue: AuthorizationContextType = {
 		accessToken,
 		loggedIn,
-		logOut,
-		login,
+		logOutUser,
+		loginUser,
+		setNewToken,
 	}
 
 	if (loggingOut) return <AppSpinner text="Logging out" />
+	console.log('This is accessToken', accessToken)
 
-	if (loading || (!accessToken && isInsideOfApplication())) return <AppSpinner text="Authentificating" />
+	if (showSpinner(loading, accessToken === null)) return <AppSpinner text="Authentificating" />
 
 	return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 }

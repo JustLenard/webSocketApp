@@ -16,27 +16,18 @@ const ChatContainer = () => {
 	const [isRecipientTyping, setIsRecipientTyping] = useState(false)
 
 	useEffect(() => {
-		console.log('This is !appSocket', !appSocket)
 		if (!appSocket) return
 
 		appSocket.on(socketEvents.onTypingStart, () => {
-			console.log('onTypingStart: User has started typing...')
 			setIsRecipientTyping(true)
 		})
 		appSocket.on(socketEvents.onTypingStop, () => {
-			console.log('onTypingStop: User has stopped typing...')
 			setIsRecipientTyping(false)
 		})
-		// appSocket.on('onMessageUpdate', (message) => {
-		// 	console.log('onMessageUpdate received')
-		// 	console.log(message)
-		// 	// dispatch(editMessage(message))
-		// })
 
 		return () => {
 			appSocket.off(socketEvents.onTypingStart)
 			appSocket.off(socketEvents.onTypingStop)
-			appSocket.off('onMessageUpdate')
 		}
 	}, [])
 

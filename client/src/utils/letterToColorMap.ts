@@ -8,9 +8,6 @@ const createLetterCollorMap = () => {
 	for (let i = 0; i < 5; i++) {
 		colors.push(...MUI_COLORS)
 	}
-
 	ALPHABET.map((letter, i) => colorMap.set(letter, colors[i]))
-
-	console.log('This is colorMap', colorMap)
 }
 createLetterCollorMap()

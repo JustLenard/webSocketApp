@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ShortUser } from 'src/utils/types/entities.types'
 import { Repository } from 'typeorm'
@@ -11,9 +11,12 @@ export class UsersService {
 		@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>,
 		@Inject(GatewaySessionManager) private sessions: GatewaySessionManager,
 	) {}
+	private logger = new Logger('Users service')
 
 	async findAll(): Promise<ShortUser[]> {
+		this.logger.log(`Getting users`)
 		const users = await this.userRepostiry.find()
+
 		// users = users.filter((user) => user.id !== userId)
 
 		return users.map((user) => ({

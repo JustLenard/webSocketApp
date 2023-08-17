@@ -33,10 +33,12 @@ export const Message: React.FC<Props> = ({ message, prev }) => {
 				<Stack width={'100%'}>
 					{showUserInfo && (
 						<Stack direction={'row'} gap={1} alignContent={'center'}>
-							<Typography color="neutral" noWrap>
+							<Typography color="primary" noWrap>
 								{message.user.username}
 							</Typography>
-							<Typography>{utcTimeToHumanTime(message.updated_at)}</Typography>
+							<Typography level="body-sm" alignItems={'center'} display={'flex'}>
+								{utcTimeToHumanTime(message.updated_at)}
+							</Typography>
 						</Stack>
 					)}
 
@@ -65,7 +67,6 @@ const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({
 				const response = await privateAxios.patch(`room/${currentRoom.id}/messages/${message.id}`, {
 					text: edit,
 				})
-				console.log('This is response', response)
 			} catch (err) {
 				handleError(err)
 			}
@@ -118,7 +119,7 @@ const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({
 						<Typography sx={{ marginLeft: marginLeft }}>{message.text}</Typography>
 
 						<Stack direction={'row'} className="buttons-wrapper">
-							<Typography>{utcTimeToHumanTime(message.updated_at)}</Typography>
+							<Typography level="body-sm">{utcTimeToHumanTime(message.updated_at)}</Typography>
 
 							{isMessageOwner && (
 								<>

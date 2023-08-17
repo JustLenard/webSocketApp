@@ -8,6 +8,8 @@ export const LOGGED_IN_KEY_NAME = 'loggedIn'
 export const CURRENT_ROOM_KEY_NAME = 'currentRoom'
 export const MUI_COLORS: ColorPaletteProp[] = ['primary', 'neutral', 'danger', 'success', 'warning']
 
+export const TRUE = 'true'
+
 export const MESSAGE_ROOM = 'room'
 export const NOTIFICATIONS_ROOM = 'notificationsRoom'
 
@@ -20,8 +22,14 @@ export enum socketEvents {
 	messageDeleted = 'messageDeleted',
 	messages = 'messages',
 	newNotification = 'newNotification',
+
 	/**
-	 * Connection
+	 * Socket connetion
+	 **/
+	connect = 'connect',
+
+	/**
+	 * User connection
 	 **/
 	userConnected = 'userConnected',
 	userDisconnected = 'userDisconnected',
@@ -36,8 +44,4 @@ export enum socketEvents {
 	createRoom = 'createRoom',
 	checkIfPrivateChatExists = 'checkIfPrivateChatExists',
 	markNotificationsAsRead = 'markNotificationsAsRead',
-}
-
-export enum apiEndpoints {
-	messages = '/messages',
 }

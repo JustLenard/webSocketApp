@@ -13,11 +13,8 @@ export class RoomsService implements OnModuleInit {
 	async onModuleInit() {
 		const globalRoom = await this.getRoomByName()
 
-		const admin = await this.userRepository.findOne({
-			where: {
-				username: 'len',
-			},
-			// relations: ['rooms'],
+		const admin = await this.userRepository.findOneBy({
+			username: 'len',
 		})
 
 		if (!globalRoom) {

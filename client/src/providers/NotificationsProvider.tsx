@@ -20,7 +20,6 @@ const NotificationsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		const getNotification = async () => {
 			try {
 				const response = await privateAxios.get('notifications')
-				console.log('Those are notifications ', response.data)
 				if (response.data) setNotifications(response.data)
 			} catch (err) {
 				handleError(err)

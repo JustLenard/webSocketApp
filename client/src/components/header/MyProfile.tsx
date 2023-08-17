@@ -9,7 +9,7 @@ import { useAuth } from '../../hooks/contextHooks'
 
 const MyProfile = () => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-	const { logOut } = useAuth()
+	const { logOutUser } = useAuth()
 	const open = Boolean(anchorEl)
 
 	const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -21,7 +21,7 @@ const MyProfile = () => {
 	}
 
 	const handleLogout = () => {
-		logOut()
+		logOutUser
 	}
 
 	return (

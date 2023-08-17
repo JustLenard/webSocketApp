@@ -30,7 +30,6 @@ const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const getMessagesForRoom = async (roomId: number) => {
 		try {
 			const response = await privateAxios.get(`room/${roomId}/messages`)
-			console.log('This is response.data', response.data)
 			setMessages(response.data)
 		} catch (err) {
 			handleError(err)
@@ -38,7 +37,7 @@ const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	}
 
 	const sendMessage = async (messageContent: string) => {
-		if (!currentRoom) return console.log('Room not selected')
+		if (!currentRoom) return
 		try {
 			const response = await privateAxios.post(`/room/${currentRoom.id}/messages`, {
 				roomId: currentRoom.id,
@@ -55,16 +54,12 @@ const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		if (!appSocket) return
 
 		appSocket.on(socketEvents.messageAdded, (payload: MessageSocketEvent) => {
-			console.log('trigger add ')
 			setMessages((prev) => [...prev, payload.message])
 		})
 		appSocket.on(socketEvents.messagePatched, (payload: MessageSocketEvent) => {
-			console.log('trigger patch ')
 			const index = messages.findIndex((elem) => elem.id === payload.message.id)
-			console.log('This is index', index)
 			const newMessages = [...messages]
 			newMessages.splice(index, 1, payload.message)
-			console.log('This is newMessages', newMessages)
 			setMessages([...newMessages])
 		})
 		appSocket.on(socketEvents.messageDeleted, (payload: MessageSocketEvent) => {
