@@ -18,6 +18,7 @@ import { appRoutes } from '../router/Root'
 import { LogInCredentials } from '../types/types'
 import { LogInFormSchema } from '../yup/logInSchema'
 import { renderErrors } from './SignUpPage'
+import AppSpinner from '../components/AppSpinner'
 
 const publicUsername = import.meta.env.VITE_PUBLIC_USERNAME
 const publicPassword = import.meta.env.VITE_PUBLIC_PASSWORD
@@ -27,6 +28,7 @@ const LoginPage: React.FC = () => {
 	const location = useLocation()
 	const navigate = useNavigate()
 	const { loggedIn, loginUser } = useAuth()
+	const [loading, setLoading] = useState(false)
 	const {
 		register,
 		handleSubmit,
@@ -37,24 +39,29 @@ const LoginPage: React.FC = () => {
 
 	// If the user is loged in, send him from the page he was coming from or to Home page
 	useEffect(() => {
-		if (loggedIn) {
+		if (loggedIn && !loading) {
 			location.state ? navigate(location.state.path) : navigate(appRoutes.chat)
 		}
-	}, [navigate, location.state, loggedIn])
+	}, [loggedIn, loading])
 
 	const onSubmit: SubmitHandler<LogInCredentials> = async (credentials) => {
 		try {
+			setLoading(true)
+
 			const response = await appAxios.post('/auth/signin', credentials)
 			loginUser(response.data.accessToken)
+			navigate(appRoutes.chat)
 		} catch (err) {
 			if (isAxiosError(err)) {
 				setManualErrors(err.response?.data.message)
 			}
 		}
+		setLoading(false)
 	}
 
 	const logInAsGuest = async () => {
 		try {
+			setLoading(true)
 			const response = await appAxios.post('/auth/guest')
 			loginUser(response.data.accessToken)
 		} catch (err) {
@@ -62,7 +69,10 @@ const LoginPage: React.FC = () => {
 				setManualErrors(err.response?.data.message)
 			}
 		}
+		setLoading(false)
 	}
+
+	if (loading) return <AppSpinner text="Logging in" />
 
 	return (
 		<CssVarsProvider>

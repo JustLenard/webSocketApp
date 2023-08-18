@@ -1,54 +1,57 @@
-import { PropsWithChildren, ReactNode, useEffect, useState } from 'react'
+import { PropsWithChildren, useEffect, useState } from 'react'
+import AppSpinner from '../components/AppSpinner'
 import { useAuth, useRooms, useSocket } from '../hooks/contextHooks'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { MessageI, MessageSocketEvent } from '../types/types'
-import { handleError } from '../utils/handleAxiosErrors'
-import { MessagesContext, MessagesContextType } from './context/messages.context'
 import { socketEvents } from '../utils/constants'
+import { handleError } from '../utils/handleAxiosErrors'
+import { showSpinner } from '../utils/helpers'
+import { MessagesContext, MessagesContextType } from './context/messages.context'
 
 /**
  * Messages provider for the app
  */
 const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
+	const { privateAxios } = useAxiosPrivate()
 	const { loggedIn } = useAuth()
 	const { appSocket } = useSocket()
 	const { currentRoom } = useRooms()
+
 	const [messages, setMessages] = useState<MessageI[]>([])
 	const [editingMessageId, setEditingMessageId] = useState<null | number>(null)
-
-	const { privateAxios } = useAxiosPrivate()
-
-	useEffect(() => {
-		if (loggedIn && currentRoom) {
-			getMessagesForRoom(currentRoom.id)
-		}
-	}, [loggedIn, currentRoom])
+	const [loading, setLoading] = useState(true)
 
 	/**
 	 * Get messages for the selected room
 	 **/
 	const getMessagesForRoom = async (roomId: number) => {
 		try {
+			setLoading(true)
 			const response = await privateAxios.get(`room/${roomId}/messages`)
 			setMessages(response.data)
 		} catch (err) {
 			handleError(err)
 		}
+		setLoading(false)
 	}
 
 	const sendMessage = async (messageContent: string) => {
 		if (!currentRoom) return
 		try {
-			const response = await privateAxios.post(`/room/${currentRoom.id}/messages`, {
+			privateAxios.post(`/room/${currentRoom.id}/messages`, {
 				roomId: currentRoom.id,
 				text: messageContent,
 			})
-
-			// setMessages((prev) => [...prev, response.data])
 		} catch (err) {
 			handleError(err)
 		}
 	}
+
+	useEffect(() => {
+		if (loggedIn && currentRoom) {
+			getMessagesForRoom(currentRoom.id)
+		}
+	}, [loggedIn, currentRoom])
 
 	useEffect(() => {
 		if (!appSocket) return
@@ -81,6 +84,8 @@ const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		editingMessageId,
 		setEditingMessageId,
 	}
+
+	if (showSpinner(loading)) return <AppSpinner text="Getting Messages" />
 
 	return <MessagesContext.Provider value={contextValue}>{children}</MessagesContext.Provider>
 }

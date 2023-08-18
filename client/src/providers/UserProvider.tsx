@@ -2,7 +2,7 @@ import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { useAuth } from '../hooks/contextHooks'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { UserContext, UserContextType } from './context/user.context'
-import { isInsideOfApplication } from '../utils/helpers'
+import { isInsideOfApplication, showSpinner } from '../utils/helpers'
 import AppSpinner from '../components/AppSpinner'
 import { handleError } from '../utils/handleAxiosErrors'
 import { UserI } from '../types/types'
@@ -11,14 +11,14 @@ import { UserI } from '../types/types'
  * Socket provider for the app
  */
 const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
-	const [user, setUser] = useState<UserI | null>(null)
-	const [loading, setLoading] = useState(false)
-
+	const { privateAxios } = useAxiosPrivate()
 	const { accessToken } = useAuth()
 
-	const { privateAxios } = useAxiosPrivate()
+	const [user, setUser] = useState<UserI | null>(null)
+	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
+		if (!isInsideOfApplication()) return
 		const getMyInfo = async () => {
 			try {
 				setLoading(true)
@@ -30,10 +30,10 @@ const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
 			}
 			setLoading(false)
 		}
-		if (accessToken && isInsideOfApplication()) getMyInfo()
+		getMyInfo()
 	}, [accessToken])
 
-	if (loading) return <AppSpinner text="Getting User" />
+	if (showSpinner(loading)) return <AppSpinner text="Getting User" />
 
 	const contextValue: UserContextType = {
 		user,

@@ -27,11 +27,17 @@ export const isInsideOfApplication = () => {
 	return location.pathname !== appRoutes.login && location.pathname !== appRoutes.signUp
 }
 
-export const showSpinner = (cond1: boolean, cond2?: boolean) => {
+// export const showSpinner = (cond1: boolean, cond2?: boolean) => {
+// 	const isInside = isInsideOfApplication()
+// 	if (cond1 && isInside) return true
+// 	if (cond2 === undefined) return false
+// 	if (cond2 && isInside) return true
+// 	return false
+// }
+
+export const showSpinner = (cond1: boolean) => {
 	const isInside = isInsideOfApplication()
 	if (cond1 && isInside) return true
-	if (cond2 === undefined) return false
-	if (cond2 && isInside) return true
 	return false
 }
 

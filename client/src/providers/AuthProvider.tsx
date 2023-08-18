@@ -9,13 +9,13 @@ import { LOGGED_IN_KEY_NAME, TRUE } from '../utils/constants'
 import { AuthContext, AuthorizationContextType } from './context/auth.context'
 
 export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
+	const refresh = useRefreshToken()
+	const { privateAxios } = useAxiosPrivate()
+
 	const [accessToken, setAccessToken] = useState<string | null>(null)
 	const [loggedIn, setLoggedIn] = useState<boolean>(sessionStorage.getItem(LOGGED_IN_KEY_NAME) === TRUE)
 	const [loading, setLoading] = useState(false)
 	const [loggingOut, setLoggingOut] = useState(false)
-
-	const refresh = useRefreshToken()
-	const { privateAxios } = useAxiosPrivate()
 
 	/**
 	 * Get access token if user still has valid refresh token
@@ -73,6 +73,10 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		sessionStorage.setItem(LOGGED_IN_KEY_NAME, TRUE)
 	}
 
+	if (loggingOut) return <AppSpinner text="Logging out" />
+
+	if (showSpinner(loading) || showSpinner(!accessToken)) return <AppSpinner text="Authentificating" />
+
 	const contextValue: AuthorizationContextType = {
 		accessToken,
 		loggedIn,
@@ -80,11 +84,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		loginUser,
 		setNewToken,
 	}
-
-	if (loggingOut) return <AppSpinner text="Logging out" />
-	console.log('This is accessToken', accessToken)
-
-	if (showSpinner(loading, accessToken === null)) return <AppSpinner text="Authentificating" />
 
 	return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 }

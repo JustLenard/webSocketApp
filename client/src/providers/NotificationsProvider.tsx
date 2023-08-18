@@ -1,16 +1,20 @@
-import { PropsWithChildren, useCallback, useEffect, useState } from 'react'
-import { NotificationsContext, NotificationsContextType } from './context/notification.context'
+import { PropsWithChildren, useEffect, useState } from 'react'
+import AppSpinner from '../components/AppSpinner'
+import { useAuth } from '../hooks/contextHooks'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { handleError } from '../utils/handleAxiosErrors'
-import { useAuth, useUser } from '../hooks/contextHooks'
+import { showSpinner } from '../utils/helpers'
+import { NotificationsContext, NotificationsContextType } from './context/notification.context'
 
 /**
  * Notifications provider for the app
  */
 const NotificationsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const { loggedIn } = useAuth()
-	const [notifications, setNotifications] = useState([])
 	const { privateAxios } = useAxiosPrivate()
+
+	const [notifications, setNotifications] = useState([])
+	const [loading, setLoading] = useState(true)
 
 	const contextValue: NotificationsContextType = {
 		notifications,
@@ -19,18 +23,20 @@ const NotificationsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	useEffect(() => {
 		const getNotification = async () => {
 			try {
+				setLoading(true)
 				const response = await privateAxios.get('notifications')
 				if (response.data) setNotifications(response.data)
 			} catch (err) {
 				handleError(err)
 			}
+			setLoading(false)
 		}
 		if (loggedIn) {
 			getNotification()
 		}
 	}, [loggedIn])
 
-	useEffect(() => {}, [])
+	if (showSpinner(loading)) return <AppSpinner text="Getting Notifications" />
 
 	return <NotificationsContext.Provider value={contextValue}>{children}</NotificationsContext.Provider>
 }
