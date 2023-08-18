@@ -1,4 +1,4 @@
-import { Grid, Stack } from '@mui/material'
+import { Grid, Paper, Stack } from '@mui/material'
 import { useSocket, useUser } from '../../hooks/contextHooks'
 import AppSpinner from '../AppSpinner'
 import ChatInput from './ChatInput'
@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 import { socketEvents } from '../../utils/constants'
 import { getReceivingUser } from '../../utils/helpers'
 
-const ChatContainer = () => {
+const ChatPanel = () => {
 	const { appSocket } = useSocket()
 	const { currentRoom } = useRooms()
 	const { user } = useUser()
@@ -17,37 +17,43 @@ const ChatContainer = () => {
 
 	useEffect(() => {
 		if (!appSocket) return
-
 		appSocket.on(socketEvents.onTypingStart, () => {
 			setIsRecipientTyping(true)
 		})
 		appSocket.on(socketEvents.onTypingStop, () => {
 			setIsRecipientTyping(false)
 		})
-
 		return () => {
 			appSocket.off(socketEvents.onTypingStart)
 			appSocket.off(socketEvents.onTypingStop)
 		}
 	}, [])
 
-	if (!currentRoom || !user) return <AppSpinner contained text="Chat container" />
+	if (!currentRoom || !user) return <AppSpinner contained />
 
 	const recipient = getReceivingUser(currentRoom.users, user.id)
+	const conversationName = currentRoom.isGroupChat ? currentRoom.name : recipient.username
+
+	const i = 'r'
 
 	return (
 		<Grid container direction={'column'} height={'100%'}>
-			<Grid
+			{/* <Grid
 				item
 				xs
-				style={{
+				sx={{
 					flex: 0,
 					background: 'gray',
 					padding: '1rem',
 				}}
 			>
-				<Typography level="title-md">{currentRoom.name}</Typography>
-			</Grid>
+				<Paper elevation={12}>
+					<Typography level="title-md">{conversationName}</Typography>
+				</Paper>
+			</Grid> */}
+			<Paper elevation={12}>
+				<Typography level="title-md">{conversationName}</Typography>
+			</Paper>
 			<Grid item xs overflow={'scroll'}>
 				<MessagesContainer />
 			</Grid>
@@ -61,4 +67,4 @@ const ChatContainer = () => {
 	)
 }
 
-export default ChatContainer
+export default ChatPanel

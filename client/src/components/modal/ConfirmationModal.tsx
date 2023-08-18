@@ -33,11 +33,10 @@ const ResponsiveModal: React.FC<Props> = ({ open, handleClose, handleConfirm }) 
 				})}
 			>
 				<Typography id="nested-modal-title" component="h2">
-					Are you absolutely sure?
+					Are you sure?
 				</Typography>
 				<Typography id="nested-modal-description" textColor="text.tertiary">
-					This action cannot be undone. This will permanently delete your account and remove your data from
-					our servers.
+					This will delete your message permanently
 				</Typography>
 				<Box
 					sx={{

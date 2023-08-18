@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material'
 import AppNavbar from '../components/header/AppNavbar'
-import ChatContainer from '../components/chat/ChatContainer'
+import ChatPanel from '../components/chat/ChatPanel'
 import LeftMenu from '../components/leftMenu/LeftMenu'
 import RightMenu from '../components/rightMenu/RightMenu'
 import MessagesProvider from '../providers/MessagesProvider'
@@ -24,7 +24,7 @@ const ChatPage = () => {
 				</Grid>
 				<Grid item xs>
 					<MessagesProvider>
-						<ChatContainer />
+						<ChatPanel />
 					</MessagesProvider>
 				</Grid>
 				<Grid item xs={2}>
