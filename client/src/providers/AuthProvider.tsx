@@ -68,7 +68,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	 **/
 	const loginUser = (accessToken: string) => {
 		setAccessToken(accessToken)
-		console.log('This is accessToken on Login', accessToken)
 		setLoggedIn(true)
 		sessionStorage.setItem(LOGGED_IN_KEY_NAME, TRUE)
 	}

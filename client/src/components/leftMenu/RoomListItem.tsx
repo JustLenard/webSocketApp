@@ -72,13 +72,11 @@ const RoomListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, descripti
 							</span>
 						</Stack>
 
-						<Typography>
-							<Typography color="neutral" level="body-md" noWrap>
+						<Typography noWrap>
+							<Typography color="neutral" level="body-md">
 								{author}
 							</Typography>
-							<Typography noWrap level="body-sm">
-								{lastMessageSnippet?.text}
-							</Typography>
+							<Typography level="body-sm">{lastMessageSnippet?.text}</Typography>
 						</Typography>
 					</ListItemContent>
 				</ListItem>

@@ -1,4 +1,4 @@
-import { CircularProgress, Skeleton, Stack, styled } from '@mui/material'
+import { Box, CircularProgress, Skeleton, Stack, styled } from '@mui/material'
 
 interface Props {
 	amount?: number
@@ -7,7 +7,7 @@ interface Props {
 	text?: string
 }
 
-const AppSpinner: React.FC<Props> = ({ text, contained = false, amount = 2, circle = true }) => {
+const AppSpinner: React.FC<Props> = ({ text, contained = false, amount = 4, circle = true }) => {
 	if (contained) return <ContainedSpinner text={text} />
 
 	if (circle) return <WholePageSpinner text={text} />
@@ -25,16 +25,19 @@ const WholePageSpinner: React.FC<{ text: string | undefined }> = ({ text }) => (
 )
 
 const ContainedSpinner: React.FC<{ text: string | undefined }> = ({ text }) => (
-	<>
+	<Box
+		sx={{
+			height: '100%',
+			display: 'flex',
+		}}
+	>
 		<CircularProgress
 			sx={{
 				alignSelf: 'center',
-				textAlign: 'center',
 				margin: '0 auto',
 			}}
 		/>
-		{text}
-	</>
+	</Box>
 )
 
 const SkeletonSpinner: React.FC<{ amount: number }> = ({ amount }) => (

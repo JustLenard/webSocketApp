@@ -10,13 +10,13 @@ const AppProviders: React.FC<PropsWithChildren> = ({ children }) => {
 	return (
 		<AuthProvider>
 			<SocketProvider>
-				<RoomsProvider>
-					<UserProvider>
-						<NotificationsProvider>
-							<MessagesProvider>{children}</MessagesProvider>
-						</NotificationsProvider>
-					</UserProvider>
-				</RoomsProvider>
+				<UserProvider>
+					<RoomsProvider>
+						{/* <NotificationsProvider> */}
+						{children}
+						{/* </NotificationsProvider> */}
+					</RoomsProvider>
+				</UserProvider>
 			</SocketProvider>
 		</AuthProvider>
 	)

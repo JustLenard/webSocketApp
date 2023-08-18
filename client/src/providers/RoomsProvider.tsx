@@ -37,9 +37,13 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		try {
 			setLoading(true)
 			const response = await privateAxios.post('/rooms', newRoom)
+			console.log('This is response.data', response.data)
 
 			if (typeof response.data === 'number') {
-				if (currentRoom?.id !== response.data) return changeCurrentRoom(response.data)
+				if (currentRoom?.id !== response.data) {
+					setLoading(false)
+					return changeCurrentRoom(response.data)
+				}
 			}
 			if (typeof response.data === 'object') {
 				setRooms((prev) => [response.data, ...prev])
@@ -84,7 +88,7 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		}
 	}, [appSocket, rooms])
 
-	if (showSpinner(loading)) return <AppSpinner text="Getting rooms" />
+	// if (showSpinner(loading)) return <AppSpinner text="Getting rooms" />
 
 	const contextValue: RoomsContextType = {
 		rooms,

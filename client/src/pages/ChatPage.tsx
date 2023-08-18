@@ -3,6 +3,7 @@ import AppNavbar from '../components/header/AppNavbar'
 import ChatContainer from '../components/chat/ChatContainer'
 import LeftMenu from '../components/leftMenu/LeftMenu'
 import RightMenu from '../components/rightMenu/RightMenu'
+import MessagesProvider from '../providers/MessagesProvider'
 
 const ChatPage = () => {
 	return (
@@ -22,7 +23,9 @@ const ChatPage = () => {
 					<LeftMenu />
 				</Grid>
 				<Grid item xs>
-					<ChatContainer />
+					<MessagesProvider>
+						<ChatContainer />
+					</MessagesProvider>
 				</Grid>
 				<Grid item xs={2}>
 					<RightMenu />
