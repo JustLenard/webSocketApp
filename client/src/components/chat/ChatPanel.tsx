@@ -59,7 +59,7 @@ const ChatPanel = () => {
 			</Grid>
 			<Grid p={'1rem'}>
 				<ChatInput />
-				<Typography level="body-md" ml={'1rem'} height={'20px'}>
+				<Typography level="body-sm" ml={'1rem'} height={'20px'}>
 					{isRecipientTyping ? `${recipient.username} is typing...` : ' '}
 				</Typography>
 			</Grid>

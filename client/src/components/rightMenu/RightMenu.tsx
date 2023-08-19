@@ -56,7 +56,16 @@ const RightMenu = () => {
 	}, [appSocket])
 
 	return (
-		<Grid container sx={{ height: '100%' }} p={'.5rem'} direction={'column'} bgcolor={'Menu'}>
+		<Grid
+			container
+			sx={{
+				flexWrap: 'nowrap',
+				p: '.5rem',
+				bgcolor: 'Menu',
+				flexDirection: 'column',
+				height: '100%',
+			}}
+		>
 			<Typography level="h4" mb={'1rem'} p={'1rem'}>
 				Users
 			</Typography>

@@ -9,14 +9,21 @@ import AppSpinner from '../AppSpinner'
 import AppAvatar from '../avatar/AppAvatar'
 import AppBadge from '../AppBadge'
 
-const RoomListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, description, lastMessage, notifications }) => {
+const RoomListItem: React.FC<RoomI> = ({
+	id,
+	isGroupChat,
+	name,
+	users,
+	lastMessage: lastMessageProp,
+	notifications,
+}) => {
 	const { appSocket } = useSocket()
 	const { currentRoom, changeCurrentRoom } = useRooms()
 	const { user } = useUser()
 
 	const [roomNotificationsAmount, setRoomNotificaitonsAmount] = useState(notifications.length)
-	const [author, setAuthor] = useState(lastMessage && user && createAuthor(lastMessage.user, user))
-	const [lastMessageSnippet, setLastMessageSnippet] = useState(lastMessage && lastMessage)
+	const [author, setAuthor] = useState(lastMessageProp && user && createAuthor(lastMessageProp.user, user))
+	const [lastMessage, setLastMessage] = useState(lastMessageProp && lastMessageProp)
 
 	const handleClick = () => {
 		changeCurrentRoom(id)
@@ -37,7 +44,7 @@ const RoomListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, descripti
 		appSocket.on(socketEvents.newNotification, (payload: NotificationSocketEvent) => {
 			if (payload.roomId !== id) return
 
-			setLastMessageSnippet(payload.notif.message)
+			setLastMessage(payload.notif.message)
 			setAuthor(createAuthor(payload.notif.creator, user))
 
 			if (user.id !== payload.notif.creator.id && currentRoom.id !== payload.notif.room.id) {
@@ -76,7 +83,7 @@ const RoomListItem: React.FC<RoomI> = ({ id, isGroupChat, name, users, descripti
 							<Typography color="neutral" level="body-md">
 								{author}
 							</Typography>
-							<Typography level="body-sm">{lastMessageSnippet?.text}</Typography>
+							<Typography level="body-sm">{lastMessage?.text}</Typography>
 						</Typography>
 					</ListItemContent>
 				</ListItem>

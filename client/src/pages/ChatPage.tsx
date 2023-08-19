@@ -11,15 +11,24 @@ const ChatPage = () => {
 			sx={{
 				minHeight: '100vh',
 				height: '100vh',
-				display: 'flex',
-				flexDirection: 'column',
 			}}
 		>
-			<Grid item>
+			{/* <Grid item>
 				<AppNavbar />
-			</Grid>
-			<Grid container sx={{ width: '100%', height: '100%' }}>
-				<Grid item xs={2}>
+			</Grid> */}
+
+			<Grid container sx={{ width: '100%', height: '100%', border: '2px solid red' }}>
+				<Grid width={'60px'}>
+					<div>User </div>
+				</Grid>
+				<Grid
+					item
+					xs={2}
+					sx={{
+						border: '2px solid green',
+						height: 'inherit',
+					}}
+				>
 					<LeftMenu />
 				</Grid>
 				<Grid item xs>
@@ -27,7 +36,14 @@ const ChatPage = () => {
 						<ChatPanel />
 					</MessagesProvider>
 				</Grid>
-				<Grid item xs={2}>
+				<Grid
+					item
+					xs={2}
+					sx={{
+						border: '2px solid green',
+						height: 'inherit',
+					}}
+				>
 					<RightMenu />
 				</Grid>
 			</Grid>

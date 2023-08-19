@@ -11,7 +11,16 @@ const LeftMenu = () => {
 	if (!rooms) return <AppSpinner text="Left menu" />
 
 	return (
-		<Grid container height={'100%'} direction={'column'} p={'.5rem'} bgcolor={'Menu'}>
+		<Grid
+			container
+			sx={{
+				flexWrap: 'nowrap',
+				p: '.5rem',
+				bgcolor: 'Menu',
+				flexDirection: 'column',
+				height: '100%',
+			}}
+		>
 			<Typography level="h4" mb={'1rem'} p={'1rem'}>
 				Conversations
 			</Typography>
@@ -30,6 +39,9 @@ const LeftMenu = () => {
 						'& [role="button"]': {},
 					}}
 				>
+					{rooms.map((room, i) => (
+						<RoomListItem {...room} key={room.id} />
+					))}
 					{rooms.map((room, i) => (
 						<RoomListItem {...room} key={room.id} />
 					))}
