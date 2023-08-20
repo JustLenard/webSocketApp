@@ -61,34 +61,32 @@ const RoomListItem: React.FC<RoomI> = ({
 	}, [appSocket, currentRoom])
 
 	return (
-		<>
-			<ListItemButton onClick={handleClick} selected={currentRoom.id === id} sx={{ width: 'inherit' }}>
-				<ListItem sx={{ width: 'inherit' }}>
-					<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
-						<AppAvatar username={conversationName} />
-					</ListItemDecorator>
-					<ListItemContent>
-						<Stack justifyContent={'space-between'} flexDirection={'row'}>
-							<Typography display={'inline-block'}>{conversationName}</Typography>
-							<span>
-								<Typography display={'inline-block'} textAlign={'end'} level="body-sm">
-									{lastMessage && utcTimeToHumanTime(lastMessage.updated_at)}
-								</Typography>
-
-								<AppBadge badgeContent={roomNotificationsAmount} />
-							</span>
-						</Stack>
-
-						<Typography noWrap>
-							<Typography color="neutral" level="body-md">
-								{author}
+		<ListItemButton onClick={handleClick} selected={currentRoom.id === id} sx={{ width: 'inherit' }}>
+			<ListItem sx={{ width: 'inherit' }}>
+				<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
+					<AppAvatar username={conversationName} />
+				</ListItemDecorator>
+				<ListItemContent>
+					<Stack justifyContent={'space-between'} flexDirection={'row'}>
+						<Typography display={'inline-block'}>{conversationName}</Typography>
+						<span>
+							<Typography display={'inline-block'} textAlign={'end'} level="body-sm">
+								{lastMessage && utcTimeToHumanTime(lastMessage.updated_at)}
 							</Typography>
-							<Typography level="body-sm">{lastMessage?.text}</Typography>
+
+							<AppBadge badgeContent={roomNotificationsAmount} />
+						</span>
+					</Stack>
+
+					<Typography noWrap>
+						<Typography color="neutral" level="body-md">
+							{author}
 						</Typography>
-					</ListItemContent>
-				</ListItem>
-			</ListItemButton>
-		</>
+						<Typography level="body-sm">{lastMessage?.text}</Typography>
+					</Typography>
+				</ListItemContent>
+			</ListItem>
+		</ListItemButton>
 	)
 }
 

@@ -59,8 +59,9 @@ const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({
 
 	const marginLeft = showUserInfo ? 0 : '56px'
 
-	const handleKeypress = async (e: React.KeyboardEvent<HTMLDivElement>) => {
+	const handleKeypress = async (e: React.KeyboardEvent) => {
 		if (!currentRoom) return
+
 		//it triggers by pressing the enter key
 		if (e.keyCode === 13 && edit) {
 			try {

@@ -29,19 +29,15 @@ const LeftMenu = () => {
 					variant={'outlined'}
 					sx={{
 						width: 'inherit',
-						minWidth: 240,
+						minWidth: 200,
 						borderRadius: 'sm',
 						boxShadow: 'sm',
-						// paddingLeft: 0,
 						'--ListItem-paddingX': 0,
 						'--ListItem-paddingY': 0,
 						'--ListDivider-gap': '0px',
 						'& [role="button"]': {},
 					}}
 				>
-					{rooms.map((room, i) => (
-						<RoomListItem {...room} key={room.id} />
-					))}
 					{rooms.map((room, i) => (
 						<RoomListItem {...room} key={room.id} />
 					))}

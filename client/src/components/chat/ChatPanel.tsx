@@ -8,6 +8,7 @@ import { useRooms } from '../../hooks/contextHooks'
 import { useEffect, useState } from 'react'
 import { socketEvents } from '../../utils/constants'
 import { getReceivingUser } from '../../utils/helpers'
+import RightDrawer from '../rightMenu/RightMenuDrawer'
 
 const ChatPanel = () => {
 	const { appSocket } = useSocket()
@@ -34,8 +35,6 @@ const ChatPanel = () => {
 	const recipient = getReceivingUser(currentRoom.users, user.id)
 	const conversationName = currentRoom.isGroupChat ? currentRoom.name : recipient.username
 
-	const i = 'r'
-
 	return (
 		<Grid container direction={'column'} height={'100%'}>
 			{/* <Grid
@@ -53,6 +52,7 @@ const ChatPanel = () => {
 			</Grid> */}
 			<Paper elevation={12}>
 				<Typography level="title-md">{conversationName}</Typography>
+				<RightDrawer />
 			</Paper>
 			<Grid item xs overflow={'scroll'}>
 				<MessagesContainer />

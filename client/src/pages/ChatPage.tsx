@@ -1,9 +1,10 @@
-import { Grid } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 import AppNavbar from '../components/header/AppNavbar'
 import ChatPanel from '../components/chat/ChatPanel'
 import LeftMenu from '../components/leftMenu/LeftMenu'
 import RightMenu from '../components/rightMenu/RightMenu'
 import MessagesProvider from '../providers/MessagesProvider'
+import RightDrawer from '../components/rightMenu/RightMenuDrawer'
 
 const ChatPage = () => {
 	return (
@@ -17,16 +18,22 @@ const ChatPage = () => {
 				<AppNavbar />
 			</Grid> */}
 
-			<Grid container sx={{ width: '100%', height: '100%', border: '2px solid red' }}>
-				<Grid width={'60px'}>
+			<Grid container sx={{ width: '100%', height: '100%', border: '2px solid red', flexWrap: 'nowrap' }}>
+				{/* <Grid width={'60px'}>
 					<div>User </div>
-				</Grid>
+				</Grid> */}
 				<Grid
 					item
-					xs={2}
+					// xs={1}
+					xs={3}
+					lg={2}
 					sx={{
 						border: '2px solid green',
 						height: 'inherit',
+						display: {
+							xs: 'none',
+							md: 'initial',
+						},
 					}}
 				>
 					<LeftMenu />
@@ -38,10 +45,15 @@ const ChatPage = () => {
 				</Grid>
 				<Grid
 					item
-					xs={2}
+					xs={0}
+					lg={2}
 					sx={{
 						border: '2px solid green',
 						height: 'inherit',
+						display: {
+							xs: 'none',
+							lg: 'initial',
+						},
 					}}
 				>
 					<RightMenu />
