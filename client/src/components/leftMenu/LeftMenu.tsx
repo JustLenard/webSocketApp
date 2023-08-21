@@ -30,12 +30,10 @@ const LeftMenu = () => {
 					sx={{
 						width: 'inherit',
 						minWidth: 200,
-						borderRadius: 'sm',
+						borderRadius: 'md',
 						boxShadow: 'sm',
 						'--ListItem-paddingX': 0,
 						'--ListItem-paddingY': 0,
-						'--ListDivider-gap': '0px',
-						'& [role="button"]': {},
 					}}
 				>
 					{rooms.map((room, i) => (

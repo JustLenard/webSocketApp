@@ -4,7 +4,6 @@ export class AuthDto {
 	@IsNotEmpty()
 	@IsString()
 	@MinLength(3, { message: 'Username should have at least 3 characters' })
-	// @Min(3, { message: 'Username should have at least 3 characters' })
 	username: string
 
 	@IsNotEmpty()

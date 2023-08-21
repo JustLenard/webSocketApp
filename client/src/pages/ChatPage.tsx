@@ -4,7 +4,7 @@ import ChatPanel from '../components/chat/ChatPanel'
 import LeftMenu from '../components/leftMenu/LeftMenu'
 import RightMenu from '../components/rightMenu/RightMenu'
 import MessagesProvider from '../providers/MessagesProvider'
-import RightDrawer from '../components/rightMenu/RightMenuDrawer'
+import AppDrawer from '../components/drawer/AppDrawer'
 
 const ChatPage = () => {
 	return (
@@ -18,17 +18,15 @@ const ChatPage = () => {
 				<AppNavbar />
 			</Grid> */}
 
-			<Grid container sx={{ width: '100%', height: '100%', border: '2px solid red', flexWrap: 'nowrap' }}>
+			<Grid container sx={{ width: '100%', height: '100%', flexWrap: 'nowrap' }}>
 				{/* <Grid width={'60px'}>
 					<div>User </div>
 				</Grid> */}
 				<Grid
 					item
-					// xs={1}
 					xs={3}
 					lg={2}
 					sx={{
-						border: '2px solid green',
 						height: 'inherit',
 						display: {
 							xs: 'none',
@@ -48,7 +46,6 @@ const ChatPage = () => {
 					xs={0}
 					lg={2}
 					sx={{
-						border: '2px solid green',
 						height: 'inherit',
 						display: {
 							xs: 'none',

@@ -1,5 +1,5 @@
 import { List, ListDivider, ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/joy'
-import { Grid } from '@mui/material'
+import { Grid, ListItemButton } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useRooms, useSocket, useUser } from '../../hooks/contextHooks'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
@@ -15,6 +15,9 @@ const RightMenu = () => {
 	const [offlineUsers, setOfflineUsers] = useState<UserI[]>([])
 	const [onlineUsers, setOnlineUsers] = useState<UserI[]>([])
 
+	/**
+	 * Get users. Separate them into offline and online
+	 **/
 	useEffect(() => {
 		const getUsers = async () => {
 			try {
@@ -36,6 +39,9 @@ const RightMenu = () => {
 		getUsers()
 	}, [])
 
+	/**
+	 * Listen to events of user going online / offline
+	 **/
 	useEffect(() => {
 		if (!appSocket) return
 		appSocket.on(socketEvents.userConnected, (user: UserI) => {
@@ -76,8 +82,10 @@ const RightMenu = () => {
 						variant={'outlined'}
 						sx={{
 							minWidth: 240,
-							borderRadius: 'sm',
+							borderRadius: 'md',
 							boxShadow: 'sm',
+							'--ListItem-paddingX': 0,
+							'--ListItem-paddingY': 0,
 						}}
 					>
 						{onlineUsers.map((user, i) => (
@@ -91,8 +99,9 @@ const RightMenu = () => {
 						variant={'outlined'}
 						sx={{
 							minWidth: 240,
-							borderRadius: 'sm',
 							boxShadow: 'sm',
+							borderRadius: 'md',
+							'--ListItem-paddingX': 0,
 							'--ListItem-paddingY': 0,
 						}}
 					>
@@ -127,16 +136,24 @@ const ProfileListItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 
 	return (
 		<>
-			<ListItem onClick={handleClick}>
-				<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
-					<AppAvatar username={username} />
-				</ListItemDecorator>
+			<ListItemButton>
+				<ListItem onClick={handleClick}>
+					<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
+						<AppAvatar username={username} />
+					</ListItemDecorator>
 
-				<ListItemContent>
-					<Typography>{username}</Typography>
-				</ListItemContent>
-			</ListItem>
-			<ListDivider inset={'gutter'} />
+					<ListItemContent>
+						<Typography>{username}</Typography>
+					</ListItemContent>
+				</ListItem>
+			</ListItemButton>
+			<ListDivider
+				inset={'gutter'}
+				sx={{
+					marginY: 0,
+					marginX: 0,
+				}}
+			/>
 		</>
 	)
 }

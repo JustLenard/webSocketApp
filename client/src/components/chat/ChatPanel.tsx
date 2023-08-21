@@ -1,14 +1,16 @@
-import { Grid, Paper, Stack } from '@mui/material'
+import { Divider, Grid, Paper, Stack } from '@mui/material'
 import { useSocket, useUser } from '../../hooks/contextHooks'
 import AppSpinner from '../AppSpinner'
 import ChatInput from './ChatInput'
 import MessagesContainer from './MessagesContainer'
-import { Typography } from '@mui/joy'
+import { Box, Typography } from '@mui/joy'
 import { useRooms } from '../../hooks/contextHooks'
 import { useEffect, useState } from 'react'
 import { socketEvents } from '../../utils/constants'
 import { getReceivingUser } from '../../utils/helpers'
-import RightDrawer from '../rightMenu/RightMenuDrawer'
+import AppDrawer from '../drawer/AppDrawer'
+import RightMenu from '../rightMenu/RightMenu'
+import LeftMenu from '../leftMenu/LeftMenu'
 
 const ChatPanel = () => {
 	const { appSocket } = useSocket()
@@ -37,23 +39,18 @@ const ChatPanel = () => {
 
 	return (
 		<Grid container direction={'column'} height={'100%'}>
-			{/* <Grid
-				item
-				xs
-				sx={{
-					flex: 0,
-					background: 'gray',
-					padding: '1rem',
-				}}
-			>
-				<Paper elevation={12}>
-					<Typography level="title-md">{conversationName}</Typography>
-				</Paper>
-			</Grid> */}
-			<Paper elevation={12}>
-				<Typography level="title-md">{conversationName}</Typography>
-				<RightDrawer />
-			</Paper>
+			<Stack direction={'row'} p={'.5rem'} alignItems={'center'}>
+				<AppDrawer direction="left" showAt="md">
+					<LeftMenu />
+				</AppDrawer>
+				<Typography level="title-md" p={'.5rem'} mr={'auto'}>
+					{conversationName}
+				</Typography>
+				<AppDrawer direction="right" showAt="lg">
+					<RightMenu />
+				</AppDrawer>
+			</Stack>
+			<Divider />
 			<Grid item xs overflow={'scroll'}>
 				<MessagesContainer />
 			</Grid>

@@ -15,6 +15,9 @@ const AppSpinner: React.FC<Props> = ({ text, contained = false, amount = 4, circ
 	return <SkeletonSpinner amount={amount} />
 }
 
+/**
+ * Spinner on the whole page
+ **/
 const WholePageSpinner: React.FC<{ text: string | undefined }> = ({ text }) => (
 	<SpinnerContainer>
 		<div>
@@ -24,6 +27,9 @@ const WholePageSpinner: React.FC<{ text: string | undefined }> = ({ text }) => (
 	</SpinnerContainer>
 )
 
+/**
+ * Show spinner in the middle of a container
+ **/
 const ContainedSpinner: React.FC<{ text: string | undefined }> = ({ text }) => (
 	<Box
 		sx={{

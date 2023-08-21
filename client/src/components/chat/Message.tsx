@@ -1,10 +1,9 @@
 import DeleteIcon from '@mui/icons-material/Delete'
 import ModeEditIcon from '@mui/icons-material/ModeEdit'
-import Box from '@mui/joy/Box'
 import Stack from '@mui/joy/Stack'
 import Typography from '@mui/joy/Typography'
 import { styled } from '@mui/joy/styles'
-import { IconButton, Input } from '@mui/material'
+import { Box, IconButton, Input } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useMessages, useRooms, useUser } from '../../hooks/contextHooks'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
@@ -23,7 +22,16 @@ export const Message: React.FC<Props> = ({ message, prev }) => {
 	const showUserInfo = prev ? prev.user.id !== message.user.id : true
 
 	return (
-		<Box sx={{ flexGrow: 1, px: 3, mt: '.25rem' }}>
+		<Box
+			sx={{
+				flexGrow: 1,
+				px: {
+					xs: '.5rem',
+					lg: '1.5rem',
+				},
+				mt: '.25rem',
+			}}
+		>
 			<Stack spacing={2} direction="row" alignItems="center">
 				{showUserInfo && (
 					<div style={{ width: '40px' }}>
@@ -59,13 +67,15 @@ const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({
 
 	const marginLeft = showUserInfo ? 0 : '56px'
 
-	const handleKeypress = async (e: React.KeyboardEvent) => {
+	/**
+	 * On 'Enter' press
+	 **/
+	const handleEnterKeypress = async (e: React.KeyboardEvent) => {
 		if (!currentRoom) return
 
-		//it triggers by pressing the enter key
-		if (e.keyCode === 13 && edit) {
+		if (e.key === 'Enter' && edit) {
 			try {
-				const response = await privateAxios.patch(`room/${currentRoom.id}/messages/${message.id}`, {
+				await privateAxios.patch(`room/${currentRoom.id}/messages/${message.id}`, {
 					text: edit,
 				})
 			} catch (err) {
@@ -113,18 +123,18 @@ const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({
 						fullWidth
 						value={edit}
 						onChange={(e) => setEdit(e.target.value)}
-						onKeyDownCapture={(e) => handleKeypress(e)}
+						onKeyDownCapture={(e) => handleEnterKeypress(e)}
 					/>
 				) : (
 					<>
 						<Typography sx={{ marginLeft: marginLeft }}>{message.text}</Typography>
-
 						<Stack direction={'row'} className="buttons-wrapper">
-							<Typography level="body-sm">{utcTimeToHumanTime(message.updated_at)}</Typography>
+							<Typography level="body-sm" mr={'.5rem'}>
+								{utcTimeToHumanTime(message.updated_at)}
+							</Typography>
 
 							{isMessageOwner && (
 								<>
-									{/* <Tooltip title="Edit"> */}
 									<IconButton
 										size="small"
 										onClick={turnEditModeOn}
@@ -134,8 +144,6 @@ const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({
 									>
 										<ModeEditIcon fontSize="small" />
 									</IconButton>
-									{/* </Tooltip> */}
-									{/* <Tooltip title="Delete"> */}
 									<IconButton
 										size="small"
 										onClick={() => setModal(true)}
@@ -145,7 +153,6 @@ const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({
 									>
 										<DeleteIcon fontSize="small" />
 									</IconButton>
-									{/* </Tooltip> */}
 								</>
 							)}
 						</Stack>
