@@ -1,16 +1,9 @@
-import { RoomI, UserI } from '../types/types'
-import {
-	ALPHABET,
-	CURRENT_ROOM_KEY_NAME,
-	GLOBAL_ROOM_NAME,
-	MESSAGE_ROOM,
-	MUI_COLORS,
-	NOTIFICATIONS_ROOM,
-} from './constants'
-import { appRoutes } from '../router/Root'
 import { ColorPaletteProp } from '@mui/joy'
-import { colorMap } from './letterToColorMap'
 import dayjs from 'dayjs'
+import { appRoutes } from '../router/Root'
+import { RoomI, UserI } from '../types/types'
+import { ALPHABET, CURRENT_ROOM_KEY_NAME, GLOBAL_ROOM_NAME, MESSAGE_ROOM, NOTIFICATIONS_ROOM } from './constants'
+import { colorMap } from './letterToColorMap'
 
 export const getRandomInt = (max: number, min = 0) => {
 	min = Math.ceil(min)
@@ -18,7 +11,7 @@ export const getRandomInt = (max: number, min = 0) => {
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-export const selectRandomArrayElement = (elements: any[]) => {
+export const selectRandomArrayElement = <T>(elements: T[]): T => {
 	const randomNumber = getRandomInt(elements.length - 1)
 	return elements[randomNumber]
 }
@@ -26,14 +19,6 @@ export const selectRandomArrayElement = (elements: any[]) => {
 export const isInsideOfApplication = () => {
 	return location.pathname !== appRoutes.login && location.pathname !== appRoutes.signUp
 }
-
-// export const showSpinner = (cond1: boolean, cond2?: boolean) => {
-// 	const isInside = isInsideOfApplication()
-// 	if (cond1 && isInside) return true
-// 	if (cond2 === undefined) return false
-// 	if (cond2 && isInside) return true
-// 	return false
-// }
 
 export const showSpinner = (cond1: boolean) => {
 	const isInside = isInsideOfApplication()
