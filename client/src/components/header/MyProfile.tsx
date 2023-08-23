@@ -21,7 +21,7 @@ const MyProfile = () => {
 	}
 
 	const handleLogout = () => {
-		logOutUser
+		logOutUser()
 	}
 
 	return (

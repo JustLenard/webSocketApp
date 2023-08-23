@@ -4,6 +4,7 @@ import { useSocket } from '../../hooks/contextHooks'
 import AppSpinner from '../AppSpinner'
 import RoomListItem from './RoomListItem'
 import { useRooms } from '../../hooks/contextHooks'
+import MyProfile from '../header/MyProfile'
 
 const LeftMenu = () => {
 	const { rooms } = useRooms()
@@ -41,6 +42,7 @@ const LeftMenu = () => {
 					))}
 				</List>
 			</Grid>
+			<MyProfile />
 		</Grid>
 	)
 }
