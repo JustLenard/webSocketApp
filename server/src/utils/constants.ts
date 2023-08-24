@@ -1,9 +1,8 @@
 export const ALPHABET = [...Array(26)].map((_, i) => (i + 10).toString(36))
 export const NUMBERS = [...Array(10)].map((_, i) => i.toString())
 
-export const GLOBAL_ROOM_NAME = 'Global'
+export const GLOBAL_ROOM_NAME = 'Global Room'
 export const REFRESH_TOKEN = 'refreshToken'
-
 export const MESSAGE_ROOM = 'room'
 export const NOTIFICATIONS_ROOM = 'notificationsRoom'
 

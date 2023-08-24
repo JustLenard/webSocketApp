@@ -63,10 +63,28 @@ export class NotificationsService {
 	}
 
 	async markNotificationsAsReadForRoom(user: UserEntity, roomId: number) {
+		console.log('Getting notiifications')
 		const notifications = await this.getNotificationsForRoom(user, roomId)
-		notifications.forEach((notif) => {
+		// console.log('This is notifications', notifications)
+
+		// notifications.forEach(async (notif) => {
+		// 	console.log('This is notif.reaBy', notif.readBy)
+		// 	notif.readBy = [...notif.readBy, user]
+		// 	console.log('This is notif.reaBy', notif.readBy)
+
+		// 	const save = await this.notifRepository.save(notif)
+		// 	console.log('This is save', save)
+		// })
+
+		const promises = notifications.map(async (notif) => {
+			// console.log('This is notif.readBy', notif.readBy)
 			notif.readBy = [...notif.readBy, user]
-			this.notifRepository.save(notif)
+			// console.log('This is notif.readBy', notif.readBy)
+
+			const save = await this.notifRepository.save(notif)
+			// console.log('This is save', save)
 		})
+
+		await Promise.all(promises)
 	}
 }

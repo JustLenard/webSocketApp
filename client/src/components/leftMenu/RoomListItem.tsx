@@ -36,12 +36,16 @@ const RoomListItem: React.FC<RoomI> = ({
 
 	useEffect(() => {
 		if (!appSocket) return
-		if (currentRoom.id === id) {
-			appSocket.emit(socketEvents.markNotificationsAsRead, id, (res: string) => {
-				if (res === 'ok') setRoomNotificaitonsAmount(0)
-			})
-		}
+		// if (currentRoom.id === id && roomNotificationsAmount > 0) {
+		// 	console.log('This is currentRoom.id === id', currentRoom.id === id)
+		// 	appSocket.emit(socketEvents.markNotificationsAsRead, id, (res: string) => {
+		// 		if (res === 'ok') setRoomNotificaitonsAmount(0)
+		// 	})
+		// }
+
 		appSocket.on(socketEvents.newNotification, (payload: NotificationSocketEvent) => {
+			console.log('new notification')
+			console.log('This is payload', payload)
 			if (payload.roomId !== id) return
 
 			setLastMessage(payload.notif.message)
@@ -55,10 +59,29 @@ const RoomListItem: React.FC<RoomI> = ({
 		})
 
 		return () => {
-			appSocket.off(socketEvents.markNotificationsAsRead)
+			// appSocket.off(socketEvents.markNotificationsAsRead)
 			appSocket.off(socketEvents.newNotification)
 		}
 	}, [appSocket, currentRoom])
+
+	useEffect(() => {
+		if (!appSocket) return
+
+		if (currentRoom.id === id && roomNotificationsAmount > 0) {
+			console.log('This is currentRoom.id', currentRoom.id)
+			console.log('This is currentRoom.id === id', currentRoom.id === id)
+			console.log('This is roomNotificationsAmount', roomNotificationsAmount)
+
+			appSocket.emit(socketEvents.markNotificationsAsRead, id, (res: string) => {
+				if (res === 'ok') setRoomNotificaitonsAmount(0)
+			})
+		}
+
+		return () => {
+			// appSocket.off(socketEvents.markNotificationsAsRead)
+			// appSocket.off(socketEvents.newNotification)
+		}
+	}, [])
 
 	return (
 		<ListItemButton onClick={handleClick} selected={currentRoom.id === id} sx={{ width: 'inherit' }}>

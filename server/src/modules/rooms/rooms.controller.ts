@@ -18,9 +18,11 @@ export class RoomControler {
 
 	@UseGuards(AtGuard)
 	@Get()
-	@HttpCode(HttpStatus.CREATED)
+	@HttpCode(HttpStatus.OK)
 	async getRoomsForUser(@GetCurrentUser() user: UserEntity) {
+		console.log('This is user', user)
 		const userRooms = await this.roomService.getRoomsForUser(user.id)
+		console.log('This is userRooms', userRooms)
 		const roomsWithNotifications = await Promise.all(
 			userRooms.map(async (room) => {
 				const notif = await this.notifService.getNotificationsForRoom(user, room.id)

@@ -1,32 +1,63 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
+import * as argon2 from 'argon2'
 import { InjectRepository } from '@nestjs/typeorm'
 import { RoomEntity } from 'src/utils/entities/room.entity'
-import { UserEntity } from 'src/utils/entities/user.entity'
+import { AccountType, UserEntity } from 'src/utils/entities/user.entity'
 import { RoomI } from 'src/utils/types/entities.types'
 import { DataSource, In, Repository } from 'typeorm'
 import { CreateRoomDto } from './dto/create-room.dto'
 import { CreateRoomParams } from 'src/utils/types/types'
 import { MessageEntity } from 'src/utils/entities/message.entity'
+import { GLOBAL_ROOM_NAME } from 'src/utils/constants'
 
 @Injectable()
 export class RoomsService implements OnModuleInit {
 	async onModuleInit() {
-		const globalRoom = await this.getRoomByName()
-
-		const admin = await this.userRepository.findOneBy({
-			username: 'len',
+		this.logger.log(`Initializing Room Service`)
+		const { ADMIN_NAME, ADMIN_PASSWORD } = process.env
+		let admin = await this.userRepository.findOneBy({
+			username: ADMIN_NAME,
 		})
 
-		if (!globalRoom) {
-			this.logger.warn('Creating global Room')
+		if (!admin) {
+			this.logger.warn(`Admin user not found`)
+			const hashedPassword = await argon2.hash(ADMIN_PASSWORD)
+			admin = await this.userRepository
+				.create({
+					username: ADMIN_NAME,
+					password: hashedPassword,
+					accountType: AccountType.admin,
+				})
+				.save()
+			this.logger.warn(`Created admin user`)
 
-			const globalRoom: RoomI = {
-				name: 'Global',
-				users: [admin],
-				isGroupChat: true,
+			let globalRoom = await this.roomRepository.findOne({
+				where: { name: GLOBAL_ROOM_NAME },
+				relations: ['users'], // Make sure the users relation is eagerly loaded
+			})
+
+			if (!globalRoom) {
+				this.logger.warn(`Global room not found`)
+				globalRoom = await this.roomRepository
+					.create({
+						name: GLOBAL_ROOM_NAME,
+						users: [admin],
+						isGroupChat: true,
+					})
+					.save()
+
+				// const mate = await this.roomRepository.findOne({
+				// 	where: { name: GLOBAL_ROOM_NAME },
+				// 	relations: ['users'], // Make sure the users relation is eagerly loaded
+				// })
+
+				// mate.users.push(admin)
+
+				// await this.roomRepository.save(mate)
+
+				// await this.roomRepository.save(globalRoom)
+				this.logger.warn(`Crated Global room`)
 			}
-
-			this.roomRepository.save(globalRoom)
 		}
 	}
 
@@ -76,7 +107,7 @@ export class RoomsService implements OnModuleInit {
 			.getOne()
 	}
 
-	async getRoomByName(roomName = 'Global'): Promise<RoomEntity> {
+	async getRoomByName(roomName: string): Promise<RoomEntity> {
 		return this.roomRepository.findOne({
 			where: { name: roomName },
 		})

@@ -3,6 +3,7 @@ import { AuthProvider } from './AuthProvider'
 import RoomsProvider from './RoomsProvider'
 import SocketProvider from './SocketProvider'
 import UserProvider from './UserProvider'
+import NotificationsProvider from './NotificationsProvider'
 
 const AppProviders: React.FC<PropsWithChildren> = ({ children }) => {
 	return (

@@ -1,21 +1,18 @@
 import { Global, Module } from '@nestjs/common'
-import { AuthModule } from '../auth/auth.module'
-import { UsersModule } from '../users/users.module'
-import { AppGateWay } from './socket.gateway'
-import { WebsocketAdapter } from './socket.adapter'
-import { UserEntity } from 'src/utils/entities/user.entity'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { GatewaySessionManager } from './socket.sessions'
-import { RoomsService } from '../rooms/rooms.service'
-import { RoomEntity } from 'src/utils/entities/room.entity'
 import { NotificationsEntity } from 'src/utils/entities/notifications.entity'
+import { RoomEntity } from 'src/utils/entities/room.entity'
+import { UserEntity } from 'src/utils/entities/user.entity'
 import { NotificationsService } from '../notifications/notifications.service'
+import { RoomsModule } from '../rooms/rooms.module'
+import { AppGateWay } from './socket.gateway'
+import { GatewaySessionManager } from './socket.sessions'
 
 @Global()
 @Module({
 	controllers: [],
-	providers: [AppGateWay, GatewaySessionManager, RoomsService, NotificationsService],
-	imports: [TypeOrmModule.forFeature([UserEntity, RoomEntity, NotificationsEntity])],
+	providers: [AppGateWay, GatewaySessionManager, NotificationsService],
+	imports: [TypeOrmModule.forFeature([UserEntity, RoomEntity, NotificationsEntity]), RoomsModule],
 	exports: [GatewaySessionManager],
 })
 export class SocketModule {}

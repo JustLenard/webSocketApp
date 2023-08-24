@@ -14,8 +14,6 @@ export class MessageService {
 	constructor(
 		@InjectRepository(MessageEntity)
 		private readonly messageRepository: Repository<MessageEntity>,
-
-		// private userService: UsersService,
 		private roomService: RoomsService,
 	) {}
 

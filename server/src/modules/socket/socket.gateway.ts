@@ -105,6 +105,7 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	 **/
 	@SubscribeMessage(socketEvents.markNotificationsAsRead)
 	markNotificationsAsRead(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
+		this.logger.warn(`Marking notifications for user in the room ${roomId} as read`)
 		this.notifService.markNotificationsAsReadForRoom(client.user, roomId)
 		return 'ok'
 	}

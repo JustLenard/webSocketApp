@@ -7,6 +7,7 @@ import {
 	HttpCode,
 	HttpStatus,
 	Inject,
+	Logger,
 	Param,
 	ParseIntPipe,
 	Patch,
@@ -34,6 +35,8 @@ export class MessageController {
 		private readonly eventEmitter: EventEmitter2,
 	) {}
 
+	private logger = new Logger('Message controler')
+
 	@UseGuards(AtGuard)
 	@Get()
 	@HttpCode(HttpStatus.OK)
@@ -54,6 +57,7 @@ export class MessageController {
 		if (!room) throw new BadRequestException('Room does not exist')
 
 		const message = await this.messageService.createMessage(dto, user, room)
+		this.logger.log(`Created message: ${message.text}`)
 		await this.roomService.addLastMessageToRoom(room, message)
 
 		const notif = await this.notifService.createNotification(message, room)

@@ -14,14 +14,7 @@ const ChatPage = () => {
 				height: '100vh',
 			}}
 		>
-			{/* <Grid item>
-				<AppNavbar />
-			</Grid> */}
-
 			<Grid container sx={{ width: '100%', height: '100%', flexWrap: 'nowrap' }}>
-				{/* <Grid width={'60px'}>
-					<div>User </div>
-				</Grid> */}
 				<Grid
 					item
 					xs={3}

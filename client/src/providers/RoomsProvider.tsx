@@ -63,6 +63,8 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 				setLoading(true)
 				const response = await privateAxios.get('/rooms')
 
+				console.log('This is response', response)
+
 				const room = getSavedOrGlobalRoom(response.data)
 				setRooms(response.data)
 				setCurrentRoom(room)

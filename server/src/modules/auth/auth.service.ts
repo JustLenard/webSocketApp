@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as argon2 from 'argon2'
 import { Response } from 'express'
-import { ALPHABET, NUMBERS, REFRESH_TOKEN } from 'src/utils/constants'
+import { ALPHABET, GLOBAL_ROOM_NAME, NUMBERS, REFRESH_TOKEN } from 'src/utils/constants'
 import { selectRandomArrayElement } from 'src/utils/helpers'
 import { Tokens } from 'src/utils/types/types'
 import { Repository } from 'typeorm'
@@ -125,7 +125,7 @@ export class AuthService {
 			.save()
 
 		const globalRoom = await this.roomRepository.findOne({
-			where: { name: 'Global' },
+			where: { name: GLOBAL_ROOM_NAME },
 			relations: ['users'], // Make sure the users relation is eagerly loaded
 		})
 
