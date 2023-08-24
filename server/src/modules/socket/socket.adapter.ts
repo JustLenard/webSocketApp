@@ -1,6 +1,6 @@
-import { IoAdapter } from '@nestjs/platform-socket.io'
-import { ForbiddenException, Logger } from '@nestjs/common'
+import { Logger } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
+import { IoAdapter } from '@nestjs/platform-socket.io'
 import { dataSource } from 'src/config/dataSourceOptions'
 import { UserEntity } from 'src/utils/entities/user.entity'
 import { AuthenticatedSocket } from 'src/utils/interfaces'
@@ -35,7 +35,6 @@ export class WebsocketAdapter extends IoAdapter {
 				console.log('This is err', err)
 
 				this.logger.log('Received invalid token')
-				socket.emit('badToken', 'mate')
 				socket.disconnect()
 			}
 		})

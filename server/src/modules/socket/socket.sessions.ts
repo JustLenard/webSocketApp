@@ -5,8 +5,8 @@ export interface IGatewaySessionManager {
 	getUserSocket(id: string): AuthenticatedSocket | undefined
 	setUserSocket(id: string, socket: AuthenticatedSocket): void
 	removeUserSocket(id: string): void
-	// getSockets(): Map<string, AuthenticatedSocket>
-	getSockets(): any
+	getSockets(): Map<string, AuthenticatedSocket>
+	// getSockets(): any
 }
 
 @Injectable()
@@ -23,11 +23,12 @@ export class GatewaySessionManager implements IGatewaySessionManager {
 	removeUserSocket(userId: string) {
 		this.sessions.delete(userId)
 	}
-	// getSockets(): Map<string, AuthenticatedSocket> {
-	getSockets() {
-		// return this.sessions
-		const sesions = []
-		this.sessions.forEach((session) => sesions.push(session.id))
-		return sesions
+	getSockets(): Map<string, AuthenticatedSocket> {
+		return this.sessions
 	}
+	// getSockets() {
+	// 	const sesions = []
+	// 	this.sessions.forEach((session) => sesions.push(session.id))
+	// 	return sesions
+	// }
 }

@@ -32,7 +32,7 @@ const ChatPanel = () => {
 		}
 	}, [])
 
-	if (!currentRoom || !user) return <AppSpinner contained />
+	if (!currentRoom || !user) return <AppSpinner contained text="No current room" />
 
 	const recipient = getReceivingUser(currentRoom.users, user.id)
 	const conversationName = currentRoom.isGroupChat ? currentRoom.name : recipient.username

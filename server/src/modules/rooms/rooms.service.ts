@@ -46,16 +46,6 @@ export class RoomsService implements OnModuleInit {
 					})
 					.save()
 
-				// const mate = await this.roomRepository.findOne({
-				// 	where: { name: GLOBAL_ROOM_NAME },
-				// 	relations: ['users'], // Make sure the users relation is eagerly loaded
-				// })
-
-				// mate.users.push(admin)
-
-				// await this.roomRepository.save(mate)
-
-				// await this.roomRepository.save(globalRoom)
 				this.logger.warn(`Crated Global room`)
 			}
 		}

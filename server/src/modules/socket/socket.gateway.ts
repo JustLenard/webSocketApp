@@ -30,8 +30,6 @@ import { GatewaySessionManager } from './socket.sessions'
 @Injectable()
 export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor(
-		// private authService: AuthService,
-		// private userService: UsersService,
 		private roomService: RoomsService,
 		private notifService: NotificationsService,
 		@Inject(GatewaySessionManager)
@@ -46,6 +44,7 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	 * Connection Events
 	 **/
 	async handleConnection(client: AuthenticatedSocket) {
+		if (!client.user) return
 		const userRoomNames = (await this.roomService.getRoomsForUser(client.user.id)).map((room) =>
 			createNotifRoomName(room.id),
 		)
@@ -54,7 +53,6 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 		this.logger.log(`New client connected ${client.id}`)
 		this.sessions.setUserSocket(client.user.id, client)
-		console.log('This is this.sessions.', this.sessions.getSockets())
 
 		this.server.emit(socketEvents.userConnected, {
 			id: client.user.id,

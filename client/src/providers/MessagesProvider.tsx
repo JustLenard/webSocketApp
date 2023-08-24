@@ -85,7 +85,7 @@ const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		setEditingMessageId,
 	}
 
-	if (showSpinner(loading)) return <AppSpinner contained />
+	if (showSpinner(loading)) return <AppSpinner contained text="Loading messages" />
 
 	return <MessagesContext.Provider value={contextValue}>{children}</MessagesContext.Provider>
 }

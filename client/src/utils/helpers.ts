@@ -41,7 +41,7 @@ export const getCurrentRoomFromSessionStorage = () => {
 }
 
 export const getGlobalRoom = (rooms: RoomI[]) => {
-	return rooms.find((room) => room.id === 1 && room.name === GLOBAL_ROOM_NAME && room.isGroupChat) ?? null
+	return rooms.find((room) => room.name === GLOBAL_ROOM_NAME && room.isGroupChat) ?? null
 }
 
 export const getSavedOrGlobalRoom = (rooms: RoomI[]) => {

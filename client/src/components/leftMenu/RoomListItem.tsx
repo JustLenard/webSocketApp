@@ -29,6 +29,7 @@ const RoomListItem: React.FC<RoomI> = ({
 		changeCurrentRoom(id)
 	}
 
+	console.log('This is currentRoom', currentRoom)
 	if (!currentRoom || !user) return <AppSpinner circle={false} text="Rooms" />
 
 	const receivingUser = getReceivingUser(users, user.id)

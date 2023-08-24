@@ -6,7 +6,7 @@ export const getRandomInt = (max: number, min = 0) => {
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-export const selectRandomArrayElement = (elements: any[]) => {
+export const selectRandomArrayElement = <T>(elements: T[]): T => {
 	const randomNumber = getRandomInt(elements.length - 1)
 	return elements[randomNumber]
 }
