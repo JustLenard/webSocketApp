@@ -23,27 +23,11 @@ import { AuthDto } from './auth.dto'
 @Injectable()
 export class AuthService {
 	async onModuleInit() {
-		// const newUser = await this.userRepostiry
-		// 	.create({
-		// 		username: dto.username,
-		// 		password: hash,
-		// 		// rooms: [globalRoom],
-		// 	})
-		// 	.save()
-		// const globalRoom = await this.roomRepository.findOne({
-		// 	where: { name: 'Global' },
-		// 	relations: ['users'], // Make sure the users relation is eagerly loaded
-		// })
-		// const user = await this.userRepostiry.findOneBy({ id: '2faa6629-590e-4f6e-aed5-a164606040df' })
-		// globalRoom.users.push(user)
-		// globalRoom.messages.push({
-		// 	// id: 5,
-		// 	text: 'text',
-		// 	user: user,
-		// } as MessageEntity)
-		// // this.roomRepository.update({ id: globalRoom.id }, globalRoom)
-		// this.roomRepository.save(globalRoom)
-		// console.log('This is globalRoom', globalRoom)
+		// const botAccounts = await this.userRepository.findOneBy({ accountType: AccountType.bot })
+		// if (!botAccounts) {
+		// 	this.logger.warn('Creating bot accounts')
+		// 	this.signupLocal({})
+		// }
 	}
 
 	constructor(

@@ -35,11 +35,11 @@ const useAxiosPrivate = () => {
 				console.log('This is prevRequest?.method', prevRequest?.method)
 				console.log('This is prevRequest?.sent', prevRequest?.sent)
 
-				if (error?.response?.status === 401 && !prevRequest?.sent) {
+				if (error?.response?.status === 401 && !prevRequest?._sent) {
 					// const modifiedRequest = { ...prevRequest } // Create a new object based on prevRequest
 					// modifiedRequest.sent = true // Update the sent property
-					console.log('This is prevRequest.sent', prevRequest.sent)
-					prevRequest.sent = 'true'
+					console.log('This is prevRequest.sent', prevRequest._sent)
+					prevRequest.sent = true
 					console.log('This is prevRequest with sent', prevRequest)
 					const newAccessToken = await refresh()
 					setNewToken(newAccessToken)

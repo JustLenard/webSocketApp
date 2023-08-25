@@ -77,3 +77,20 @@ export const getColorPalletteProp = (yourString: string): ColorPaletteProp => {
 export const utcTimeToHumanTime = (date: Date) => {
 	return dayjs.utc(date).tz(dayjs.tz.guess()).fromNow()
 }
+
+export const createFrequencyMap = (str: string) => {
+	const frequency: Record<string, number> = {}
+
+	for (const letter of str) {
+		frequency[letter] ??= 0
+		frequency[letter]++
+	}
+	return frequency
+}
+
+export const arrayToObj = (arr: string[]) => {
+	return arr.reduce((acc: Record<string, string>, red: string) => {
+		acc[red] = red
+		return acc
+	}, {})
+}

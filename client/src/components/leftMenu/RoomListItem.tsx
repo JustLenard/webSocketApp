@@ -55,7 +55,7 @@ const RoomListItem: React.FC<RoomI> = ({
 			if (user.id !== payload.notif.creator.id && currentRoom.id !== payload.notif.room.id) {
 				setRoomNotificaitonsAmount((prev) => prev + 1)
 			} else {
-				appSocket.emit(socketEvents.markNotificationsAsRead, id)
+				// appSocket.emit(socketEvents.markNotificationsAsRead, id)
 			}
 		})
 
@@ -74,6 +74,7 @@ const RoomListItem: React.FC<RoomI> = ({
 			console.log('This is roomNotificationsAmount', roomNotificationsAmount)
 
 			appSocket.emit(socketEvents.markNotificationsAsRead, id, (res: string) => {
+				console.log('marking notif as read')
 				if (res === 'ok') setRoomNotificaitonsAmount(0)
 			})
 		}
@@ -82,7 +83,7 @@ const RoomListItem: React.FC<RoomI> = ({
 			// appSocket.off(socketEvents.markNotificationsAsRead)
 			// appSocket.off(socketEvents.newNotification)
 		}
-	}, [])
+	}, [currentRoom])
 
 	return (
 		<ListItemButton onClick={handleClick} selected={currentRoom.id === id} sx={{ width: 'inherit' }}>
