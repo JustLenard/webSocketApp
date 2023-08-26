@@ -129,7 +129,7 @@ const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({
 					<>
 						<Typography sx={{ marginLeft: marginLeft }}>{message.text}</Typography>
 						<Stack direction={'row'} className="buttons-wrapper">
-							<Typography level="body-sm" mr={'.5rem'}>
+							<Typography level="body-sm" mr={'.5rem'} alignItems={'center'}>
 								{utcTimeToHumanTime(message.updated_at)}
 							</Typography>
 
@@ -140,6 +140,7 @@ const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({
 										onClick={turnEditModeOn}
 										sx={{
 											height: '1.5rem',
+											width: '1.5rem',
 										}}
 									>
 										<ModeEditIcon fontSize="small" />
@@ -149,6 +150,7 @@ const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({
 										onClick={() => setModal(true)}
 										sx={{
 											height: '1.5rem',
+											width: '1.5rem',
 										}}
 									>
 										<DeleteIcon fontSize="small" />

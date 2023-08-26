@@ -12,38 +12,6 @@ import AppDrawer from '../drawer/AppDrawer'
 import RightMenu from '../rightMenu/RightMenu'
 import LeftMenu from '../leftMenu/LeftMenu'
 
-// const createFrequencyMap = (str: string) => {
-// 	return str.split('').reduce((acc: Record<string, number>, reducer: string) => {
-// 		acc[reducer] ??= 0
-// 		acc[reducer]++
-// 		return acc
-// 	}, {})
-// }
-
-// const myString = 'stringgg'
-
-// const test = new RegExp('^string..$').test(myString)
-// console.log('This is test', test)
-
-// const newString = myString.replaceAll('g', 'b')
-// console.log('This is newString', newString)
-// console.log('This is createFrequencyMap()', createFrequencyMap('myWordddd'))
-
-// const makeFrequencyMap = (str: string) => {
-// 	return str.split('').reduce((acc: Record<string, number>, red: string) => {
-// 		acc[red] ??= 0
-// 		acc[red]++
-// 		return acc
-// 	}, {})
-// }
-
-function merge(nums1: number[], m: number, nums2: number[], n: number): void {
-	nums1 = [...nums1.slice(0, m), ...nums2].sort()
-	console.log(nums1)
-}
-
-merge([1, 2, 3, 0, 0, 0], 3, [2, 5, 6], 3)
-
 const ChatPanel = () => {
 	const { appSocket } = useSocket()
 	const { currentRoom } = useRooms()

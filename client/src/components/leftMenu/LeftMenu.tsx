@@ -5,6 +5,7 @@ import AppSpinner from '../AppSpinner'
 import RoomListItem from './RoomListItem'
 import { useRooms } from '../../hooks/contextHooks'
 import MyProfile from '../header/MyProfile'
+import { getRandomInt } from '../../utils/helpers'
 
 const LeftMenu = () => {
 	const { rooms } = useRooms()
@@ -25,7 +26,7 @@ const LeftMenu = () => {
 			<Typography level="h4" mb={'1rem'} p={'1rem'}>
 				Conversations
 			</Typography>
-			<Grid item overflow={'scroll'} display={'inline-block'} width={'inherit'}>
+			<Grid item overflow={'scroll'} display={'inline-block'} width={'inherit'} pb={'1rem'}>
 				<List
 					variant={'outlined'}
 					sx={{
@@ -37,8 +38,35 @@ const LeftMenu = () => {
 						'--ListItem-paddingY': 0,
 					}}
 				>
-					{rooms.map((room, i) => (
+					{/* {rooms.map((room, i) => (
 						<RoomListItem {...room} key={room.id} />
+					))} */}
+					{rooms.map((room, i) => (
+						<RoomListItem {...room} key={getRandomInt(1000)} />
+					))}
+					{rooms.map((room, i) => (
+						<RoomListItem {...room} key={getRandomInt(1000)} />
+					))}
+					{rooms.map((room, i) => (
+						<RoomListItem {...room} key={getRandomInt(1000)} />
+					))}
+					{rooms.map((room, i) => (
+						<RoomListItem {...room} key={getRandomInt(1000)} />
+					))}
+					{rooms.map((room, i) => (
+						<RoomListItem {...room} key={getRandomInt(1000)} />
+					))}
+					{rooms.map((room, i) => (
+						<RoomListItem {...room} key={getRandomInt(1000)} />
+					))}
+					{rooms.map((room, i) => (
+						<RoomListItem {...room} key={getRandomInt(1000)} />
+					))}
+					{rooms.map((room, i) => (
+						<RoomListItem {...room} key={getRandomInt(1000)} />
+					))}
+					{rooms.map((room, i) => (
+						<RoomListItem {...room} key={getRandomInt(1000)} />
 					))}
 				</List>
 			</Grid>
