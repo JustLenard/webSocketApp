@@ -66,7 +66,24 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 				console.log('This is response', response)
 
 				const room = getSavedOrGlobalRoom(response.data)
-				setRooms(response.data)
+				// setRooms(response.data)
+				setRooms([
+					...response.data,
+					...response.data,
+					...response.data,
+					...response.data,
+					...response.data,
+					...response.data,
+					...response.data,
+					...response.data,
+					...response.data,
+					...response.data,
+					...response.data,
+					...response.data,
+					...response.data,
+					...response.data,
+				])
+
 				setCurrentRoom(room)
 				if (room) {
 					appSocket.emit(socketEvents.onRoomJoin, room.id)

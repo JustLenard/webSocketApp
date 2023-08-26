@@ -4,7 +4,7 @@ import { useSocket } from '../../hooks/contextHooks'
 import AppSpinner from '../AppSpinner'
 import RoomListItem from './RoomListItem'
 import { useRooms } from '../../hooks/contextHooks'
-import MyProfile from '../header/MyProfile'
+import UserMenu from '../header/UserMenu'
 import { getRandomInt } from '../../utils/helpers'
 
 const LeftMenu = () => {
@@ -20,57 +20,34 @@ const LeftMenu = () => {
 				p: '.5rem',
 				bgcolor: 'Menu',
 				flexDirection: 'column',
-				height: '100%',
+				height: 'calc(100vh - .5rem)',
 			}}
 		>
-			<Typography level="h4" mb={'1rem'} p={'1rem'}>
+			<Typography level="h4" mb={'1rem'} p={'1rem'} flex={'0 0 auto'}>
 				Conversations
 			</Typography>
-			<Grid item overflow={'scroll'} display={'inline-block'} width={'inherit'} pb={'1rem'}>
-				<List
-					variant={'outlined'}
-					sx={{
-						width: 'inherit',
-						minWidth: 200,
-						borderRadius: 'md',
-						boxShadow: 'sm',
-						'--ListItem-paddingX': 0,
-						'--ListItem-paddingY': 0,
-					}}
-				>
-					{/* {rooms.map((room, i) => (
+
+			<List
+				variant={'outlined'}
+				sx={{
+					width: 'inherit',
+					minWidth: 200,
+					borderRadius: 'md',
+					boxShadow: 'sm',
+					'--ListItem-paddingX': 0,
+					'--ListItem-paddingY': 0,
+					overflow: 'scroll',
+					mb: '1rem',
+				}}
+			>
+				{/* {rooms.map((room, i) => (
 						<RoomListItem {...room} key={room.id} />
 					))} */}
-					{rooms.map((room, i) => (
-						<RoomListItem {...room} key={getRandomInt(1000)} />
-					))}
-					{rooms.map((room, i) => (
-						<RoomListItem {...room} key={getRandomInt(1000)} />
-					))}
-					{rooms.map((room, i) => (
-						<RoomListItem {...room} key={getRandomInt(1000)} />
-					))}
-					{rooms.map((room, i) => (
-						<RoomListItem {...room} key={getRandomInt(1000)} />
-					))}
-					{rooms.map((room, i) => (
-						<RoomListItem {...room} key={getRandomInt(1000)} />
-					))}
-					{rooms.map((room, i) => (
-						<RoomListItem {...room} key={getRandomInt(1000)} />
-					))}
-					{rooms.map((room, i) => (
-						<RoomListItem {...room} key={getRandomInt(1000)} />
-					))}
-					{rooms.map((room, i) => (
-						<RoomListItem {...room} key={getRandomInt(1000)} />
-					))}
-					{rooms.map((room, i) => (
-						<RoomListItem {...room} key={getRandomInt(1000)} />
-					))}
-				</List>
-			</Grid>
-			<MyProfile />
+				{rooms.map((room, i) => (
+					<RoomListItem {...room} key={getRandomInt(1000)} />
+				))}
+			</List>
+			<UserMenu />
 		</Grid>
 	)
 }

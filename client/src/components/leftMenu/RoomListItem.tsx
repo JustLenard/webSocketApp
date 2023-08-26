@@ -86,16 +86,22 @@ const RoomListItem: React.FC<RoomI> = ({
 	}, [currentRoom])
 
 	return (
-		<ListItemButton onClick={handleClick} selected={currentRoom.id === id} sx={{ width: 'inherit' }}>
+		<ListItemButton
+			onClick={handleClick}
+			selected={currentRoom.id === id}
+			sx={{ width: 'inherit', flex: '1 0 auto', maxHeight: '72px' }}
+		>
 			<ListItem sx={{ width: 'inherit' }}>
 				<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
 					<AppAvatar username={conversationName} />
 				</ListItemDecorator>
 				<ListItemContent>
 					<Stack justifyContent={'space-between'} flexDirection={'row'}>
-						<Typography display={'inline-block'}>{conversationName}</Typography>
+						<Typography display={'inline-block'} noWrap>
+							{conversationName}
+						</Typography>
 						<span>
-							<Typography display={'inline-block'} textAlign={'end'} level="body-sm">
+							<Typography display={'inline-block'} textAlign={'end'} level="body-sm" noWrap>
 								{lastMessage && utcTimeToHumanTime(lastMessage.updated_at)}
 							</Typography>
 

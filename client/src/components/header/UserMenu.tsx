@@ -8,7 +8,7 @@ import { useAuth, useUser } from '../../hooks/contextHooks'
 import { getSubstring } from '../../utils/helpers'
 import AppSpinner from '../AppSpinner'
 
-const MyProfile = () => {
+const UserMenu = () => {
 	const { user } = useUser()
 
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -34,6 +34,7 @@ const MyProfile = () => {
 			sx={{
 				p: '.5rem',
 				boxSizing: 'border-box',
+				width: '100% !important',
 			}}
 		>
 			<Stack direction={'row'} alignItems={'center'}>
@@ -71,4 +72,4 @@ const MyProfile = () => {
 	)
 }
 
-export default MyProfile
+export default UserMenu
