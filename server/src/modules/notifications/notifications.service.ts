@@ -4,6 +4,7 @@ import { MessageEntity } from 'src/utils/entities/message.entity'
 import { NotificationsEntity } from 'src/utils/entities/notifications.entity'
 import { RoomEntity } from 'src/utils/entities/room.entity'
 import { UserEntity } from 'src/utils/entities/user.entity'
+import { SimpleRoomNotifications } from 'src/utils/types/types'
 import { Repository } from 'typeorm'
 
 @Injectable()
@@ -60,6 +61,20 @@ export class NotificationsService {
 			})
 			.orderBy('notification.created_at', 'DESC')
 			.getMany()
+	}
+
+	async getSimplifiedNotificationsForRoom(user: UserEntity, roomId: number): Promise<SimpleRoomNotifications> | null {
+		const notifications = await this.getNotificationsForRoom(user, roomId)
+		if (notifications.length === 0) return null
+		return {
+			roomId,
+			unreadNotificationsAmount: notifications.length,
+			lastMessage: {
+				author: notifications[0].creator,
+				createdAt: notifications[0].created_at,
+				message: notifications[0].message.text,
+			},
+		}
 	}
 
 	async markNotificationsAsReadForRoom(user: UserEntity, roomId: number) {

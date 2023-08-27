@@ -47,7 +47,7 @@ export type RoomI = {
 	description?: string
 	users: UserI[]
 	lastMessage: null | MessageI
-	notifications: NotificationT[]
+	notifications: SimpleRoomNotifications | null
 }
 
 export type PostRoomI = {
@@ -81,7 +81,8 @@ export type NotificationT = {
 	id: number
 	creator: UserI
 	message: MessageI
-	room: RoomI
+	// room: RoomI
+	roomId: number
 }
 
 /**
@@ -95,4 +96,19 @@ export type MessageSocketEvent = {
 export type NotificationSocketEvent = {
 	notif: NotificationT
 	roomId: number
+}
+
+export type SimpleUser = {
+	id: string
+	username: string
+}
+
+export type SimpleRoomNotifications = {
+	roomId: number
+	lastMessage: {
+		message: string
+		author: SimpleUser
+		createdAt: Date
+	}
+	unreadNotificationsAmount: number
 }

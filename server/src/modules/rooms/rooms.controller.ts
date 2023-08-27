@@ -25,7 +25,7 @@ export class RoomControler {
 		console.log('This is userRooms', userRooms)
 		const roomsWithNotifications = await Promise.all(
 			userRooms.map(async (room) => {
-				const notif = await this.notifService.getNotificationsForRoom(user, room.id)
+				const notif = await this.notifService.getSimplifiedNotificationsForRoom(user, room.id)
 				return {
 					...room,
 					notifications: notif,

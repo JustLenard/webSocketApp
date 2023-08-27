@@ -81,10 +81,8 @@ export class RoomsService implements OnModuleInit {
 	}
 
 	async createRoom(room: CreateRoomParams, creator: UserEntity) {
-		this.logger.debug('creating room')
-
+		this.logger.debug('Creating new room')
 		const newRoom = await this.addUsersToRoom({ ...room, users: [creator] }, room.users)
-		console.log('This is newRoom', newRoom)
 		return this.roomRepository.save(newRoom)
 	}
 
@@ -125,10 +123,7 @@ export class RoomsService implements OnModuleInit {
 	}
 
 	async addLastMessageToRoom(room: RoomEntity, message: MessageEntity) {
-		// room.lastMessage = message
-
 		return this.roomRepository.update(room.id, { lastMessage: message })
-		// return this.roomRepository.save(room)
 	}
 
 	async addUsersToRoom(room: RoomI, userIds: string[]) {

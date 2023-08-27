@@ -7,6 +7,8 @@ import { handleError } from '../utils/handleAxiosErrors'
 import { getSavedOrGlobalRoom, isInsideOfApplication, saveRoomIdToSessionStorage, showSpinner } from '../utils/helpers'
 import { RoomsContext, RoomsContextType } from './context/rooms.context'
 import AppSpinner from '../components/AppSpinner'
+import { useAppDispatch } from '../hooks/reduxHooks'
+import { setUpNotification } from '../redux/slices/notifications.slice'
 
 /**
  * Rooms provider for the app
@@ -15,6 +17,7 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const { appSocket } = useSocket()
 	const { privateAxios } = useAxiosPrivate()
 	const { accessToken } = useAuth()
+	const dispatch = useAppDispatch()
 
 	const [rooms, setRooms] = useState<RoomI[]>([])
 	const [currentRoom, setCurrentRoom] = useState<RoomI | null>(null)
@@ -66,23 +69,8 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 				console.log('This is response', response)
 
 				const room = getSavedOrGlobalRoom(response.data)
-				// setRooms(response.data)
-				setRooms([
-					...response.data,
-					...response.data,
-					...response.data,
-					...response.data,
-					...response.data,
-					...response.data,
-					...response.data,
-					...response.data,
-					...response.data,
-					...response.data,
-					...response.data,
-					...response.data,
-					...response.data,
-					...response.data,
-				])
+				setRooms(response.data)
+				dispatch(setUpNotification(response.data))
 
 				setCurrentRoom(room)
 				if (room) {
@@ -100,7 +88,8 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	useEffect(() => {
 		if (!appSocket) return
 		appSocket.on(socketEvents.createRoom, (room: RoomI) => {
-			setRooms((prev) => [{ ...room, notifications: [] }, ...prev])
+			// setRooms((prev) => [{ ...room, notifications: [] }, ...prev])
+			setRooms((prev) => [{ ...room, notifications: null }, ...prev])
 		})
 		return () => {
 			appSocket.off(socketEvents.createRoom)

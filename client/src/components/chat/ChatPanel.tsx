@@ -11,6 +11,8 @@ import { getReceivingUser } from '../../utils/helpers'
 import AppDrawer from '../drawer/AppDrawer'
 import RightMenu from '../rightMenu/RightMenu'
 import LeftMenu from '../leftMenu/LeftMenu'
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
+import { increaseCount } from '../../redux/slices/notifications.slice'
 
 const ChatPanel = () => {
 	const { appSocket } = useSocket()

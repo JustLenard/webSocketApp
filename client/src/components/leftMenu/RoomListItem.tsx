@@ -21,7 +21,10 @@ const RoomListItem: React.FC<RoomI> = ({
 	const { currentRoom, changeCurrentRoom } = useRooms()
 	const { user } = useUser()
 
-	const [roomNotificationsAmount, setRoomNotificaitonsAmount] = useState(notifications.length)
+	// const [roomNotificationsAmount, setRoomNotificaitonsAmount] = useState(notifications.length)
+	// const [author, setAuthor] = useState(lastMessageProp && user && createAuthor(lastMessageProp.user, user))
+	// const [lastMessage, setLastMessage] = useState(lastMessageProp && lastMessageProp)
+	const [roomNotificationsAmount, setRoomNotificaitonsAmount] = useState(0)
 	const [author, setAuthor] = useState(lastMessageProp && user && createAuthor(lastMessageProp.user, user))
 	const [lastMessage, setLastMessage] = useState(lastMessageProp && lastMessageProp)
 
@@ -29,61 +32,60 @@ const RoomListItem: React.FC<RoomI> = ({
 		changeCurrentRoom(id)
 	}
 
-	console.log('This is currentRoom', currentRoom)
 	if (!currentRoom || !user) return <AppSpinner circle={false} text="Rooms" />
 
 	const receivingUser = getReceivingUser(users, user.id)
 	const conversationName = isGroupChat ? name : receivingUser.username
 
-	useEffect(() => {
-		if (!appSocket) return
-		// if (currentRoom.id === id && roomNotificationsAmount > 0) {
-		// 	console.log('This is currentRoom.id === id', currentRoom.id === id)
-		// 	appSocket.emit(socketEvents.markNotificationsAsRead, id, (res: string) => {
-		// 		if (res === 'ok') setRoomNotificaitonsAmount(0)
-		// 	})
-		// }
+	// useEffect(() => {
+	// 	if (!appSocket) return
+	// 	// if (currentRoom.id === id && roomNotificationsAmount > 0) {
+	// 	// 	console.log('This is currentRoom.id === id', currentRoom.id === id)
+	// 	// 	appSocket.emit(socketEvents.markNotificationsAsRead, id, (res: string) => {
+	// 	// 		if (res === 'ok') setRoomNotificaitonsAmount(0)
+	// 	// 	})
+	// 	// }
 
-		appSocket.on(socketEvents.newNotification, (payload: NotificationSocketEvent) => {
-			console.log('new notification')
-			console.log('This is payload', payload)
-			if (payload.roomId !== id) return
+	// 	appSocket.on(socketEvents.newNotification, (payload: NotificationSocketEvent) => {
+	// 		// console.log('new notification')
+	// 		// console.log('This is payload', payload)
+	// 		if (payload.roomId !== id) return
 
-			setLastMessage(payload.notif.message)
-			setAuthor(createAuthor(payload.notif.creator, user))
+	// 		setLastMessage(payload.notif.message)
+	// 		setAuthor(createAuthor(payload.notif.creator, user))
 
-			if (user.id !== payload.notif.creator.id && currentRoom.id !== payload.notif.room.id) {
-				setRoomNotificaitonsAmount((prev) => prev + 1)
-			} else {
-				// appSocket.emit(socketEvents.markNotificationsAsRead, id)
-			}
-		})
+	// 		if (user.id !== payload.notif.creator.id && currentRoom.id !== payload.notif.room.id) {
+	// 			setRoomNotificaitonsAmount((prev) => prev + 1)
+	// 		} else {
+	// 			// appSocket.emit(socketEvents.markNotificationsAsRead, id)
+	// 		}
+	// 	})
 
-		return () => {
-			// appSocket.off(socketEvents.markNotificationsAsRead)
-			appSocket.off(socketEvents.newNotification)
-		}
-	}, [appSocket, currentRoom])
+	// 	return () => {
+	// 		// appSocket.off(socketEvents.markNotificationsAsRead)
+	// 		appSocket.off(socketEvents.newNotification)
+	// 	}
+	// }, [appSocket, currentRoom])
 
-	useEffect(() => {
-		if (!appSocket) return
+	// useEffect(() => {
+	// 	if (!appSocket) return
 
-		if (currentRoom.id === id && roomNotificationsAmount > 0) {
-			console.log('This is currentRoom.id', currentRoom.id)
-			console.log('This is currentRoom.id === id', currentRoom.id === id)
-			console.log('This is roomNotificationsAmount', roomNotificationsAmount)
+	// 	if (currentRoom.id === id && roomNotificationsAmount > 0) {
+	// 		console.log('This is currentRoom.id', currentRoom.id)
+	// 		console.log('This is currentRoom.id === id', currentRoom.id === id)
+	// 		console.log('This is roomNotificationsAmount', roomNotificationsAmount)
 
-			appSocket.emit(socketEvents.markNotificationsAsRead, id, (res: string) => {
-				console.log('marking notif as read')
-				if (res === 'ok') setRoomNotificaitonsAmount(0)
-			})
-		}
+	// 		appSocket.emit(socketEvents.markNotificationsAsRead, id, (res: string) => {
+	// 			console.log('marking notif as read')
+	// 			if (res === 'ok') setRoomNotificaitonsAmount(0)
+	// 		})
+	// 	}
 
-		return () => {
-			// appSocket.off(socketEvents.markNotificationsAsRead)
-			// appSocket.off(socketEvents.newNotification)
-		}
-	}, [currentRoom])
+	// 	return () => {
+	// 		// appSocket.off(socketEvents.markNotificationsAsRead)
+	// 		// appSocket.off(socketEvents.newNotification)
+	// 	}
+	// }, [currentRoom])
 
 	return (
 		<ListItemButton
@@ -103,9 +105,8 @@ const RoomListItem: React.FC<RoomI> = ({
 						<span>
 							<Typography display={'inline-block'} textAlign={'end'} level="body-sm" noWrap>
 								{lastMessage && utcTimeToHumanTime(lastMessage.updated_at)}
+								<AppBadge badgeContent={roomNotificationsAmount} />
 							</Typography>
-
-							<AppBadge badgeContent={roomNotificationsAmount} />
 						</span>
 					</Stack>
 

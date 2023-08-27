@@ -4,6 +4,7 @@ import { handleError } from '../utils/handleAxiosErrors'
 import { useAuth } from './contextHooks'
 
 const useRefreshToken = () => {
+	const { logOutUser } = useAuth()
 	const refresh = async () => {
 		try {
 			const response = await baseAxios.post('/auth/refresh')
@@ -11,7 +12,8 @@ const useRefreshToken = () => {
 			return response.data.accessToken
 		} catch (err) {
 			handleError(err)
-			location.assign(appRoutes.login)
+			logOutUser()
+			// location.assign(appRoutes.login)
 		}
 	}
 	return refresh
