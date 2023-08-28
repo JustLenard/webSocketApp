@@ -2,14 +2,15 @@ import { Badge, Box, ListItem, ListItemContent, ListItemDecorator, Typography } 
 import { ListItemButton, Stack } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useRooms, useSocket, useUser } from '../../hooks/contextHooks'
-import { NotificationSocketEvent, NotificationT, RoomI, UserI } from '../../types/types'
+import { NotificationSocketEvent, TNotification, TRoom, TUser } from '../../types/types'
 import { socketEvents } from '../../utils/constants'
-import { getReceivingUser, utcTimeToHumanTime } from '../../utils/helpers'
+import { createAuthor, getReceivingUser, utcTimeToHumanTime } from '../../utils/helpers'
 import AppSpinner from '../AppSpinner'
 import AppAvatar from '../avatar/AppAvatar'
 import AppBadge from '../AppBadge'
+import { useAppSelector } from '../../hooks/reduxHooks'
 
-const RoomListItem: React.FC<RoomI> = ({
+const RoomListItem: React.FC<TRoom> = ({
 	id,
 	isGroupChat,
 	name,
@@ -20,13 +21,17 @@ const RoomListItem: React.FC<RoomI> = ({
 	const { appSocket } = useSocket()
 	const { currentRoom, changeCurrentRoom } = useRooms()
 	const { user } = useUser()
+	const simpleNotif = useAppSelector((state) => state.notif[id])
 
 	// const [roomNotificationsAmount, setRoomNotificaitonsAmount] = useState(notifications.length)
 	// const [author, setAuthor] = useState(lastMessageProp && user && createAuthor(lastMessageProp.user, user))
 	// const [lastMessage, setLastMessage] = useState(lastMessageProp && lastMessageProp)
-	const [roomNotificationsAmount, setRoomNotificaitonsAmount] = useState(0)
-	const [author, setAuthor] = useState(lastMessageProp && user && createAuthor(lastMessageProp.user, user))
-	const [lastMessage, setLastMessage] = useState(lastMessageProp && lastMessageProp)
+	// const [roomNotificationsAmount, setRoomNotificaitonsAmount] = useState(
+	// 	simpleNotif ? simpleNotif.unreadNotificationsAmount : 0,
+	// )
+
+	// const [author, setAuthor] = useState(lastMessageProp && user && createAuthor(lastMessageProp.user, user))
+	// const [lastMessage, setLastMessage] = useState(lastMessageProp && lastMessageProp)
 
 	const handleClick = () => {
 		changeCurrentRoom(id)
@@ -34,38 +39,24 @@ const RoomListItem: React.FC<RoomI> = ({
 
 	if (!currentRoom || !user) return <AppSpinner circle={false} text="Rooms" />
 
+	const getLastMessageData = () => {
+		if (simpleNotif) {
+			return [
+				createAuthor(simpleNotif.lastMessage.author, user),
+				simpleNotif.lastMessage.messageText,
+				simpleNotif.lastMessage.createdAt,
+			]
+		}
+		if (lastMessageProp) {
+			return [createAuthor(lastMessageProp.user, user), lastMessageProp.text, lastMessageProp.created_at]
+		}
+		return [null, null, null]
+	}
+
+	const [author, lastMessage, createdAt] = getLastMessageData()
+	const roomNotificationsAmount = simpleNotif ? simpleNotif.unreadNotificationsAmount : 0
 	const receivingUser = getReceivingUser(users, user.id)
 	const conversationName = isGroupChat ? name : receivingUser.username
-
-	// useEffect(() => {
-	// 	if (!appSocket) return
-	// 	// if (currentRoom.id === id && roomNotificationsAmount > 0) {
-	// 	// 	console.log('This is currentRoom.id === id', currentRoom.id === id)
-	// 	// 	appSocket.emit(socketEvents.markNotificationsAsRead, id, (res: string) => {
-	// 	// 		if (res === 'ok') setRoomNotificaitonsAmount(0)
-	// 	// 	})
-	// 	// }
-
-	// 	appSocket.on(socketEvents.newNotification, (payload: NotificationSocketEvent) => {
-	// 		// console.log('new notification')
-	// 		// console.log('This is payload', payload)
-	// 		if (payload.roomId !== id) return
-
-	// 		setLastMessage(payload.notif.message)
-	// 		setAuthor(createAuthor(payload.notif.creator, user))
-
-	// 		if (user.id !== payload.notif.creator.id && currentRoom.id !== payload.notif.room.id) {
-	// 			setRoomNotificaitonsAmount((prev) => prev + 1)
-	// 		} else {
-	// 			// appSocket.emit(socketEvents.markNotificationsAsRead, id)
-	// 		}
-	// 	})
-
-	// 	return () => {
-	// 		// appSocket.off(socketEvents.markNotificationsAsRead)
-	// 		appSocket.off(socketEvents.newNotification)
-	// 	}
-	// }, [appSocket, currentRoom])
 
 	// useEffect(() => {
 	// 	if (!appSocket) return
@@ -102,28 +93,29 @@ const RoomListItem: React.FC<RoomI> = ({
 						<Typography display={'inline-block'} noWrap>
 							{conversationName}
 						</Typography>
-						<span>
-							<Typography display={'inline-block'} textAlign={'end'} level="body-sm" noWrap>
-								{lastMessage && utcTimeToHumanTime(lastMessage.updated_at)}
-								<AppBadge badgeContent={roomNotificationsAmount} />
-							</Typography>
-						</span>
+
+						{createdAt && (
+							<span>
+								<Typography display={'inline-block'} textAlign={'end'} level="body-sm" noWrap>
+									{utcTimeToHumanTime(createdAt as Date)}
+									<AppBadge badgeContent={roomNotificationsAmount} />
+								</Typography>
+							</span>
+						)}
 					</Stack>
 
-					<Typography noWrap>
-						<Typography color="neutral" level="body-md">
-							{author}
+					{author && lastMessage && (
+						<Typography noWrap>
+							<Typography color="neutral" level="body-md">
+								{author as string}
+							</Typography>
+							<Typography level="body-sm">{lastMessage as string}</Typography>
 						</Typography>
-						<Typography level="body-sm">{lastMessage?.text}</Typography>
-					</Typography>
+					)}
 				</ListItemContent>
 			</ListItem>
 		</ListItemButton>
 	)
-}
-
-const createAuthor = (author: UserI, user: UserI) => {
-	return author.username === user.username ? 'You: ' : `${author.username}: `
 }
 
 export default RoomListItem

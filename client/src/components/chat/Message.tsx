@@ -7,15 +7,15 @@ import { Box, IconButton, Input } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useMessages, useRooms, useUser } from '../../hooks/contextHooks'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import { MessageI } from '../../types/types'
+import { TMessage } from '../../types/types'
 import { handleError } from '../../utils/handleAxiosErrors'
 import { utcTimeToHumanTime } from '../../utils/helpers'
 import AppAvatar from '../avatar/AppAvatar'
 import ResponsiveModal from '../modal/ConfirmationModal'
 
 interface Props {
-	message: MessageI
-	prev: MessageI | null
+	message: TMessage
+	prev: TMessage | null
 }
 
 export const Message: React.FC<Props> = ({ message, prev }) => {
@@ -57,7 +57,7 @@ export const Message: React.FC<Props> = ({ message, prev }) => {
 	)
 }
 
-const SImpleMessage: React.FC<{ message: MessageI; showUserInfo: boolean }> = ({ message, showUserInfo }) => {
+const SImpleMessage: React.FC<{ message: TMessage; showUserInfo: boolean }> = ({ message, showUserInfo }) => {
 	const { currentRoom } = useRooms()
 	const { editingMessageId, setEditingMessageId, getMessagesForRoom } = useMessages()
 	const { user } = useUser()

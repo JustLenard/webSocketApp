@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
 import { useAuth, useSocket } from '../hooks/contextHooks'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { CreateRoomParams, RoomI } from '../types/types'
+import { CreateRoomParams, TRoom } from '../types/types'
 import { socketEvents } from '../utils/constants'
 import { handleError } from '../utils/handleAxiosErrors'
 import { getSavedOrGlobalRoom, isInsideOfApplication, saveRoomIdToSessionStorage, showSpinner } from '../utils/helpers'
@@ -19,8 +19,8 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const { accessToken } = useAuth()
 	const dispatch = useAppDispatch()
 
-	const [rooms, setRooms] = useState<RoomI[]>([])
-	const [currentRoom, setCurrentRoom] = useState<RoomI | null>(null)
+	const [rooms, setRooms] = useState<TRoom[]>([])
+	const [currentRoom, setCurrentRoom] = useState<TRoom | null>(null)
 	const [loading, setLoading] = useState(true)
 
 	const changeCurrentRoom = (roomId: number) => {
@@ -87,7 +87,7 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
 	useEffect(() => {
 		if (!appSocket) return
-		appSocket.on(socketEvents.createRoom, (room: RoomI) => {
+		appSocket.on(socketEvents.createRoom, (room: TRoom) => {
 			// setRooms((prev) => [{ ...room, notifications: [] }, ...prev])
 			setRooms((prev) => [{ ...room, notifications: null }, ...prev])
 		})

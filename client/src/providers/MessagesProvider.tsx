@@ -2,7 +2,7 @@ import { PropsWithChildren, useEffect, useState } from 'react'
 import AppSpinner from '../components/AppSpinner'
 import { useAuth, useRooms, useSocket } from '../hooks/contextHooks'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { MessageI, MessageSocketEvent } from '../types/types'
+import { TMessage, MessageSocketEvent } from '../types/types'
 import { socketEvents } from '../utils/constants'
 import { handleError } from '../utils/handleAxiosErrors'
 import { showSpinner } from '../utils/helpers'
@@ -17,7 +17,7 @@ const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const { appSocket } = useSocket()
 	const { currentRoom } = useRooms()
 
-	const [messages, setMessages] = useState<MessageI[]>([])
+	const [messages, setMessages] = useState<TMessage[]>([])
 	const [editingMessageId, setEditingMessageId] = useState<null | number>(null)
 	const [loading, setLoading] = useState(true)
 

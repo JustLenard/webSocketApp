@@ -1,7 +1,7 @@
 import { ColorPaletteProp } from '@mui/joy'
 import dayjs from 'dayjs'
 import { appRoutes } from '../router/Root'
-import { RoomI, UserI } from '../types/types'
+import { TRoom, TUser } from '../types/types'
 import { ALPHABET, CURRENT_ROOM_KEY_NAME, GLOBAL_ROOM_NAME, MESSAGE_ROOM, NOTIFICATIONS_ROOM } from './constants'
 import { colorMap } from './letterToColorMap'
 
@@ -26,7 +26,7 @@ export const showSpinner = (cond1: boolean) => {
 	return false
 }
 
-export const getReceivingUser = (users: UserI[], sendingUserId: string) => {
+export const getReceivingUser = (users: TUser[], sendingUserId: string) => {
 	return users.filter((user) => user.id !== sendingUserId)[0]
 }
 
@@ -40,11 +40,11 @@ export const getCurrentRoomFromSessionStorage = () => {
 	return null
 }
 
-export const getGlobalRoom = (rooms: RoomI[]) => {
+export const getGlobalRoom = (rooms: TRoom[]) => {
 	return rooms.find((room) => room.name === GLOBAL_ROOM_NAME && room.isGroupChat) ?? null
 }
 
-export const getSavedOrGlobalRoom = (rooms: RoomI[]) => {
+export const getSavedOrGlobalRoom = (rooms: TRoom[]) => {
 	const savedCurrentRoomId = getCurrentRoomFromSessionStorage()
 	const currentRoom = rooms.find((room) => room.id === savedCurrentRoomId)
 
@@ -93,4 +93,8 @@ export const arrayToObj = (arr: string[]) => {
 		acc[red] = red
 		return acc
 	}, {})
+}
+
+export const createAuthor = (author: TUser, user: TUser) => {
+	return author.username === user.username ? 'You: ' : `${author.username}: `
 }

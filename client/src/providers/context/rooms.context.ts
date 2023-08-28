@@ -1,10 +1,10 @@
 import { createContext } from 'react'
-import { CreateRoomParams, RoomI } from '../../types/types'
+import { CreateRoomParams, TRoom } from '../../types/types'
 
 export type RoomsContextType = {
-	rooms: RoomI[]
+	rooms: TRoom[]
 	changeCurrentRoom: (roomId: number) => void
-	currentRoom: null | RoomI
+	currentRoom: null | TRoom
 	createNewRoom: (newRoom: CreateRoomParams) => void
 }
 

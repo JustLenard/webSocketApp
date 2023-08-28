@@ -6,9 +6,31 @@ import RoomListItem from './RoomListItem'
 import { useRooms } from '../../hooks/contextHooks'
 import UserMenu from '../header/UserMenu'
 import { getRandomInt } from '../../utils/helpers'
+import { useEffect } from 'react'
+import { socketEvents } from '../../utils/constants'
+import { NotificationSocketEvent } from '../../types/types'
+import { useAppDispatch } from '../../hooks/reduxHooks'
+import { newNotification } from '../../redux/slices/notifications.slice'
 
 const LeftMenu = () => {
+	const { appSocket } = useSocket()
 	const { rooms } = useRooms()
+	const dispatch = useAppDispatch()
+
+	console.log('rerender')
+
+	useEffect(() => {
+		if (!appSocket) return
+
+		appSocket.on(socketEvents.newNotification, (payload: NotificationSocketEvent) => {
+			console.log('This is payload', payload)
+			dispatch(newNotification(payload))
+		})
+
+		return () => {
+			appSocket.off(socketEvents.newNotification)
+		}
+	}, [])
 
 	if (!rooms) return <AppSpinner text="Left menu" />
 

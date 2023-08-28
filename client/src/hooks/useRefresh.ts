@@ -1,5 +1,6 @@
 import { baseAxios } from '../api/axios'
 import { appRoutes } from '../router/Root'
+import { LOGGED_IN_KEY_NAME } from '../utils/constants'
 import { handleError } from '../utils/handleAxiosErrors'
 import { useAuth } from './contextHooks'
 
@@ -12,8 +13,9 @@ const useRefreshToken = () => {
 			return response.data.accessToken
 		} catch (err) {
 			handleError(err)
-			logOutUser()
-			// location.assign(appRoutes.login)
+			// logOutUser()
+			sessionStorage.removeItem(LOGGED_IN_KEY_NAME)
+			location.assign(appRoutes.login)
 		}
 	}
 	return refresh

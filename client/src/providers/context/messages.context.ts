@@ -1,9 +1,9 @@
 import { Socket } from 'socket.io-client'
-import { CreateRoomParams, MessageI, RoomI } from '../../types/types'
+import { CreateRoomParams, TMessage, TRoom } from '../../types/types'
 import { Dispatch, SetStateAction, createContext } from 'react'
 
 export type MessagesContextType = {
-	messages: MessageI[]
+	messages: TMessage[]
 	sendMessage: (message: string) => void
 	getMessagesForRoom: (roomId: number) => void
 	editingMessageId: number | null

@@ -1,8 +1,8 @@
 import { createContext } from 'react'
-import { NotificationT } from '../../types/types'
+import { TNotification } from '../../types/types'
 
 export type NotificationsContextType = {
-	notifications: NotificationT[]
+	notifications: TNotification[]
 	markRoomNotificationsAsRead: (roomId: number) => void
 }
 

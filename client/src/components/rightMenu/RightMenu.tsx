@@ -3,7 +3,7 @@ import { Grid, ListItemButton } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useRooms, useSocket, useUser } from '../../hooks/contextHooks'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import { CreateRoomParams, UserI } from '../../types/types'
+import { CreateRoomParams, TUser } from '../../types/types'
 import { socketEvents } from '../../utils/constants'
 import { handleError } from '../../utils/handleAxiosErrors'
 import AppAvatar from '../avatar/AppAvatar'
@@ -12,8 +12,8 @@ const RightMenu = () => {
 	const { appSocket } = useSocket()
 	const { privateAxios } = useAxiosPrivate()
 
-	const [offlineUsers, setOfflineUsers] = useState<UserI[]>([])
-	const [onlineUsers, setOnlineUsers] = useState<UserI[]>([])
+	const [offlineUsers, setOfflineUsers] = useState<TUser[]>([])
+	const [onlineUsers, setOnlineUsers] = useState<TUser[]>([])
 
 	/**
 	 * Get users. Separate them into offline and online
@@ -23,10 +23,10 @@ const RightMenu = () => {
 			try {
 				const response = await privateAxios.get('/users')
 
-				const offUsers: UserI[] = []
-				const onUsers: UserI[] = []
+				const offUsers: TUser[] = []
+				const onUsers: TUser[] = []
 
-				response.data.forEach((user: UserI) => {
+				response.data.forEach((user: TUser) => {
 					if (!user.online) return offUsers.push(user)
 					if (user.online && !onlineUsers.find((onUser) => onUser.id === user.id)) onUsers.push(user)
 				})
@@ -44,13 +44,13 @@ const RightMenu = () => {
 	 **/
 	useEffect(() => {
 		if (!appSocket) return
-		appSocket.on(socketEvents.userConnected, (user: UserI) => {
+		appSocket.on(socketEvents.userConnected, (user: TUser) => {
 			if (onlineUsers.find((onlineUser) => onlineUser.id === user.id)) return
 			setOfflineUsers((prev) => prev.filter((item) => item.id !== user.id))
 
 			setOnlineUsers((prev) => [...prev, user])
 		})
-		appSocket.on(socketEvents.userDisconnected, (user: UserI) => {
+		appSocket.on(socketEvents.userDisconnected, (user: TUser) => {
 			setOnlineUsers((prev) => prev.filter((item) => item.id !== user.id))
 			setOfflineUsers((prev) => [...prev, user])
 		})

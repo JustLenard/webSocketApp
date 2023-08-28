@@ -30,16 +30,22 @@ const AppDrawer: React.FC<Props> = ({ children, direction, showAt }) => {
 	}
 
 	return (
-		<>
+		<Box
+			sx={{
+				display: {
+					[showAt]: 'none',
+				},
+			}}
+		>
 			<IconButton
 				color="inherit"
 				edge="end"
 				onClick={toggleDrawer(true)}
 				sx={{
 					mx: '1rem',
-					display: {
-						[showAt]: 'none',
-					},
+					// display: {
+					// 	[showAt]: 'none',
+					// },
 				}}
 			>
 				<MenuIcon />
@@ -55,7 +61,7 @@ const AppDrawer: React.FC<Props> = ({ children, direction, showAt }) => {
 			>
 				{children}
 			</SwipeableDrawer>
-		</>
+		</Box>
 	)
 }
 

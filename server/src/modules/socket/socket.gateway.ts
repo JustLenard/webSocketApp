@@ -113,6 +113,15 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	 **/
 	@OnEvent(appEmitters.notificationsCreate)
 	handleNotificationCreate(payload: CreateNotificationEvent) {
+		this.logger.log(`Sending notification  ${payload.notif.id}: ${payload.notif.message.text}`)
+		console.log('This is this.sessions.get', this.sessions.getSockets())
+
+		// const clients = this.server.sockets.adapter.rooms[createNotifRoomName(payload.roomId)]
+		// console.log(clients)
+		// for (const clientId in clients) {
+		// 	console.log(this.server.sockets.sockets[clientId])
+		// }
+
 		this.server.to(createNotifRoomName(payload.roomId)).emit(socketEvents.newNotification, payload)
 	}
 

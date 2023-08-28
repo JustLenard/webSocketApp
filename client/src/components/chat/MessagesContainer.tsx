@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { useSocket } from '../../hooks/contextHooks'
-import { MessageI } from '../../types/types'
+import { TMessage } from '../../types/types'
 import Message from './Message'
 import { useMessages } from '../../hooks/contextHooks'
 
@@ -24,7 +24,7 @@ const MessagesContainer = () => {
 
 export default MessagesContainer
 
-const renderMessages = (messages: MessageI[]) => {
+const renderMessages = (messages: TMessage[]) => {
 	return messages.map((mesage, i) => {
 		const prev = i === 0 ? null : messages[i - 1]
 		return <Message key={mesage.id} message={mesage} prev={prev} />

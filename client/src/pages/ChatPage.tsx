@@ -17,7 +17,7 @@ const ChatPage = () => {
 			<Grid container sx={{ width: '100%', height: '100%', flexWrap: 'nowrap' }}>
 				<Grid
 					item
-					xs={3}
+					xs={4}
 					lg={2}
 					sx={{
 						height: 'inherit',

@@ -1,13 +1,9 @@
-export type User = {
-	id: number
-}
-
-export type IRoom = {
-	id: number
-	name: string
-	description?: string
-	users?: User[]
-}
+// export type IRoom = {
+// 	id: number
+// 	name: string
+// 	description?: string
+// 	users?: User[]
+// }
 
 /**
  * Authorization
@@ -37,50 +33,50 @@ export type CreateRoomParams = {
 
 export type MessageEventParams = {
 	roomId: number
-	message: MessageI
+	message: TMessage
 }
 
-export type RoomI = {
+export type TRoom = {
 	id: number
 	name: string
 	isGroupChat: boolean
 	description?: string
-	users: UserI[]
-	lastMessage: null | MessageI
+	users: TUser[]
+	lastMessage: null | TMessage
 	notifications: SimpleRoomNotifications | null
 }
 
-export type PostRoomI = {
+export type TPostRoom = {
 	name: string
 	description?: string
 	users: string[]
 	isGroupChat: false
 }
 
-export type MessageI = {
+export type TMessage = {
 	id: number
 	text: string
-	user: UserI
-	room: RoomI
+	user: TUser
+	room: TRoom
 	created_at: Date
 	updated_at: Date
 }
 
-export type ISentMessage = {
+export type TSentMessage = {
 	text: string
 	room: number
 }
 
-export type UserI = {
+export type TUser = {
 	id: string
 	username: string
-	online: boolean
+	online?: boolean
 }
 
-export type NotificationT = {
+export type TNotification = {
 	id: number
-	creator: UserI
-	message: MessageI
+	creator: TUser
+	message: TMessage
 	// room: RoomI
 	roomId: number
 }
@@ -89,25 +85,20 @@ export type NotificationT = {
  * Socket event payloads
  **/
 export type MessageSocketEvent = {
-	message: MessageI
+	message: TMessage
 	roomId: number
 }
 
 export type NotificationSocketEvent = {
-	notif: NotificationT
+	notif: TNotification
 	roomId: number
-}
-
-export type SimpleUser = {
-	id: string
-	username: string
 }
 
 export type SimpleRoomNotifications = {
 	roomId: number
 	lastMessage: {
-		message: string
-		author: SimpleUser
+		messageText: string
+		author: TUser
 		createdAt: Date
 	}
 	unreadNotificationsAmount: number
