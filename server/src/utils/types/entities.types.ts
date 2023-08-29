@@ -32,29 +32,6 @@ export interface MessageI {
 	updated_at?: Date
 }
 
-export interface NotificationI {
-	id?: number
-	message: MessageI
-	roomId: number
-	createdFor: UserI[]
-	creatorId: string
-	readBy: string[]
-	created_at?: Date
-	updated_at?: Date
-}
-
-export interface FMessage {
-	text: string
-	room: number
-}
-
-export interface JoinedRoomI {
-	id?: number
-	socketId: string
-	user: UserI
-	room: RoomI
-}
-
 export type ShortUser = {
 	id: string
 	username: string

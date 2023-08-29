@@ -24,7 +24,9 @@ const LeftMenu = () => {
 		if (!appSocket || !user || !currentRoom) return
 
 		appSocket.on(socketEvents.newNotification, (payload: NotificationSocketEvent) => {
+			console.log('Received notification', payload)
 			if (user.id !== payload.notif.creator.id && currentRoom.id !== payload.roomId) {
+				console.log('Creating nottification')
 				dispatch(newNotification(payload))
 			}
 		})
@@ -32,7 +34,7 @@ const LeftMenu = () => {
 		return () => {
 			appSocket.off(socketEvents.newNotification)
 		}
-	}, [])
+	}, [currentRoom])
 
 	if (!rooms) return <AppSpinner text="Left menu" />
 
@@ -64,9 +66,6 @@ const LeftMenu = () => {
 					mb: '1rem',
 				}}
 			>
-				{/* {rooms.map((room, i) => (
-						<RoomListItem {...room} key={room.id} />
-					))} */}
 				{rooms.map((room, i) => (
 					<RoomListItem {...room} key={getRandomInt(1000)} />
 				))}

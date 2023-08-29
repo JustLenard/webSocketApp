@@ -46,11 +46,6 @@ export type CreateMessageResponse = {
 	conversation: RoomEntity
 }
 
-export type SimpleUser = {
-	id: string
-	username: string
-}
-
 export type SimpleRoomNotifications = {
 	roomId: number
 	lastMessage: MessageEntity

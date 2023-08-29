@@ -16,6 +16,8 @@ export class RoomControler {
 		private readonly eventEmitter: EventEmitter2,
 	) {}
 
+	private logger: Logger = new Logger('Room Service')
+
 	@UseGuards(AtGuard)
 	@Get()
 	@HttpCode(HttpStatus.OK)
@@ -31,11 +33,8 @@ export class RoomControler {
 			}),
 		)
 
-		console.log('This is roomsWithNotifications', roomsWithNotifications)
 		return roomsWithNotifications
 	}
-
-	private logger: Logger = new Logger('Room Service')
 
 	@UseGuards(AtGuard)
 	@Post()

@@ -131,13 +131,15 @@ const ProfileListItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 			isGroupChat: false,
 		}
 
+		console.log('This is newRoom', newRoom)
+
 		createNewRoom(newRoom)
 	}
 
 	return (
 		<>
-			<ListItemButton>
-				<ListItem onClick={handleClick}>
+			<ListItemButton onClick={handleClick}>
+				<ListItem>
 					<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
 						<AppAvatar username={username} />
 					</ListItemDecorator>
@@ -147,13 +149,13 @@ const ProfileListItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 					</ListItemContent>
 				</ListItem>
 			</ListItemButton>
-			<ListDivider
+			{/* <ListDivider
 				inset={'gutter'}
 				sx={{
 					marginY: 0,
 					marginX: 0,
 				}}
-			/>
+			/> */}
 		</>
 	)
 }
