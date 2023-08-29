@@ -43,7 +43,8 @@ export type TRoom = {
 	description?: string
 	users: TUser[]
 	lastMessage: null | TMessage
-	notifications: SimpleRoomNotifications | null
+	// notifications: SimpleRoomNotifications
+	notifications: number
 }
 
 export type TPostRoom = {
@@ -95,11 +96,6 @@ export type NotificationSocketEvent = {
 }
 
 export type SimpleRoomNotifications = {
-	roomId: number
-	lastMessage: {
-		messageText: string
-		author: TUser
-		createdAt: Date
-	}
+	lastMessage: TMessage | null
 	unreadNotificationsAmount: number
 }

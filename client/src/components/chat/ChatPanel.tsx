@@ -1,4 +1,4 @@
-import { Divider, Grid, Paper, Stack } from '@mui/material'
+import { Divider, Grid, Paper, Stack, useMediaQuery, useTheme } from '@mui/material'
 import { useSocket, useUser } from '../../hooks/contextHooks'
 import AppSpinner from '../AppSpinner'
 import ChatInput from './ChatInput'
@@ -19,6 +19,10 @@ const ChatPanel = () => {
 	const { user } = useUser()
 	const [isRecipientTyping, setIsRecipientTyping] = useState(false)
 
+	const theme = useTheme()
+	const downMdBreakpoint = useMediaQuery(theme.breakpoints.down('md'))
+	const downLgBreakpoint = useMediaQuery(theme.breakpoints.down('lg'))
+
 	useEffect(() => {
 		if (!appSocket) return
 		appSocket.on(socketEvents.onTypingStart, () => {
@@ -36,21 +40,24 @@ const ChatPanel = () => {
 	if (!currentRoom || !user) return <AppSpinner contained text="No current room" />
 
 	const recipient = getReceivingUser(currentRoom.users, user.id)
-	console.log('This is recipient', recipient)
 	const conversationName = currentRoom.isGroupChat ? currentRoom.name : recipient.username
 
 	return (
 		<Grid container direction={'column'} height={'100%'}>
 			<Stack direction={'row'} p={'.5rem'} alignItems={'center'}>
-				<AppDrawer direction="left" showAt="md">
-					<LeftMenu />
-				</AppDrawer>
+				{downMdBreakpoint && (
+					<AppDrawer direction="left">
+						<LeftMenu />
+					</AppDrawer>
+				)}
 				<Typography level="title-md" p={'.5rem'} mr={'auto'}>
 					{conversationName}
 				</Typography>
-				<AppDrawer direction="right" showAt="lg">
-					<RightMenu />
-				</AppDrawer>
+				{downLgBreakpoint && (
+					<AppDrawer direction="right">
+						<RightMenu />
+					</AppDrawer>
+				)}
 			</Stack>
 			<Divider />
 			<Grid item xs overflow={'scroll'}>

@@ -8,7 +8,8 @@ import { createAuthor, getReceivingUser, utcTimeToHumanTime } from '../../utils/
 import AppSpinner from '../AppSpinner'
 import AppAvatar from '../avatar/AppAvatar'
 import AppBadge from '../AppBadge'
-import { useAppSelector } from '../../hooks/reduxHooks'
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
+import { markRoomNotifAsRead } from '../../redux/slices/notifications.slice'
 
 const RoomListItem: React.FC<TRoom> = ({
 	id,
@@ -18,65 +19,27 @@ const RoomListItem: React.FC<TRoom> = ({
 	lastMessage: lastMessageProp,
 	notifications,
 }) => {
+	const dispatch = useAppDispatch()
 	const { appSocket } = useSocket()
 	const { currentRoom, changeCurrentRoom } = useRooms()
 	const { user } = useUser()
-	const simpleNotif = useAppSelector((state) => state.notif[id])
-
-	// const [roomNotificationsAmount, setRoomNotificaitonsAmount] = useState(notifications.length)
-	// const [author, setAuthor] = useState(lastMessageProp && user && createAuthor(lastMessageProp.user, user))
-	// const [lastMessage, setLastMessage] = useState(lastMessageProp && lastMessageProp)
-	// const [roomNotificationsAmount, setRoomNotificaitonsAmount] = useState(
-	// 	simpleNotif ? simpleNotif.unreadNotificationsAmount : 0,
-	// )
-
-	// const [author, setAuthor] = useState(lastMessageProp && user && createAuthor(lastMessageProp.user, user))
-	// const [lastMessage, setLastMessage] = useState(lastMessageProp && lastMessageProp)
+	const notificationForRoom = useAppSelector((state) => state.notif[id])
 
 	const handleClick = () => {
 		changeCurrentRoom(id)
+
+		if (!notificationForRoom?.unreadNotificationsAmount) return
+		if (!appSocket) return
+
+		appSocket.emit(socketEvents.markNotificationsAsRead, id, (res: string) => {
+			if (res === 'ok') dispatch(markRoomNotifAsRead(id))
+		})
 	}
 
 	if (!currentRoom || !user) return <AppSpinner circle={false} text="Rooms" />
 
-	const getLastMessageData = () => {
-		if (simpleNotif) {
-			return [
-				createAuthor(simpleNotif.lastMessage.author, user),
-				simpleNotif.lastMessage.messageText,
-				simpleNotif.lastMessage.createdAt,
-			]
-		}
-		if (lastMessageProp) {
-			return [createAuthor(lastMessageProp.user, user), lastMessageProp.text, lastMessageProp.created_at]
-		}
-		return [null, null, null]
-	}
-
-	const [author, lastMessage, createdAt] = getLastMessageData()
-	const roomNotificationsAmount = simpleNotif ? simpleNotif.unreadNotificationsAmount : 0
 	const receivingUser = getReceivingUser(users, user.id)
 	const conversationName = isGroupChat ? name : receivingUser.username
-
-	// useEffect(() => {
-	// 	if (!appSocket) return
-
-	// 	if (currentRoom.id === id && roomNotificationsAmount > 0) {
-	// 		console.log('This is currentRoom.id', currentRoom.id)
-	// 		console.log('This is currentRoom.id === id', currentRoom.id === id)
-	// 		console.log('This is roomNotificationsAmount', roomNotificationsAmount)
-
-	// 		appSocket.emit(socketEvents.markNotificationsAsRead, id, (res: string) => {
-	// 			console.log('marking notif as read')
-	// 			if (res === 'ok') setRoomNotificaitonsAmount(0)
-	// 		})
-	// 	}
-
-	// 	return () => {
-	// 		// appSocket.off(socketEvents.markNotificationsAsRead)
-	// 		// appSocket.off(socketEvents.newNotification)
-	// 	}
-	// }, [currentRoom])
 
 	return (
 		<ListItemButton
@@ -94,22 +57,22 @@ const RoomListItem: React.FC<TRoom> = ({
 							{conversationName}
 						</Typography>
 
-						{createdAt && (
+						{notificationForRoom.lastMessage && (
 							<span>
 								<Typography display={'inline-block'} textAlign={'end'} level="body-sm" noWrap>
-									{utcTimeToHumanTime(createdAt as Date)}
-									<AppBadge badgeContent={roomNotificationsAmount} />
+									{utcTimeToHumanTime(notificationForRoom.lastMessage.created_at)}
+									<AppBadge badgeContent={notificationForRoom.unreadNotificationsAmount} />
 								</Typography>
 							</span>
 						)}
 					</Stack>
 
-					{author && lastMessage && (
+					{notificationForRoom.lastMessage && (
 						<Typography noWrap>
 							<Typography color="neutral" level="body-md">
-								{author as string}
+								{createAuthor(notificationForRoom.lastMessage.user, user)}
 							</Typography>
-							<Typography level="body-sm">{lastMessage as string}</Typography>
+							<Typography level="body-sm">{notificationForRoom.lastMessage.text}</Typography>
 						</Typography>
 					)}
 				</ListItemContent>

@@ -1,6 +1,6 @@
 import { List, Typography } from '@mui/joy'
 import { Grid } from '@mui/material'
-import { useSocket } from '../../hooks/contextHooks'
+import { useSocket, useUser } from '../../hooks/contextHooks'
 import AppSpinner from '../AppSpinner'
 import RoomListItem from './RoomListItem'
 import { useRooms } from '../../hooks/contextHooks'
@@ -14,17 +14,19 @@ import { newNotification } from '../../redux/slices/notifications.slice'
 
 const LeftMenu = () => {
 	const { appSocket } = useSocket()
-	const { rooms } = useRooms()
+	const { rooms, currentRoom } = useRooms()
+	const { user } = useUser()
 	const dispatch = useAppDispatch()
 
-	console.log('rerender')
+	console.log('Left menu rerender')
 
 	useEffect(() => {
-		if (!appSocket) return
+		if (!appSocket || !user || !currentRoom) return
 
 		appSocket.on(socketEvents.newNotification, (payload: NotificationSocketEvent) => {
-			console.log('This is payload', payload)
-			dispatch(newNotification(payload))
+			if (user.id !== payload.notif.creator.id && currentRoom.id !== payload.roomId) {
+				dispatch(newNotification(payload))
+			}
 		})
 
 		return () => {

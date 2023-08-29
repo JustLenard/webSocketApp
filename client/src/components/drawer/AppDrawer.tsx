@@ -2,7 +2,7 @@ import Button from '@mui/material/Button'
 import SwipeableDrawer from '@mui/material/SwipeableDrawer'
 import { PropsWithChildren, ReactNode, useState } from 'react'
 import RightMenu from '../rightMenu/RightMenu'
-import { Box, IconButton } from '@mui/material'
+import { Box, IconButton, useMediaQuery, useTheme } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right'
@@ -11,10 +11,9 @@ type MUI_BreakPoint = 'xs' | 'sm' | 'md' | 'lg'
 interface Props {
 	children: ReactNode
 	direction: Anchor
-	showAt: MUI_BreakPoint
 }
 
-const AppDrawer: React.FC<Props> = ({ children, direction, showAt }) => {
+const AppDrawer: React.FC<Props> = ({ children, direction }) => {
 	const [state, setState] = useState(false)
 
 	const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -29,23 +28,16 @@ const AppDrawer: React.FC<Props> = ({ children, direction, showAt }) => {
 		setState(open)
 	}
 
+	// const shouldRenderBox = useMediaQuery((theme) => theme.breakpoints.down('md'))
+
 	return (
-		<Box
-			sx={{
-				display: {
-					[showAt]: 'none',
-				},
-			}}
-		>
+		<>
 			<IconButton
 				color="inherit"
 				edge="end"
 				onClick={toggleDrawer(true)}
 				sx={{
 					mx: '1rem',
-					// display: {
-					// 	[showAt]: 'none',
-					// },
 				}}
 			>
 				<MenuIcon />
@@ -61,7 +53,7 @@ const AppDrawer: React.FC<Props> = ({ children, direction, showAt }) => {
 			>
 				{children}
 			</SwipeableDrawer>
-		</Box>
+		</>
 	)
 }
 

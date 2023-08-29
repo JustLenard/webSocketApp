@@ -62,22 +62,26 @@ export class RoomsService implements OnModuleInit {
 	private logger: Logger = new Logger('Room Service')
 
 	async getRoomsForUser(userId: string) {
-		return this.roomRepository
-			.createQueryBuilder('room')
-			.leftJoin('room.users', 'users')
-			.where('users.id = :userId', { userId: userId })
-			.leftJoinAndSelect('room.lastMessage', 'lastMessage')
-			.leftJoinAndSelect('lastMessage.user', 'messageUser')
-			.leftJoin('room.users', 'allUsers')
-			.select([
-				'room',
-				'allUsers.id',
-				'allUsers.username',
-				'lastMessage',
-				'messageUser.id',
-				'messageUser.username',
-			])
-			.getMany()
+		return (
+			this.roomRepository
+				.createQueryBuilder('room')
+				.leftJoin('room.users', 'users')
+				.where('users.id = :userId', { userId: userId })
+				.leftJoinAndSelect('room.lastMessage', 'lastMessage')
+				// .leftJoin('lastMessage.user', 'lastMessageUser')
+				// .leftJoinAndSelect('lastMessageUser.id', 'lastMessageUser.username')
+				.leftJoinAndSelect('lastMessage.user', 'messageUser')
+				.leftJoin('room.users', 'allUsers')
+				.select([
+					'room',
+					'allUsers.id',
+					'allUsers.username',
+					'lastMessage',
+					'messageUser.id',
+					'messageUser.username',
+				])
+				.getMany()
+		)
 	}
 
 	async createRoom(room: CreateRoomParams, creator: UserEntity) {

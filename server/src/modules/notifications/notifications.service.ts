@@ -41,7 +41,7 @@ export class NotificationsService {
 			.getMany()
 	}
 
-	async getNotificationsForRoom(user: UserEntity, roomId: number) {
+	async getUnreadNotifications(user: UserEntity, roomId: number) {
 		return this.notifRepository
 			.createQueryBuilder('notification')
 			.leftJoin('notification.creator', 'creator')
@@ -63,41 +63,30 @@ export class NotificationsService {
 			.getMany()
 	}
 
-	async getSimplifiedNotificationsForRoom(user: UserEntity, roomId: number): Promise<SimpleRoomNotifications> | null {
-		const notifications = await this.getNotificationsForRoom(user, roomId)
-		if (notifications.length === 0) return null
-		return {
-			roomId,
-			unreadNotificationsAmount: notifications.length,
-			lastMessage: {
-				author: notifications[0].creator,
-				createdAt: notifications[0].created_at,
-				message: notifications[0].message.text,
-			},
-		}
+	async getUnreadNotificationsAmount(user: UserEntity, roomId: number) {
+		return this.notifRepository
+			.createQueryBuilder('notification')
+			.leftJoinAndSelect('notification.readBy', 'readBy')
+			.leftJoinAndSelect('notification.createdFor', 'createdFor')
+			.leftJoinAndSelect('notification.room', 'room')
+			.where('createdFor.id = :userId', { userId: user.id })
+			.andWhere('room.id = :roomId', {
+				roomId,
+			})
+			.andWhere('(readBy.id != :userId OR readBy.id IS NULL OR readBy.id = :emptyUuid)', {
+				userId: user.id,
+				emptyUuid: '00000000-0000-0000-0000-000000000000',
+			})
+			.getMany()
+			.then((val) => val.length)
 	}
 
 	async markNotificationsAsReadForRoom(user: UserEntity, roomId: number) {
-		console.log('Getting notiifications')
-		const notifications = await this.getNotificationsForRoom(user, roomId)
-		// console.log('This is notifications', notifications)
-
-		// notifications.forEach(async (notif) => {
-		// 	console.log('This is notif.reaBy', notif.readBy)
-		// 	notif.readBy = [...notif.readBy, user]
-		// 	console.log('This is notif.reaBy', notif.readBy)
-
-		// 	const save = await this.notifRepository.save(notif)
-		// 	console.log('This is save', save)
-		// })
+		const notifications = await this.getUnreadNotifications(user, roomId)
 
 		const promises = notifications.map(async (notif) => {
-			// console.log('This is notif.readBy', notif.readBy)
 			notif.readBy = [...notif.readBy, user]
-			// console.log('This is notif.readBy', notif.readBy)
-
-			const save = await this.notifRepository.save(notif)
-			// console.log('This is save', save)
+			return await this.notifRepository.save(notif)
 		})
 
 		await Promise.all(promises)

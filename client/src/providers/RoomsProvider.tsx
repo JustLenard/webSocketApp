@@ -7,8 +7,8 @@ import { handleError } from '../utils/handleAxiosErrors'
 import { getSavedOrGlobalRoom, isInsideOfApplication, saveRoomIdToSessionStorage, showSpinner } from '../utils/helpers'
 import { RoomsContext, RoomsContextType } from './context/rooms.context'
 import AppSpinner from '../components/AppSpinner'
-import { useAppDispatch } from '../hooks/reduxHooks'
-import { setUpNotification } from '../redux/slices/notifications.slice'
+import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks'
+import { addNewRoom, markRoomNotifAsRead, setUpNotification } from '../redux/slices/notifications.slice'
 
 /**
  * Rooms provider for the app
@@ -18,6 +18,10 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const { privateAxios } = useAxiosPrivate()
 	const { accessToken } = useAuth()
 	const dispatch = useAppDispatch()
+	// const notifications = useAppSelector((state) => state.notif)
+
+	// console.log('This is notifications', notifications)
+	console.log('Rooms provider rerender ')
 
 	const [rooms, setRooms] = useState<TRoom[]>([])
 	const [currentRoom, setCurrentRoom] = useState<TRoom | null>(null)
@@ -40,7 +44,6 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		try {
 			setLoading(true)
 			const response = await privateAxios.post('/rooms', newRoom)
-			console.log('This is response.data', response.data)
 
 			if (typeof response.data === 'number') {
 				if (currentRoom?.id !== response.data) {
@@ -51,6 +54,7 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 			if (typeof response.data === 'object') {
 				setRooms((prev) => [response.data, ...prev])
 				setCurrentRoom(response.data)
+				dispatch(addNewRoom(response.data))
 			}
 		} catch (err) {
 			handleError(err)
@@ -66,8 +70,6 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 				setLoading(true)
 				const response = await privateAxios.get('/rooms')
 
-				console.log('This is response', response)
-
 				const room = getSavedOrGlobalRoom(response.data)
 				setRooms(response.data)
 				dispatch(setUpNotification(response.data))
@@ -76,6 +78,11 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 				if (room) {
 					appSocket.emit(socketEvents.onRoomJoin, room.id)
 					saveRoomIdToSessionStorage(room.id)
+					if (room.notifications) {
+						appSocket.emit(socketEvents.markNotificationsAsRead, room.id, (res: string) => {
+							if (res === 'ok') dispatch(markRoomNotifAsRead(room.id))
+						})
+					}
 				}
 			} catch (err) {
 				handleError(err)
@@ -89,7 +96,8 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		if (!appSocket) return
 		appSocket.on(socketEvents.createRoom, (room: TRoom) => {
 			// setRooms((prev) => [{ ...room, notifications: [] }, ...prev])
-			setRooms((prev) => [{ ...room, notifications: null }, ...prev])
+			setRooms((prev) => [{ ...room, notifications: 0 }, ...prev])
+			dispatch(addNewRoom(room))
 		})
 		return () => {
 			appSocket.off(socketEvents.createRoom)

@@ -20,18 +20,18 @@ export class RoomControler {
 	@Get()
 	@HttpCode(HttpStatus.OK)
 	async getRoomsForUser(@GetCurrentUser() user: UserEntity) {
-		console.log('This is user', user)
 		const userRooms = await this.roomService.getRoomsForUser(user.id)
-		console.log('This is userRooms', userRooms)
 		const roomsWithNotifications = await Promise.all(
 			userRooms.map(async (room) => {
-				const notif = await this.notifService.getSimplifiedNotificationsForRoom(user, room.id)
+				const notif = await this.notifService.getUnreadNotificationsAmount(user, room.id)
 				return {
 					...room,
 					notifications: notif,
 				}
 			}),
 		)
+
+		console.log('This is roomsWithNotifications', roomsWithNotifications)
 		return roomsWithNotifications
 	}
 

@@ -53,10 +53,6 @@ export type SimpleUser = {
 
 export type SimpleRoomNotifications = {
 	roomId: number
-	lastMessage: {
-		message: string
-		author: SimpleUser
-		createdAt: Date
-	}
+	lastMessage: MessageEntity
 	unreadNotificationsAmount: number
 }

@@ -1,4 +1,4 @@
-import { Button, Grid } from '@mui/material'
+import { Button, Grid, useMediaQuery, useTheme } from '@mui/material'
 import AppNavbar from '../components/header/AppNavbar'
 import ChatPanel from '../components/chat/ChatPanel'
 import LeftMenu from '../components/leftMenu/LeftMenu'
@@ -7,6 +7,10 @@ import MessagesProvider from '../providers/MessagesProvider'
 import AppDrawer from '../components/drawer/AppDrawer'
 
 const ChatPage = () => {
+	const theme = useTheme()
+	const upMdBreakpoint = useMediaQuery(theme.breakpoints.up('md'))
+	const upLgBreakpoint = useMediaQuery(theme.breakpoints.up('lg'))
+
 	return (
 		<Grid
 			sx={{
@@ -15,39 +19,35 @@ const ChatPage = () => {
 			}}
 		>
 			<Grid container sx={{ width: '100%', height: '100%', flexWrap: 'nowrap' }}>
-				<Grid
-					item
-					xs={4}
-					lg={2}
-					sx={{
-						height: 'inherit',
-						display: {
-							xs: 'none',
-							md: 'initial',
-						},
-					}}
-				>
-					<LeftMenu />
-				</Grid>
+				{upMdBreakpoint && (
+					<Grid
+						item
+						xs={4}
+						lg={2}
+						sx={{
+							height: 'inherit',
+						}}
+					>
+						<LeftMenu />
+					</Grid>
+				)}
 				<Grid item xs>
 					<MessagesProvider>
 						<ChatPanel />
 					</MessagesProvider>
 				</Grid>
-				<Grid
-					item
-					xs={0}
-					lg={2}
-					sx={{
-						height: 'inherit',
-						display: {
-							xs: 'none',
-							lg: 'initial',
-						},
-					}}
-				>
-					<RightMenu />
-				</Grid>
+				{upLgBreakpoint && (
+					<Grid
+						item
+						xs={0}
+						lg={2}
+						sx={{
+							height: 'inherit',
+						}}
+					>
+						<RightMenu />
+					</Grid>
+				)}
 			</Grid>
 		</Grid>
 	)
