@@ -11,9 +11,7 @@ type ChatForm = {
 	message: string
 }
 
-interface Props {}
-
-const ChatInput: React.FC<Props> = () => {
+const ChatInput = () => {
 	const { appSocket } = useSocket()
 	const [timer, setTimer] = useState<ReturnType<typeof setTimeout>>()
 	const { currentRoom } = useRooms()

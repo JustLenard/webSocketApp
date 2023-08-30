@@ -17,7 +17,8 @@ const ChatPanel = () => {
 	const { appSocket } = useSocket()
 	const { currentRoom } = useRooms()
 	const { user } = useUser()
-	const [isRecipientTyping, setIsRecipientTyping] = useState(false)
+	// const [isRecipientTyping, setIsRecipientTyping] = useState(false)
+	const [userTyping, setUserTyping] = useState<null | string>(null)
 
 	const theme = useTheme()
 	const downMdBreakpoint = useMediaQuery(theme.breakpoints.down('md'))
@@ -25,11 +26,13 @@ const ChatPanel = () => {
 
 	useEffect(() => {
 		if (!appSocket) return
-		appSocket.on(socketEvents.onTypingStart, () => {
-			setIsRecipientTyping(true)
+		appSocket.on(socketEvents.onTypingStart, (userName: string) => {
+			// setIsRecipientTyping(true)
+			setUserTyping(userName)
 		})
 		appSocket.on(socketEvents.onTypingStop, () => {
-			setIsRecipientTyping(false)
+			// setIsRecipientTyping(false)
+			setUserTyping(null)
 		})
 		return () => {
 			appSocket.off(socketEvents.onTypingStart)
@@ -66,7 +69,8 @@ const ChatPanel = () => {
 			<Grid p={'1rem'}>
 				<ChatInput />
 				<Typography level="body-sm" ml={'1rem'} height={'20px'}>
-					{isRecipientTyping ? `${recipient.username} is typing...` : ' '}
+					{/* {isRecipientTyping ? `${recipient.username} is typing...` : ' '} */}
+					{userTyping ? `${userTyping} is typing...` : ' '}
 				</Typography>
 			</Grid>
 		</Grid>
