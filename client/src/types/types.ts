@@ -1,10 +1,3 @@
-// export type IRoom = {
-// 	id: number
-// 	name: string
-// 	description?: string
-// 	users?: User[]
-// }
-
 /**
  * Authorization
  **/
@@ -98,4 +91,14 @@ export type NotificationSocketEvent = {
 export type SimpleRoomNotifications = {
 	lastMessage: TMessage | null
 	unreadNotificationsAmount: number
+}
+
+/**
+ * Redux
+ **/
+
+export type TCreateNewnotification = {
+	notif: TNotification
+	roomId: number
+	incrementNotifCount: boolean
 }

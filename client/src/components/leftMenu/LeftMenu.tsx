@@ -25,9 +25,9 @@ const LeftMenu = () => {
 
 		appSocket.on(socketEvents.newNotification, (payload: NotificationSocketEvent) => {
 			console.log('Received notification', payload)
-			if (user.id !== payload.notif.creator.id && currentRoom.id !== payload.roomId) {
+			if (user.id !== payload.notif.creator.id) {
 				console.log('Creating nottification')
-				dispatch(newNotification(payload))
+				dispatch(newNotification({ ...payload, incrementNotifCount: currentRoom.id !== payload.roomId }))
 			}
 		})
 

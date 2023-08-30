@@ -1,5 +1,11 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { TRoom, SimpleRoomNotifications, NotificationSocketEvent, TNotification } from '../../types/types'
+import {
+	TRoom,
+	SimpleRoomNotifications,
+	NotificationSocketEvent,
+	TNotification,
+	TCreateNewnotification,
+} from '../../types/types'
 
 const initialState: Record<number, SimpleRoomNotifications> = {}
 
@@ -19,18 +25,24 @@ export const authSlice = createSlice({
 					}),
 			)
 		},
-		newNotification: (state, action: PayloadAction<NotificationSocketEvent>) => {
-			const { roomId, notif } = action.payload
-			if (!state[roomId]) {
-				state[roomId] = {
-					lastMessage: notif.message,
-					unreadNotificationsAmount: 0,
-				}
-			} else {
-				state[roomId] = {
-					lastMessage: notif.message,
-					unreadNotificationsAmount: state[roomId].unreadNotificationsAmount + 1,
-				}
+		newNotification: (state, action: PayloadAction<TCreateNewnotification>) => {
+			const { roomId, notif, incrementNotifCount } = action.payload
+			// if (!state[roomId]) {
+			// 	state[roomId] = {
+			// 		lastMessage: notif.message,
+			// 		unreadNotificationsAmount: 0,
+			// 	}
+			// } else {
+			// 	state[roomId] = {
+			// 		lastMessage: notif.message,
+			// 		unreadNotificationsAmount: state[roomId].unreadNotificationsAmount + 1,
+			// 	}
+			// }
+			state[roomId] = {
+				lastMessage: notif.message,
+				unreadNotificationsAmount: incrementNotifCount
+					? state[roomId].unreadNotificationsAmount + 1
+					: state[roomId].unreadNotificationsAmount,
 			}
 		},
 		markRoomNotifAsRead: (state, action: PayloadAction<number>) => {
