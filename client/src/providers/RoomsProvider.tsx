@@ -21,7 +21,7 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	// const notifications = useAppSelector((state) => state.notif)
 
 	// console.log('This is notifications', notifications)
-	console.log('Rooms provider rerender ')
+	// console.log('Rooms provider rerender ')
 
 	const [rooms, setRooms] = useState<TRoom[]>([])
 	const [currentRoom, setCurrentRoom] = useState<TRoom | null>(null)

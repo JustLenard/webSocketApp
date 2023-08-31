@@ -4,7 +4,7 @@ import { useSocket, useUser } from '../../hooks/contextHooks'
 import AppSpinner from '../AppSpinner'
 import RoomListItem from './RoomListItem'
 import { useRooms } from '../../hooks/contextHooks'
-import UserMenu from '../header/UserMenu'
+import UserMenu from '../userMenu/UserMenu'
 import { getRandomInt } from '../../utils/helpers'
 import { useEffect } from 'react'
 import { socketEvents } from '../../utils/constants'
@@ -18,14 +18,11 @@ const LeftMenu = () => {
 	const { user } = useUser()
 	const dispatch = useAppDispatch()
 
-	console.log('Left menu rerender')
-
 	useEffect(() => {
 		if (!appSocket || !user || !currentRoom) return
 
 		appSocket.on(socketEvents.newNotification, (payload: NotificationSocketEvent) => {
 			console.log('Received notification', payload)
-			console.log('Creating nottification')
 			dispatch(newNotification({ ...payload, incrementNotifCount: currentRoom.id !== payload.roomId }))
 		})
 
@@ -62,8 +59,6 @@ const LeftMenu = () => {
 					'--ListItem-paddingY': 0,
 					overflow: 'scroll',
 					mb: '1rem',
-					scrollbarColor: 'red',
-					// scrollbarWidth: 'none',
 				}}
 			>
 				{rooms.map((room, i) => (

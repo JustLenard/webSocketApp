@@ -41,6 +41,7 @@ export class MessageController {
 	@Get()
 	@HttpCode(HttpStatus.OK)
 	async findMessagesForRoom(@Param('roomId', ParseIntPipe) roomId: number): Promise<MessageI[]> {
+		this.logger.log(`Getting messages for room ${roomId}`)
 		return this.messageService.findMessagesForRoom(roomId)
 	}
 

@@ -81,11 +81,14 @@ const RightMenu = () => {
 					<List
 						variant={'outlined'}
 						sx={{
-							minWidth: 240,
+							width: 'inherit',
+							minWidth: 200,
 							borderRadius: 'md',
 							boxShadow: 'sm',
 							'--ListItem-paddingX': 0,
 							'--ListItem-paddingY': 0,
+							overflow: 'scroll',
+							mb: '1rem',
 						}}
 					>
 						{onlineUsers.map((user, i) => (
@@ -98,11 +101,14 @@ const RightMenu = () => {
 					<List
 						variant={'outlined'}
 						sx={{
-							minWidth: 240,
-							boxShadow: 'sm',
+							width: 'inherit',
+							minWidth: 200,
 							borderRadius: 'md',
+							boxShadow: 'sm',
 							'--ListItem-paddingX': 0,
 							'--ListItem-paddingY': 0,
+							overflow: 'scroll',
+							mb: '1rem',
 						}}
 					>
 						{offlineUsers.map((user, i) => (

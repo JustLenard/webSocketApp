@@ -5,7 +5,6 @@ import { handleError } from '../utils/handleAxiosErrors'
 import { useAuth } from './contextHooks'
 
 const useRefreshToken = () => {
-	const { logOutUser } = useAuth()
 	const refresh = async () => {
 		try {
 			const response = await baseAxios.post('/auth/refresh')

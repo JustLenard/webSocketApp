@@ -1,5 +1,5 @@
 import { Button, Grid, useMediaQuery, useTheme } from '@mui/material'
-import AppNavbar from '../components/header/AppNavbar'
+import AppNavbar from '../components/userMenu/AppNavbar'
 import ChatPanel from '../components/chat/ChatPanel'
 import LeftMenu from '../components/leftMenu/LeftMenu'
 import RightMenu from '../components/rightMenu/RightMenu'

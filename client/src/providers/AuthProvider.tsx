@@ -59,10 +59,6 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		setLoggingOut(false)
 	}
 
-	const setNewToken = (newToken: string) => {
-		setAccessToken(newToken)
-	}
-
 	/**
 	 * Login user
 	 **/
@@ -81,7 +77,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		loggedIn,
 		logOutUser,
 		loginUser,
-		setNewToken,
+		setAccessToken,
 	}
 
 	return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

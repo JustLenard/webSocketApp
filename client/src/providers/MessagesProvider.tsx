@@ -28,6 +28,7 @@ const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		try {
 			setLoading(true)
 			const response = await privateAxios.get(`room/${roomId}/messages`)
+			console.log('This is response.data', response.data)
 			setMessages(response.data)
 		} catch (err) {
 			handleError(err)
@@ -48,10 +49,10 @@ const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	}
 
 	useEffect(() => {
-		if (loggedIn && currentRoom) {
+		if (currentRoom) {
 			getMessagesForRoom(currentRoom.id)
 		}
-	}, [loggedIn, currentRoom])
+	}, [currentRoom])
 
 	useEffect(() => {
 		if (!appSocket) return
@@ -85,7 +86,7 @@ const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		setEditingMessageId,
 	}
 
-	if (showSpinner(loading)) return <AppSpinner contained text="Loading messages" />
+	// if (showSpinner(loading)) return <AppSpinner contained text="Loading messages" />
 
 	return <MessagesContext.Provider value={contextValue}>{children}</MessagesContext.Provider>
 }

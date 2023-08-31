@@ -6,9 +6,10 @@ import { appRoutes } from '../router/Root'
 
 const useAxiosPrivate = () => {
 	const refresh = useRefreshToken()
-	const { accessToken, setNewToken } = useAuth()
+	const { accessToken, setAccessToken } = useAuth()
 
 	useEffect(() => {
+		if (!accessToken || !setAccessToken) return
 		const requestIntercept = appAxios.interceptors.request.use(
 			(config) => {
 				if (!config.headers['Authorization'] && accessToken) {
@@ -35,14 +36,14 @@ const useAxiosPrivate = () => {
 				console.log('This is prevRequest?.method', prevRequest?.method)
 				console.log('This is prevRequest?.sent', prevRequest?.sent)
 
-				if (error?.response?.status === 401 && !prevRequest?._sent) {
+				if (error?.response?.status === 401 && !prevRequest?.sent) {
 					// const modifiedRequest = { ...prevRequest } // Create a new object based on prevRequest
 					// modifiedRequest.sent = true // Update the sent property
 					console.log('This is prevRequest.sent', prevRequest._sent)
 					prevRequest.sent = true
 					console.log('This is prevRequest with sent', prevRequest)
 					const newAccessToken = await refresh()
-					setNewToken(newAccessToken)
+					setAccessToken(newAccessToken)
 
 					console.log('This is newAccessToken', newAccessToken)
 					prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`

@@ -15,23 +15,14 @@ export enum Routes {
 }
 
 export enum socketEvents {
-	/**
-	 * Emited by Backend
-	 **/
 	messageAdded = 'messageAdded',
 	messagePatched = 'messagePatched',
 	messageDeleted = 'messageDeleted',
 	messages = 'messages',
 	newNotification = 'newNotification',
-	/**
-	 * Connection
-	 **/
+	connect = 'connect',
 	userConnected = 'userConnected',
 	userDisconnected = 'userDisconnected',
-
-	/**
-	 * Emited by FrontEnd
-	 **/
 	onRoomJoin = 'onRoomJoin',
 	onRoomLeave = 'onRoomLeave',
 	onTypingStart = 'onTypingStart',

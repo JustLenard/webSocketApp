@@ -15,29 +15,14 @@ export const MESSAGE_ROOM = 'room'
 export const NOTIFICATIONS_ROOM = 'notificationsRoom'
 
 export enum socketEvents {
-	/**
-	 * Emited by Backend
-	 **/
 	messageAdded = 'messageAdded',
 	messagePatched = 'messagePatched',
 	messageDeleted = 'messageDeleted',
 	messages = 'messages',
 	newNotification = 'newNotification',
-
-	/**
-	 * Socket connetion
-	 **/
 	connect = 'connect',
-
-	/**
-	 * User connection
-	 **/
 	userConnected = 'userConnected',
 	userDisconnected = 'userDisconnected',
-
-	/**
-	 * Emited by FrontEnd
-	 **/
 	onRoomJoin = 'onRoomJoin',
 	onRoomLeave = 'onRoomLeave',
 	onTypingStart = 'onTypingStart',

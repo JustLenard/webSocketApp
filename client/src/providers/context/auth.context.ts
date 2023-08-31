@@ -5,7 +5,7 @@ export type AuthorizationContextType = {
 	accessToken: string | null
 	logOutUser: () => void
 	loginUser: (accToken: string) => void
-	setNewToken: (newToken: string) => void
+	setAccessToken: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 export const AuthContext = createContext<AuthorizationContextType>({ accessToken: null } as AuthorizationContextType)
