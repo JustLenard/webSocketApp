@@ -69,15 +69,6 @@ const LeftMenu = () => {
 				{rooms.map((room, i) => (
 					<RoomListItem {...room} key={getRandomInt(1000)} />
 				))}
-				{rooms.map((room, i) => (
-					<RoomListItem {...room} key={getRandomInt(1000)} />
-				))}
-				{rooms.map((room, i) => (
-					<RoomListItem {...room} key={getRandomInt(1000)} />
-				))}
-				{rooms.map((room, i) => (
-					<RoomListItem {...room} key={getRandomInt(1000)} />
-				))}
 			</List>
 			<UserMenu />
 		</Grid>

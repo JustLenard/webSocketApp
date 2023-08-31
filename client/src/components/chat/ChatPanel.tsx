@@ -1,41 +1,22 @@
-import { Divider, Grid, Paper, Stack, useMediaQuery, useTheme } from '@mui/material'
-import { useSocket, useUser } from '../../hooks/contextHooks'
+import { Typography } from '@mui/joy'
+import { Divider, Grid, Stack, useMediaQuery, useTheme } from '@mui/material'
+import { useRooms, useSocket, useUser } from '../../hooks/contextHooks'
+import { getReceivingUser } from '../../utils/helpers'
 import AppSpinner from '../AppSpinner'
+import AppDrawer from '../drawer/AppDrawer'
+import LeftMenu from '../leftMenu/LeftMenu'
+import RightMenu from '../rightMenu/RightMenu'
 import ChatInput from './ChatInput'
 import MessagesContainer from './MessagesContainer'
-import { Box, Typography } from '@mui/joy'
-import { useRooms } from '../../hooks/contextHooks'
-import { useEffect, useState } from 'react'
-import { socketEvents } from '../../utils/constants'
-import { getReceivingUser } from '../../utils/helpers'
-import AppDrawer from '../drawer/AppDrawer'
-import RightMenu from '../rightMenu/RightMenu'
-import LeftMenu from '../leftMenu/LeftMenu'
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
+import TypingIndicator from './TypingIndicator'
 
 const ChatPanel = () => {
-	const { appSocket } = useSocket()
 	const { currentRoom } = useRooms()
 	const { user } = useUser()
-	const [userTyping, setUserTyping] = useState<null | string>(null)
 
 	const theme = useTheme()
 	const downMdBreakpoint = useMediaQuery(theme.breakpoints.down('md'))
 	const downLgBreakpoint = useMediaQuery(theme.breakpoints.down('lg'))
-
-	useEffect(() => {
-		if (!appSocket) return
-		appSocket.on(socketEvents.onTypingStart, (userName: string) => {
-			setUserTyping(userName)
-		})
-		appSocket.on(socketEvents.onTypingStop, () => {
-			setUserTyping(null)
-		})
-		return () => {
-			appSocket.off(socketEvents.onTypingStart)
-			appSocket.off(socketEvents.onTypingStop)
-		}
-	}, [])
 
 	if (!currentRoom || !user) return <AppSpinner contained text="No current room" />
 
@@ -65,9 +46,7 @@ const ChatPanel = () => {
 			</Grid>
 			<Grid p={'1rem 1rem .4rem 1rem'}>
 				<ChatInput />
-				<Typography level="body-sm" ml={'1rem'} height={'20px'} mt={'5px'}>
-					{userTyping ? `${userTyping} is typing...` : ' '}
-				</Typography>
+				<TypingIndicator />
 			</Grid>
 		</Grid>
 	)

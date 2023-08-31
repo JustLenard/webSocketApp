@@ -90,7 +90,6 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@SubscribeMessage(socketEvents.onTypingStart)
 	onTypingStart(@MessageBody() roomId: number, @ConnectedSocket() client: AuthenticatedSocket) {
-		console.log('typing received')
 		client.to(createMessageRoomName(roomId)).emit(socketEvents.onTypingStart, client.user.username)
 	}
 

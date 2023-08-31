@@ -1,10 +1,9 @@
 import SendIcon from '@mui/icons-material/Send'
 import { Input } from '@mui/joy'
 import { IconButton } from '@mui/material'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { useRooms, useSocket } from '../../hooks/contextHooks'
-import { useMessages } from '../../hooks/contextHooks'
 import { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { useMessages, useRooms, useSocket } from '../../hooks/contextHooks'
 import { socketEvents } from '../../utils/constants'
 
 type ChatForm = {
@@ -12,39 +11,48 @@ type ChatForm = {
 }
 
 const ChatInput = () => {
-	const { appSocket } = useSocket()
-	const [timer, setTimer] = useState<ReturnType<typeof setTimeout>>()
-	const { currentRoom } = useRooms()
-	const [isTyping, setIsTyping] = useState(false)
+	const { sendMessage } = useMessages()
 	const {
 		register,
 		handleSubmit,
-		watch,
 		formState: { errors },
 		resetField,
 	} = useForm<ChatForm>()
 
-	const { sendMessage } = useMessages()
+	const [timer, setTimer] = useState<ReturnType<typeof setTimeout>>()
+	const [isTyping, setIsTyping] = useState(false)
+	const { appSocket } = useSocket()
+	const { currentRoom } = useRooms()
 
 	const handleMessageSubmit: SubmitHandler<ChatForm> = (formData) => {
 		sendMessage(formData.message.trim())
-
 		resetField('message')
 	}
 
 	const sendTypingStatus = () => {
 		if (!appSocket || !currentRoom) return
 
-		setIsTyping(true)
-		appSocket.emit(socketEvents.onTypingStart, currentRoom.id)
-		clearTimeout(timer)
-		setTimer(
-			setTimeout(() => {
-				appSocket.emit(socketEvents.onTypingStop, currentRoom.id)
-				setIsTyping(false)
-			}, 1000),
-		)
+		if (isTyping) {
+			clearTimeout(timer)
+			setTimer(
+				setTimeout(() => {
+					appSocket.emit(socketEvents.onTypingStop, currentRoom.id)
+					setIsTyping(false)
+				}, 2000),
+			)
+		} else {
+			setIsTyping(true)
+			appSocket.emit(socketEvents.onTypingStart, currentRoom.id)
+			clearTimeout(timer!)
+			setTimer(
+				setTimeout(() => {
+					appSocket.emit(socketEvents.onTypingStop, currentRoom.id)
+					setIsTyping(false)
+				}, 2000),
+			)
+		}
 	}
+
 	return (
 		<form onSubmit={handleSubmit(handleMessageSubmit)}>
 			<Input
