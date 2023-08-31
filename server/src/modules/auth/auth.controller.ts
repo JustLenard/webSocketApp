@@ -17,8 +17,8 @@ export class AuthController {
 
 	@Post('/signup')
 	@HttpCode(HttpStatus.CREATED)
-	async signupLocal(@Body() dto: AuthDto): Promise<Tokens> {
-		return await this.authService.signupLocal(dto)
+	async signupLocal(@Body() dto: AuthDto, @Res({ passthrough: true }) res: Response): Promise<Tokens> {
+		return await this.authService.signupLocal(dto, res)
 	}
 
 	@Post('/signin')

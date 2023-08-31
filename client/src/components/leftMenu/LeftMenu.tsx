@@ -25,10 +25,8 @@ const LeftMenu = () => {
 
 		appSocket.on(socketEvents.newNotification, (payload: NotificationSocketEvent) => {
 			console.log('Received notification', payload)
-			if (user.id !== payload.notif.creator.id) {
-				console.log('Creating nottification')
-				dispatch(newNotification({ ...payload, incrementNotifCount: currentRoom.id !== payload.roomId }))
-			}
+			console.log('Creating nottification')
+			dispatch(newNotification({ ...payload, incrementNotifCount: currentRoom.id !== payload.roomId }))
 		})
 
 		return () => {
@@ -64,8 +62,19 @@ const LeftMenu = () => {
 					'--ListItem-paddingY': 0,
 					overflow: 'scroll',
 					mb: '1rem',
+					scrollbarColor: 'red',
+					// scrollbarWidth: 'none',
 				}}
 			>
+				{rooms.map((room, i) => (
+					<RoomListItem {...room} key={getRandomInt(1000)} />
+				))}
+				{rooms.map((room, i) => (
+					<RoomListItem {...room} key={getRandomInt(1000)} />
+				))}
+				{rooms.map((room, i) => (
+					<RoomListItem {...room} key={getRandomInt(1000)} />
+				))}
 				{rooms.map((room, i) => (
 					<RoomListItem {...room} key={getRandomInt(1000)} />
 				))}

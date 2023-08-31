@@ -147,6 +147,8 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		console.log('This is room', room)
 
 		const recipients = room.users.filter((user) => user.id !== creatorId && user.accountType !== AccountType.bot)
+		// const recipients = room.users.filter((user) => user.accountType !== AccountType.bot)
+
 		console.log('This is recipients', recipients)
 
 		/**
@@ -162,6 +164,10 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		 * Make the socketets connect to the newly created room
 		 **/
 		recipientSockets.forEach((socket) => socket.join(createNotifRoomName(room.id)))
+
+		const roomCreatorSocket = this.sessions.getUserSocket(creatorId)
+		this.onConversationJoin(room.id, roomCreatorSocket)
+		roomCreatorSocket.join(createNotifRoomName(room.id))
 
 		console.log('This is recipientSockets', recipientSockets)
 		recipientSockets.forEach((client) => client.emit(socketEvents.createRoom, room))

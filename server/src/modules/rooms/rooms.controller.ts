@@ -42,15 +42,16 @@ export class RoomControler {
 	async createRoom(@GetCurrentUser() user: UserEntity, @Body() dto: CreateRoomDto) {
 		const privateChat = await this.roomService.checkIfPrivateChatExits(user.id, dto.users[0])
 
-		if (!privateChat) {
-			const newRoom = await this.roomService.createRoom(dto, user)
-			newRoom.users = newRoom.users.map((user) => ({ id: user.id, username: user.username } as UserEntity))
-
-			this.eventEmitter.emit(appEmitters.roomCreate, { room: newRoom, creatorId: user.id })
-			return { ...newRoom, notifications: [] }
+		if (privateChat) {
+			this.logger.warn('Room already exists. Aborting')
+			return privateChat
 		}
 
-		this.logger.warn('Room already exists. Aborting')
-		return privateChat
+		this.logger.warn('Creating new room')
+		const newRoom = await this.roomService.createRoom(dto, user)
+		newRoom.users = newRoom.users.map((user) => ({ id: user.id, username: user.username } as UserEntity))
+
+		this.eventEmitter.emit(appEmitters.roomCreate, { room: newRoom, creatorId: user.id })
+		return { ...newRoom, notifications: 0 }
 	}
 }

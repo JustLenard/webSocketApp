@@ -83,7 +83,7 @@ export class AuthService {
 			.execute()
 	}
 
-	async signupLocal(dto: AuthDto): Promise<Tokens> {
+	async signupLocal(dto: AuthDto, res: Response): Promise<Tokens> {
 		/**
 		 * Enforce unique username
 		 **/
@@ -119,6 +119,7 @@ export class AuthService {
 
 		const tokens = await this.getTokens(newUser.id, newUser.username)
 		await this.updateRtHash(newUser.id, tokens.refreshToken)
+		this.setCookie(res, tokens.refreshToken)
 
 		return tokens
 	}
