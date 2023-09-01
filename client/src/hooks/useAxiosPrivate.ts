@@ -42,6 +42,7 @@ const useAxiosPrivate = () => {
 					console.log('This is prevRequest.sent', prevRequest._sent)
 					prevRequest.sent = true
 					console.log('This is prevRequest with sent', prevRequest)
+
 					const newAccessToken = await refresh()
 					setAccessToken(newAccessToken)
 

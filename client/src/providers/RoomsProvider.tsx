@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, useEffect, useState } from 'react'
-import { useAuth, useSocket } from '../hooks/contextHooks'
+import { useAuth, useMessages, useSocket } from '../hooks/contextHooks'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { CreateRoomParams, TRoom } from '../types/types'
 import { socketEvents } from '../utils/constants'
@@ -18,10 +18,6 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const { privateAxios } = useAxiosPrivate()
 	const { accessToken } = useAuth()
 	const dispatch = useAppDispatch()
-	// const notifications = useAppSelector((state) => state.notif)
-
-	// console.log('This is notifications', notifications)
-	// console.log('Rooms provider rerender ')
 
 	const [rooms, setRooms] = useState<TRoom[]>([])
 	const [currentRoom, setCurrentRoom] = useState<TRoom | null>(null)
@@ -35,7 +31,6 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 			appSocket.emit(socketEvents.onRoomJoin, selectedRoom.id)
 
 			setCurrentRoom(selectedRoom)
-
 			saveRoomIdToSessionStorage(selectedRoom.id)
 		}
 	}

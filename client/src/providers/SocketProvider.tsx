@@ -33,6 +33,13 @@ const SocketProvider: React.FC<PropsWithChildren> = ({ children }) => {
 			setAppSocket(socket)
 			setConnectionCreated(socket.connected)
 		})
+
+		socket.on('badJwt', (ev) => console.log('This is ev', ev))
+
+		return () => {
+			socket.off(socketEvents.connect)
+			socket.off('badJwt')
+		}
 	}, [])
 
 	useEffect(() => {
@@ -40,6 +47,12 @@ const SocketProvider: React.FC<PropsWithChildren> = ({ children }) => {
 			createSocketConnection(accessToken)
 		}
 	}, [createSocketConnection, accessToken])
+
+	// useEffect(() => {
+	// 	if (isInsideOfApplication() && accessToken) {
+	// 		createSocketConnection(accessToken)
+	// 	}
+	// }, [createSocketConnection])
 
 	if (showSpinner(!connectionCreated)) return <AppSpinner text="Creating webSocket connection" />
 
