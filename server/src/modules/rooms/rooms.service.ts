@@ -138,15 +138,23 @@ export class RoomsService implements OnModuleInit {
 		return room
 	}
 
-	async setNewLastMesasgeIfNeeded(roomId: number, message: MessageEntity) {
-		const room = await this.roomRepository.findOne({
-			where: { id: roomId },
-			relations: ['messages', 'lastMessage'],
-		})
-		if (room.lastMessage.id !== message.id) return
+	async setNewLastMesasge(room: RoomEntity) {
 		const newLastMessage = room.messages.length > 1 ? room.messages[room.messages.length - 2] : null
 
 		room.lastMessage = newLastMessage
 		await this.roomRepository.save(room)
+		return newLastMessage
+	}
+
+	async isLastMessageInRoom(message: MessageEntity) {
+		const room = await this.roomRepository.findOne({
+			where: { id: message.room.id },
+			relations: ['messages', 'lastMessage'],
+		})
+
+		return {
+			isLastMessage: room.lastMessage.id === message.id,
+			room,
+		}
 	}
 }

@@ -6,7 +6,6 @@ import {
 	Get,
 	HttpCode,
 	HttpStatus,
-	Inject,
 	Logger,
 	Param,
 	ParseIntPipe,
@@ -17,14 +16,14 @@ import {
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { GetCurrentUser } from 'src/common/decorators/getCurrentUser.decorator'
 import { AtGuard } from 'src/common/guards/at.guard'
+import { Routes, appEmitters } from 'src/utils/constants'
 import { UserEntity } from 'src/utils/entities/user.entity'
 import { MessageI } from 'src/utils/types/entities.types'
+import { NotificationsService } from '../notifications/notifications.service'
 import { RoomsService } from '../rooms/rooms.service'
 import { MessageDto } from './dto/create-message.dto'
-import { MessageService } from './messages.service'
-import { Routes, appEmitters } from 'src/utils/constants'
 import { UpdateMessageDto } from './dto/update-message.dto'
-import { NotificationsService } from '../notifications/notifications.service'
+import { MessageService } from './messages.service'
 
 @Controller(Routes.messages)
 export class MessageController {
@@ -92,9 +91,10 @@ export class MessageController {
 		@Param('roomId', ParseIntPipe) roomId: number,
 		@GetCurrentUser() user: UserEntity,
 	) {
-		const message = await this.messageService.deleteMessage(messageId, user.id, roomId)
+		const { message, isLastMessage } = await this.messageService.deleteMessage(messageId, user.id, roomId)
 		message.user = { id: message.user.id, username: message.user.username } as UserEntity
 		this.eventEmitter.emit(appEmitters.messageDelete, { message, roomId })
+
 		return 'ok'
 	}
 }

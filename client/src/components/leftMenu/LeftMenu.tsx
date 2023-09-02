@@ -15,11 +15,10 @@ import { newNotification } from '../../redux/slices/notifications.slice'
 const LeftMenu = () => {
 	const { appSocket } = useSocket()
 	const { rooms, currentRoom } = useRooms()
-	const { user } = useUser()
 	const dispatch = useAppDispatch()
 
 	useEffect(() => {
-		if (!appSocket || !user || !currentRoom) return
+		if (!appSocket || !currentRoom) return
 
 		appSocket.on(socketEvents.newNotification, (payload: NotificationSocketEvent) => {
 			console.log('Received notification', payload)

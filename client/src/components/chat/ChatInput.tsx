@@ -38,7 +38,7 @@ const ChatInput = () => {
 				setTimeout(() => {
 					appSocket.emit(socketEvents.onTypingStop, currentRoom.id)
 					setIsTyping(false)
-				}, 2000),
+				}, 1000),
 			)
 		} else {
 			setIsTyping(true)
@@ -48,7 +48,7 @@ const ChatInput = () => {
 				setTimeout(() => {
 					appSocket.emit(socketEvents.onTypingStop, currentRoom.id)
 					setIsTyping(false)
-				}, 2000),
+				}, 1000),
 			)
 		}
 	}

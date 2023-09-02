@@ -45,8 +45,6 @@ const RightMenu = () => {
 	useEffect(() => {
 		if (!appSocket) return
 		appSocket.on(socketEvents.userConnected, (user: TUser) => {
-			console.log('This is user connected event', user)
-			console.log('This is onlineUsers', onlineUsers)
 			if (onlineUsers.find((onlineUser) => onlineUser.id === user.id)) return
 
 			setOfflineUsers((prev) => prev.filter((item) => item.id !== user.id))
@@ -54,7 +52,6 @@ const RightMenu = () => {
 			setOnlineUsers((prev) => [...prev, user])
 		})
 		appSocket.on(socketEvents.userDisconnected, (user: TUser) => {
-			console.log('This is user disconnected event', user)
 			if (offlineUsers.find((offlineUser) => offlineUser.id === user.id)) return
 
 			setOnlineUsers((prev) => prev.filter((item) => item.id !== user.id))

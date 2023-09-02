@@ -58,9 +58,16 @@ export class MessageService {
 		if (!message) {
 			throw new BadRequestException('Cannot delete message')
 		}
-		await this.roomService.setNewLastMesasgeIfNeeded(roomId, message)
-		await this.messageRepository.delete({ id: messageId })
 
-		return message
+		const { room, isLastMessage } = await this.roomService.isLastMessageInRoom(message)
+
+		if (isLastMessage) {
+			const newLastMessage = await this.roomService.setNewLastMesasge(room)
+			await this.messageRepository.delete({ id: messageId })
+			return { isLastMessage, message: newLastMessage }
+		}
+
+		await this.messageRepository.delete({ id: messageId })
+		return { isLastMessage, message }
 	}
 }
