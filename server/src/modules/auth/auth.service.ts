@@ -11,8 +11,17 @@ import { JwtService } from '@nestjs/jwt'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as argon2 from 'argon2'
 import { Response } from 'express'
-import { ALPHABET, GLOBAL_ROOM_NAME, NUMBERS, REFRESH_TOKEN } from 'src/utils/constants'
-import { selectRandomArrayElement } from 'src/utils/helpers'
+import {
+	ACCESS_TOKEN_EXPIRATION_SECONDS,
+	ALPHABET,
+	BOT_USERS,
+	GLOBAL_ROOM_NAME,
+	GUEST_USERS,
+	NUMBERS,
+	REFRESH_TOKEN,
+	REFRESH_TOKEN_EXPIRATION_SECONDS,
+} from 'src/utils/constants'
+import { generatePassword, selectRandomArrayElement } from 'src/utils/helpers'
 import { Tokens } from 'src/utils/types/types'
 import { Repository } from 'typeorm'
 import { RoomEntity } from '../../utils/entities/room.entity'
@@ -23,11 +32,51 @@ import { AuthDto } from './auth.dto'
 @Injectable()
 export class AuthService {
 	async onModuleInit() {
-		// const botAccounts = await this.userRepository.findOneBy({ accountType: AccountType.bot })
-		// if (!botAccounts) {
-		// 	this.logger.warn('Creating bot accounts')
-		// 	this.signupLocal({})
-		// }
+		const globalRoom = await this.roomRepository.findOne({
+			where: { name: GLOBAL_ROOM_NAME },
+			relations: ['users'],
+		})
+
+		const botAccounts = await this.userRepository.findOneBy({ accountType: AccountType.bot })
+		/**
+		 * Create bot accounts
+		 **/
+		if (!botAccounts) {
+			this.logger.warn('Creating bot accounts')
+			await Promise.all(
+				BOT_USERS.map(async (user) => {
+					const newBotUser = await this.userRepository
+						.create({
+							username: user,
+							password: await this.hashData(generatePassword(12)),
+							accountType: AccountType.bot,
+						})
+						.save()
+					globalRoom.users.push(newBotUser)
+				}),
+			)
+		}
+
+		const guestAccouns = await this.userRepository.findOneBy({ accountType: AccountType.guest })
+		/**
+		 * Create guest accounts
+		 **/
+		if (!guestAccouns) {
+			this.logger.warn('Creating guest accounts')
+			await Promise.all(
+				GUEST_USERS.map(async (user) => {
+					const newGuestUser = await this.userRepository
+						.create({
+							username: user,
+							password: await this.hashData(generatePassword(12)),
+							accountType: AccountType.guest,
+						})
+						.save()
+					globalRoom.users.push(newGuestUser)
+				}),
+			)
+		}
+		await this.roomRepository.save(globalRoom)
 	}
 
 	constructor(
@@ -48,8 +97,7 @@ export class AuthService {
 				},
 				{
 					secret: process.env.ACCESS_TOKEN_SECRET,
-					expiresIn: 60 * 15,
-					// expiresIn: 7,
+					expiresIn: ACCESS_TOKEN_EXPIRATION_SECONDS,
 				},
 			),
 			this.jwtService.signAsync(
@@ -59,8 +107,7 @@ export class AuthService {
 				},
 				{
 					secret: process.env.REFRESH_TOKEN_SECRET,
-					expiresIn: 60 * 60 * 24 * 7, // 1 week
-					// expiresIn: 5,
+					expiresIn: REFRESH_TOKEN_EXPIRATION_SECONDS,
 				},
 			),
 		])
