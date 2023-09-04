@@ -20,8 +20,8 @@ import { LogInFormSchema } from '../yup/logInSchema'
 import { renderErrors } from './SignUpPage'
 import AppSpinner from '../components/AppSpinner'
 
-const publicUsername = import.meta.env.VITE_PUBLIC_USERNAME
-const publicPassword = import.meta.env.VITE_PUBLIC_PASSWORD
+const publicUsername = import.meta.env.VITE_USERNAME
+const publicPassword = import.meta.env.VITE_PASSWORD
 
 const LoginPage: React.FC = () => {
 	const [manualErrors, setManualErrors] = useState<string | null | string[]>(null)
@@ -104,7 +104,11 @@ const LoginPage: React.FC = () => {
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<FormControl>
 							<FormLabel>Username</FormLabel>
-							<Input placeholder="ex: Connor" defaultValue={publicUsername} {...register('username')} />
+							<Input
+								placeholder="ex: Connor"
+								defaultValue={publicUsername ?? ''}
+								{...register('username')}
+							/>
 							{errors.username && <ErrorText>{errors.username.message}</ErrorText>}
 						</FormControl>
 
@@ -113,7 +117,7 @@ const LoginPage: React.FC = () => {
 							<Input
 								type="password"
 								placeholder="password"
-								defaultValue={publicPassword}
+								defaultValue={publicPassword ?? ''}
 								{...register('password')}
 							/>
 							{errors.password && <ErrorText>{errors.password.message}</ErrorText>}

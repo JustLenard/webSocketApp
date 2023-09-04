@@ -6,7 +6,7 @@ import { socketEvents } from '../utils/constants'
 import { isInsideOfApplication, showSpinner } from '../utils/helpers'
 import { SocketContext, SocketContextType } from './context/socket.contetx'
 
-const websocketURL = import.meta.env.VITE_PUBLIC_URL
+const websocketURL = import.meta.env.VITE_SERVER_URL
 
 /**
  * Socket provider for the app
