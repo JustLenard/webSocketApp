@@ -1,6 +1,6 @@
 import { Typography } from '@mui/joy'
 import { Divider, Grid, Stack, useMediaQuery, useTheme } from '@mui/material'
-import { useRooms, useSocket, useUser } from '../../hooks/contextHooks'
+import { useRooms, useUser } from '../../hooks/contextHooks'
 import { getReceivingUser } from '../../utils/helpers'
 import AppSpinner from '../AppSpinner'
 import AppDrawer from '../drawer/AppDrawer'

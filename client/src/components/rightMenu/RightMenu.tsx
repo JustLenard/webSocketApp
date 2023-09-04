@@ -1,4 +1,4 @@
-import { List, ListDivider, ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/joy'
+import { List, ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/joy'
 import { Grid, ListItemButton } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useRooms, useSocket, useUser } from '../../hooks/contextHooks'
@@ -134,38 +134,28 @@ const ProfileListItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 	const { createNewRoom } = useRooms()
 
 	const handleClick = () => {
+		if (user?.id === id) return
 		const newRoom: CreateRoomParams = {
 			name: `${user?.username}-${username}`,
 			users: [id],
 			isGroupChat: false,
 		}
 
-		console.log('This is newRoom', newRoom)
-
 		createNewRoom(newRoom)
 	}
 
 	return (
-		<>
-			<ListItemButton onClick={handleClick}>
-				<ListItem>
-					<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
-						<AppAvatar username={username} />
-					</ListItemDecorator>
+		<ListItemButton onClick={handleClick}>
+			<ListItem>
+				<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
+					<AppAvatar username={username} />
+				</ListItemDecorator>
 
-					<ListItemContent>
-						<Typography>{username}</Typography>
-					</ListItemContent>
-				</ListItem>
-			</ListItemButton>
-			{/* <ListDivider
-				inset={'gutter'}
-				sx={{
-					marginY: 0,
-					marginX: 0,
-				}}
-			/> */}
-		</>
+				<ListItemContent>
+					<Typography>{username}</Typography>
+				</ListItemContent>
+			</ListItem>
+		</ListItemButton>
 	)
 }
 

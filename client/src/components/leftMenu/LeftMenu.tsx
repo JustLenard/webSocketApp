@@ -61,7 +61,7 @@ const LeftMenu = () => {
 				}}
 			>
 				{rooms.map((room, i) => (
-					<RoomListItem {...room} key={getRandomInt(1000)} />
+					<RoomListItem {...room} key={room.id} />
 				))}
 			</List>
 			<UserMenu />

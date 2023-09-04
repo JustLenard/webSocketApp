@@ -1,24 +1,17 @@
-import { Badge, Box, ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/joy'
+import { ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/joy'
 import { ListItemButton, Stack } from '@mui/material'
-import { useEffect, useState } from 'react'
 import { useRooms, useSocket, useUser } from '../../hooks/contextHooks'
-import { NotificationSocketEvent, TNotification, TRoom, TUser } from '../../types/types'
-import { socketEvents } from '../../utils/constants'
-import { createAuthor, getReceivingUser, utcTimeToHumanTime } from '../../utils/helpers'
-import AppSpinner from '../AppSpinner'
-import AppAvatar from '../avatar/AppAvatar'
-import AppBadge from '../AppBadge'
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
 import { markRoomNotifAsRead } from '../../redux/slices/notifications.slice'
+import { TRoom } from '../../types/types'
+import { socketEvents } from '../../utils/constants'
+import { createAuthor, getReceivingUser, utcTimeToHumanTime } from '../../utils/helpers'
+import AppBadge from '../AppBadge'
+import AppSpinner from '../AppSpinner'
+import AppAvatar from '../avatar/AppAvatar'
+import TimeDisplay from '../TimeDisplay'
 
-const RoomListItem: React.FC<TRoom> = ({
-	id,
-	isGroupChat,
-	name,
-	users,
-	lastMessage: lastMessageProp,
-	notifications,
-}) => {
+const RoomListItem: React.FC<TRoom> = ({ id, isGroupChat, name, users }) => {
 	const dispatch = useAppDispatch()
 	const { appSocket } = useSocket()
 	const { currentRoom, changeCurrentRoom } = useRooms()
@@ -60,7 +53,7 @@ const RoomListItem: React.FC<TRoom> = ({
 						{notificationForRoom.lastMessage && (
 							<span>
 								<Typography display={'inline-block'} textAlign={'end'} level="body-sm" noWrap>
-									{utcTimeToHumanTime(notificationForRoom.lastMessage.created_at)}
+									<TimeDisplay date={notificationForRoom.lastMessage.created_at} />
 									<AppBadge badgeContent={notificationForRoom.unreadNotificationsAmount} />
 								</Typography>
 							</span>

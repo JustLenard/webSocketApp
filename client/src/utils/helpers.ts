@@ -69,9 +69,10 @@ export const getSubstring = (initialString: string, end = 2) => {
 }
 
 export const getColorPalletteProp = (yourString: string): ColorPaletteProp => {
-	if (!ALPHABET.includes(yourString[0])) return 'neutral'
+	const firstLetter = yourString.toLowerCase()[0]
+	if (!ALPHABET.includes(firstLetter)) return 'neutral'
 
-	return colorMap.get(yourString[0]) ?? 'neutral'
+	return colorMap.get(firstLetter) ?? 'neutral'
 }
 
 export const utcTimeToHumanTime = (date: Date) => {
