@@ -1,10 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, UseGuards } from '@nestjs/common'
+import { Controller, Get, Param, UseGuards } from '@nestjs/common'
 import { GetCurrentUser } from 'src/common/decorators/getCurrentUser.decorator'
 import { AtGuard } from 'src/common/guards/at.guard'
-import { UpdateUserDto } from './dto/update-user.dto'
-import { UsersService } from './users.service'
-import { UserEntity } from 'src/utils/entities/user.entity'
 import { Routes } from 'src/utils/constants'
+import { UserEntity } from 'src/utils/entities/user.entity'
+import { UsersService } from './users.service'
 
 @Controller(Routes.user)
 export class UsersController {

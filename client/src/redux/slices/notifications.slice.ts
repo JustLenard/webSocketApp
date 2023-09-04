@@ -27,18 +27,6 @@ export const authSlice = createSlice({
 		},
 		newNotification: (state, action: PayloadAction<TCreateNewnotification>) => {
 			const { roomId, notif, incrementNotifCount } = action.payload
-			console.log('adding notif')
-			// if (!state[roomId]) {
-			// 	state[roomId] = {
-			// 		lastMessage: notif.message,
-			// 		unreadNotificationsAmount: 0,
-			// 	}
-			// } else {
-			// 	state[roomId] = {
-			// 		lastMessage: notif.message,
-			// 		unreadNotificationsAmount: state[roomId].unreadNotificationsAmount + 1,
-			// 	}
-			// }
 			state[roomId] = {
 				lastMessage: notif.message,
 				unreadNotificationsAmount: incrementNotifCount

@@ -36,7 +36,6 @@ export type TRoom = {
 	description?: string
 	users: TUser[]
 	lastMessage: null | TMessage
-	// notifications: SimpleRoomNotifications
 	notifications: number
 }
 
@@ -71,7 +70,6 @@ export type TNotification = {
 	id: number
 	creator: TUser
 	message: TMessage
-	// room: RoomI
 	roomId: number
 }
 

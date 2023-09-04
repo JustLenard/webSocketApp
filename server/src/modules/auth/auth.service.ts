@@ -14,74 +14,25 @@ import { Response } from 'express'
 import {
 	ACCESS_TOKEN_EXPIRATION_SECONDS,
 	ALPHABET,
-	BOT_USERS,
 	GLOBAL_ROOM_NAME,
-	GUEST_USERS,
 	NUMBERS,
 	REFRESH_TOKEN,
 	REFRESH_TOKEN_EXPIRATION_SECONDS,
 } from 'src/utils/constants'
-import { generatePassword, selectRandomArrayElement } from 'src/utils/helpers'
 import { Tokens } from 'src/utils/types/types'
 import { Repository } from 'typeorm'
 import { RoomEntity } from '../../utils/entities/room.entity'
 import { AccountType, UserEntity } from '../../utils/entities/user.entity'
+import { GatewaySessionManager } from '../socket/socket.sessions'
 import { UsersService } from '../users/users.service'
 import { AuthDto } from './auth.dto'
 
 @Injectable()
 export class AuthService {
-	async onModuleInit() {
-		const globalRoom = await this.roomRepository.findOne({
-			where: { name: GLOBAL_ROOM_NAME },
-			relations: ['users'],
-		})
-
-		const botAccounts = await this.userRepository.findOneBy({ accountType: AccountType.bot })
-		/**
-		 * Create bot accounts
-		 **/
-		if (!botAccounts) {
-			this.logger.warn('Creating bot accounts')
-			await Promise.all(
-				BOT_USERS.map(async (user) => {
-					const newBotUser = await this.userRepository
-						.create({
-							username: user,
-							password: await this.hashData(generatePassword(12)),
-							accountType: AccountType.bot,
-						})
-						.save()
-					globalRoom.users.push(newBotUser)
-				}),
-			)
-		}
-
-		const guestAccouns = await this.userRepository.findOneBy({ accountType: AccountType.guest })
-		/**
-		 * Create guest accounts
-		 **/
-		if (!guestAccouns) {
-			this.logger.warn('Creating guest accounts')
-			await Promise.all(
-				GUEST_USERS.map(async (user) => {
-					const newGuestUser = await this.userRepository
-						.create({
-							username: user,
-							password: await this.hashData(generatePassword(12)),
-							accountType: AccountType.guest,
-						})
-						.save()
-					globalRoom.users.push(newGuestUser)
-				}),
-			)
-		}
-		await this.roomRepository.save(globalRoom)
-	}
-
 	constructor(
 		private usersService: UsersService,
 		private jwtService: JwtService,
+		private readonly sessions: GatewaySessionManager,
 		@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
 		@InjectRepository(RoomEntity) private roomRepository: Repository<RoomEntity>,
 	) {}
@@ -194,14 +145,19 @@ export class AuthService {
 		})
 
 		if (guestUsers.length === 0) throw new InternalServerErrorException('No guest accounts')
-		const selectedUser: UserEntity = selectRandomArrayElement(guestUsers)
 
-		const tokens = await this.getTokens(selectedUser.id, selectedUser.username)
-		await this.updateRtHash(selectedUser.id, tokens.refreshToken)
+		for (const user of guestUsers) {
+			const userSession = this.sessions.getUserSocket(user.id)
+			if (!userSession) {
+				const tokens = await this.getTokens(user.id, user.username)
+				await this.updateRtHash(user.id, tokens.refreshToken)
 
-		this.setCookie(res, tokens.refreshToken)
+				this.setCookie(res, tokens.refreshToken)
 
-		return tokens
+				return tokens
+			}
+		}
+		throw new InternalServerErrorException('All guest accounts in use')
 	}
 
 	async logout(userId: string) {

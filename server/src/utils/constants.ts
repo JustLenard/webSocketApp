@@ -10,7 +10,6 @@ export const ACCESS_TOKEN_EXPIRATION_SECONDS = 900 // 15 min
 export const REFRESH_TOKEN_EXPIRATION_SECONDS = 604800 // 1 week
 
 export const BOT_USERS = ['CodeNinja42', 'PyroTechX', 'ChaosCreator87', 'WhisperingGeek', 'WildWebSurfer']
-
 export const GUEST_USERS = [
 	'SarahCoder',
 	'JohnDev',

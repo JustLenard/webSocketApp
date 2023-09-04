@@ -15,10 +15,9 @@ export const generatePassword = (length: number) => {
 	const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+'
 	let password = ''
 	for (let i = 0; i < length; i++) {
-		const randomIndex = Math.floor(Math.random() * charset.length)
+		const randomIndex = getRandomInt(charset.length - 1)
 		password += charset.charAt(randomIndex)
 	}
-
 	return password
 }
 

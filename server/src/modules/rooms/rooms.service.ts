@@ -1,14 +1,14 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
-import * as argon2 from 'argon2'
 import { InjectRepository } from '@nestjs/typeorm'
+import * as argon2 from 'argon2'
+import { BOT_USERS, GLOBAL_ROOM_NAME, GUEST_USERS } from 'src/utils/constants'
+import { MessageEntity } from 'src/utils/entities/message.entity'
 import { RoomEntity } from 'src/utils/entities/room.entity'
 import { AccountType, UserEntity } from 'src/utils/entities/user.entity'
+import { generatePassword } from 'src/utils/helpers'
 import { RoomI } from 'src/utils/types/entities.types'
-import { DataSource, In, Repository } from 'typeorm'
-import { CreateRoomDto } from './dto/create-room.dto'
 import { CreateRoomParams } from 'src/utils/types/types'
-import { MessageEntity } from 'src/utils/entities/message.entity'
-import { GLOBAL_ROOM_NAME } from 'src/utils/constants'
+import { In, Repository } from 'typeorm'
 
 @Injectable()
 export class RoomsService implements OnModuleInit {
@@ -38,15 +38,54 @@ export class RoomsService implements OnModuleInit {
 
 			if (!globalRoom) {
 				this.logger.warn(`Global room not found`)
-				globalRoom = await this.roomRepository
-					.create({
-						name: GLOBAL_ROOM_NAME,
-						users: [admin],
-						isGroupChat: true,
-					})
-					.save()
+				globalRoom = this.roomRepository.create({
+					name: GLOBAL_ROOM_NAME,
+					users: [admin],
+					isGroupChat: true,
+				})
 
 				this.logger.warn(`Crated Global room`)
+
+				const botAccounts = await this.userRepository.findOneBy({ accountType: AccountType.bot })
+				/**
+				 * Create bot accounts
+				 **/
+				if (!botAccounts) {
+					this.logger.warn('Creating bot accounts')
+					await Promise.all(
+						BOT_USERS.map(async (user) => {
+							const newBotUser = await this.userRepository
+								.create({
+									username: user,
+									password: await argon2.hash(generatePassword(12)),
+									accountType: AccountType.bot,
+								})
+								.save()
+							globalRoom.users.push(newBotUser)
+						}),
+					)
+				}
+
+				const guestAccouns = await this.userRepository.findOneBy({ accountType: AccountType.guest })
+				/**
+				 * Create guest accounts
+				 **/
+				if (!guestAccouns) {
+					this.logger.warn('Creating guest accounts')
+					await Promise.all(
+						GUEST_USERS.map(async (user) => {
+							const newGuestUser = await this.userRepository
+								.create({
+									username: user,
+									password: await argon2.hash(generatePassword(12)),
+									accountType: AccountType.guest,
+								})
+								.save()
+							globalRoom.users.push(newGuestUser)
+						}),
+					)
+				}
+				await this.roomRepository.save(globalRoom)
 			}
 		}
 	}
@@ -62,26 +101,22 @@ export class RoomsService implements OnModuleInit {
 	private logger: Logger = new Logger('Room Service')
 
 	async getRoomsForUser(userId: string) {
-		return (
-			this.roomRepository
-				.createQueryBuilder('room')
-				.leftJoin('room.users', 'users')
-				.where('users.id = :userId', { userId: userId })
-				.leftJoinAndSelect('room.lastMessage', 'lastMessage')
-				// .leftJoin('lastMessage.user', 'lastMessageUser')
-				// .leftJoinAndSelect('lastMessageUser.id', 'lastMessageUser.username')
-				.leftJoinAndSelect('lastMessage.user', 'messageUser')
-				.leftJoin('room.users', 'allUsers')
-				.select([
-					'room',
-					'allUsers.id',
-					'allUsers.username',
-					'lastMessage',
-					'messageUser.id',
-					'messageUser.username',
-				])
-				.getMany()
-		)
+		return this.roomRepository
+			.createQueryBuilder('room')
+			.leftJoin('room.users', 'users')
+			.where('users.id = :userId', { userId: userId })
+			.leftJoinAndSelect('room.lastMessage', 'lastMessage')
+			.leftJoinAndSelect('lastMessage.user', 'messageUser')
+			.leftJoin('room.users', 'allUsers')
+			.select([
+				'room',
+				'allUsers.id',
+				'allUsers.username',
+				'lastMessage',
+				'messageUser.id',
+				'messageUser.username',
+			])
+			.getMany()
 	}
 
 	async createRoom(room: CreateRoomParams, creator: UserEntity) {

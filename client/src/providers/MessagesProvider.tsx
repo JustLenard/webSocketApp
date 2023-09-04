@@ -28,7 +28,6 @@ const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		try {
 			setLoading(true)
 			const response = await privateAxios.get(`room/${roomId}/messages`)
-			console.log('This is response.data', response.data)
 			setMessages(response.data)
 		} catch (err) {
 			handleError(err)

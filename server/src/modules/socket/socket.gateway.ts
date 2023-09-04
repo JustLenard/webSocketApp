@@ -63,10 +63,12 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 
 	handleDisconnect(client: AuthenticatedSocket) {
 		this.logger.log(`Disconecting client ${client.id}`)
-		this.sessions.removeUserSocket(client.user.id)
+		const userId = client?.user?.id
+		if (!userId) return
+		this.sessions.removeUserSocket(userId)
 
 		this.server.emit(socketEvents.userDisconnected, {
-			id: client.user.id,
+			id: userId,
 			username: client.user.username,
 			online: false,
 		})
@@ -143,12 +145,8 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	@OnEvent(appEmitters.roomCreate)
 	async roomCreate(payload: CreateRoomEvent) {
 		const { room, creatorId } = payload
-		console.log('This is room', room)
 
 		const recipients = room.users.filter((user) => user.id !== creatorId && user.accountType !== AccountType.bot)
-		// const recipients = room.users.filter((user) => user.accountType !== AccountType.bot)
-
-		console.log('This is recipients', recipients)
 
 		/**
 		 * Find all the sockets with the associated recepient (user)
@@ -165,13 +163,11 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 		recipientSockets.forEach((socket) => socket.join(createNotifRoomName(room.id)))
 
 		const roomCreatorSocket = this.sessions.getUserSocket(creatorId)
+		if (!roomCreatorSocket) return
 		this.onConversationJoin(room.id, roomCreatorSocket)
 		roomCreatorSocket.join(createNotifRoomName(room.id))
 
-		console.log('This is recipientSockets', recipientSockets)
 		recipientSockets.forEach((client) => client.emit(socketEvents.createRoom, room))
-
-		console.log('This is recipientSockets', recipientSockets)
 	}
 
 	@OnEvent(appEmitters.disconnectUser)
