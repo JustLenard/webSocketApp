@@ -29,6 +29,11 @@ export type CreateNotificationEvent = {
 	roomId: number
 }
 
+export type BotTypeEvent = {
+	botUsername: string
+	userId: string
+}
+
 export type CreateRoomParams = {
 	name?: string
 	description?: string

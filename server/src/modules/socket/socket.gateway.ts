@@ -13,7 +13,7 @@ import { Server } from 'socket.io'
 import { AccountType } from 'src/utils/entities/user.entity'
 import { createMessageRoomName, createNotifRoomName } from 'src/utils/helpers'
 import { AuthenticatedSocket } from 'src/utils/interfaces'
-import { CreateMessageEvent, CreateNotificationEvent, CreateRoomEvent } from 'src/utils/types/types'
+import { BotTypeEvent, CreateMessageEvent, CreateNotificationEvent, CreateRoomEvent } from 'src/utils/types/types'
 import { appEmitters, socketEvents } from '../../utils/constants'
 import { NotificationsService } from '../notifications/notifications.service'
 import { RoomsService } from '../rooms/rooms.service'
@@ -113,39 +113,46 @@ export class AppGateWay implements OnGatewayConnection, OnGatewayDisconnect {
 	/**
 	 * Internal app events
 	 **/
+	@OnEvent(appEmitters.botType)
+	imitateBotTyping(payload: BotTypeEvent) {
+		const userSocket = this.sessions.getUserSocket(payload.userId)
+		if (!userSocket) return
+		this.server.to(userSocket.id).emit(socketEvents.onTypingStart, payload.botUsername)
+	}
+
+	@OnEvent(appEmitters.botStopType)
+	imitateBotStopTyping(payload: BotTypeEvent) {
+		const userSocket = this.sessions.getUserSocket(payload.userId)
+		if (!userSocket) return
+		this.server.to(userSocket.id).emit(socketEvents.onTypingStop, payload.botUsername)
+	}
+
 	@OnEvent(appEmitters.notificationsCreate)
 	handleNotificationCreate(payload: CreateNotificationEvent) {
 		this.logger.log(`Sending notification  ${payload.notif.id}: ${payload.notif.message.text}`)
-
 		this.server.to(createNotifRoomName(payload.roomId)).emit(socketEvents.newNotification, payload)
 	}
 
 	@OnEvent(appEmitters.messageCreate)
 	handleMessageCreate(payload: CreateMessageEvent) {
-		const { roomId } = payload
-
-		this.server.to(createMessageRoomName(roomId)).emit(socketEvents.messageAdded, payload)
+		this.server.to(createMessageRoomName(payload.roomId)).emit(socketEvents.messageAdded, payload)
 	}
 
 	@OnEvent(appEmitters.messagePatch)
 	async handleMessageUpdate(payload: CreateMessageEvent) {
-		const { roomId } = payload
-		this.server.to(createMessageRoomName(roomId)).emit(socketEvents.messagePatched, payload)
+		this.server.to(createMessageRoomName(payload.roomId)).emit(socketEvents.messagePatched, payload)
 	}
 
 	@OnEvent(appEmitters.messageDelete)
 	async handleMessageDelete(payload: CreateMessageEvent) {
 		this.logger.log(`Deleting message with id: ${payload.message.id}`)
-
 		const { message, roomId } = payload
-
 		this.server.to(createMessageRoomName(roomId)).emit(socketEvents.messageDeleted, { message, roomId })
 	}
 
 	@OnEvent(appEmitters.roomCreate)
 	async roomCreate(payload: CreateRoomEvent) {
 		const { room, creatorId } = payload
-
 		const recipients = room.users.filter((user) => user.id !== creatorId && user.accountType !== AccountType.bot)
 
 		/**

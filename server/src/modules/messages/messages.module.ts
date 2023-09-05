@@ -9,10 +9,12 @@ import { UsersModule } from '../users/users.module'
 import { UsersService } from '../users/users.service'
 import { MessageController } from './messages.controller'
 import { MessageService } from './messages.service'
+import { OpenAiModule } from '../open-ai/open-ai.module'
+import { OpenAiService } from '../open-ai/open-ai.service'
 
 @Module({
 	imports: [TypeOrmModule.forFeature([MessageEntity, UserEntity, NotificationsEntity]), RoomsModule, UsersModule],
 	controllers: [MessageController],
-	providers: [MessageService, UsersService, NotificationsService],
+	providers: [MessageService, UsersService, NotificationsService, OpenAiService],
 })
 export class MessagesModule {}

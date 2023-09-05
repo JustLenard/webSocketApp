@@ -1,13 +1,11 @@
-import { BadRequestException, HttpException, Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { MessageI } from 'src/utils/types/entities.types'
-import { Repository } from 'typeorm'
-import { UsersService } from 'src/modules/users/users.service'
-import { UserEntity } from 'src/utils/entities/user.entity'
 import { MessageEntity } from 'src/utils/entities/message.entity'
-import { MessageDto } from './dto/create-message.dto'
-import { RoomsService } from '../rooms/rooms.service'
 import { RoomEntity } from 'src/utils/entities/room.entity'
+import { UserEntity } from 'src/utils/entities/user.entity'
+import { Repository } from 'typeorm'
+import { RoomsService } from '../rooms/rooms.service'
+import { MessageDto } from './dto/create-message.dto'
 
 @Injectable()
 export class MessageService {
@@ -19,7 +17,7 @@ export class MessageService {
 
 	async createMessage(message: MessageDto, user: UserEntity, room: RoomEntity): Promise<MessageEntity> {
 		const newMessage = this.messageRepository.create({
-			text: message.text,
+			text: message.text.trim(),
 			room,
 			user,
 		})

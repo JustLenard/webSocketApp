@@ -53,10 +53,10 @@ export class RoomsService implements OnModuleInit {
 				if (!botAccounts) {
 					this.logger.warn('Creating bot accounts')
 					await Promise.all(
-						BOT_USERS.map(async (user) => {
+						BOT_USERS.map(async (botUser) => {
 							const newBotUser = await this.userRepository
 								.create({
-									username: user,
+									username: botUser.userName,
 									password: await argon2.hash(generatePassword(12)),
 									accountType: AccountType.bot,
 								})
@@ -93,7 +93,6 @@ export class RoomsService implements OnModuleInit {
 	constructor(
 		@InjectRepository(RoomEntity)
 		private readonly roomRepository: Repository<RoomEntity>,
-
 		@InjectRepository(UserEntity)
 		private readonly userRepository: Repository<UserEntity>,
 	) {}

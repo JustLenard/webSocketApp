@@ -1,20 +1,25 @@
-import { Injectable } from '@nestjs/common'
-import { CreateOpenAiDto } from './dto/create-open-ai.dto'
-import { UpdateOpenAiDto } from './dto/update-open-ai.dto'
-import { Configuration, CreateCompletionRequest, OpenAIApi } from 'openai'
-import axios from 'axios'
-
-const DEFAULT_MODEL_ID = 'text-davinci-003'
-const DEFAULT_TEMPERATURE = 0.9
+import { Injectable, Logger } from '@nestjs/common'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from 'openai'
+import { BOT_USERS, DEFAULT_MODEL_ID, DEFAULT_TEMPERATURE, appEmitters } from 'src/utils/constants'
+import { MessageEntity } from 'src/utils/entities/message.entity'
+import { RoomEntity } from 'src/utils/entities/room.entity'
+import { UserEntity } from 'src/utils/entities/user.entity'
+import { MessageService } from '../messages/messages.service'
+import { NotificationsService } from '../notifications/notifications.service'
+import { RoomsService } from '../rooms/rooms.service'
 
 @Injectable()
 export class OpenAiService {
 	private openAiApi: OpenAIApi
+	private logger = new Logger('Open AI service')
 
-	private readonly apiUrl = 'https://api.openai.com/v1/'
-	// private readonly apiUrl = 'https://api.openai.com/v1/chat/completions'
-
-	constructor() {
+	constructor(
+		private messageService: MessageService,
+		private notifService: NotificationsService,
+		private roomService: RoomsService,
+		private readonly eventEmitter: EventEmitter2,
+	) {
 		const configuration = new Configuration({
 			organization: process.env.ORGANIAZATION_ID,
 			apiKey: process.env.OPENAI_API_KEY,
@@ -22,77 +27,84 @@ export class OpenAiService {
 		this.openAiApi = new OpenAIApi(configuration)
 	}
 
-	async respondToMessage() {
-		this.openAiApi.createChatCompletion({
-			model: 'gpt-3.5-turbo',
-			messages: [
-				{ role: 'system', content: 'You are a helpful assistant.' },
-				{ role: 'user', content: 'Who won the world series in 2020?' },
-				{ role: 'assistant', content: 'The Los Angeles Dodgers won the World Series in 2020.' },
-				{ role: 'user', content: 'Where was it played?' },
-			],
+	/**
+	 * Create a response from the model
+	 **/
+	async respondToMessage(room: RoomEntity, botAccount: UserEntity) {
+		this.logger.log(`Triggerring model response`)
+		const messages = await this.messageService.findMessagesForRoom(room.id)
+		const receivingUserId = room.users.filter((user) => user.id !== botAccount.id)[0].id
+
+		/**
+		 * Get response from the model
+		 **/
+		const response = await this.openAiApi.createChatCompletion({
+			model: DEFAULT_MODEL_ID,
+			temperature: DEFAULT_TEMPERATURE,
+			messages: this.formatMessages(messages, botAccount),
 		})
-	}
 
-	async getModelAnswer(question: string, temperature?: number) {
-		try {
-			const params: CreateCompletionRequest = {
-				model: DEFAULT_MODEL_ID,
-				prompt: question,
-				temperature: temperature ? temperature : DEFAULT_TEMPERATURE,
-			}
+		const modelReponse = response.data.choices[0].message.content
 
-			const response = await this.openAiApi.createCompletion(params)
+		this.eventEmitter.emit(appEmitters.botType, { botUsername: botAccount.username, userId: receivingUserId })
 
-			const { data } = response
-
-			if (data.choices.length) return data.choices
-
-			return response.data
-		} catch (e) {
-			console.log('This is e', e)
-		}
-	}
-
-	async generateText(prompt: string): Promise<string> {
-		// console.log(
-		//   'This is process.env.OPENAI_API_KEY',
-		//   process.env.OPENAI_API_KEY,
-		// );
-		// const response = await this.openai.createCompletion({
-		//   model: 'text-davinci-002',
-		//   prompt,
-		//   temperature: 0.5,
-		//   max_tokens: 60,
-		//   n: 1,
-		//   stop: '\n',
-		// });
-		// console.log('This is response', response);
-		// console.log(
-		//   'This is process.env.OPENAI_API_KEY',
-		//   process.env.OPENAI_API_KEY,
-		// );
-
-		const response = await axios.post(
-			`${this.apiUrl}engines/davinci-codex/completions`,
-			{
-				prompt,
-				max_tokens: 1024,
-				temperature: 0.5,
-				n: 1,
-				stop: '\n',
-			},
-			{
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+		/**
+		 * Timeout is needed to imitate the 'person' typing
+		 **/
+		const timeOutTime = (modelReponse.length / 6) * 100
+		setTimeout(async () => {
+			const message = await this.messageService.createMessage(
+				{
+					roomId: room.id,
+					text: modelReponse,
 				},
-			},
+				botAccount,
+				room,
+			)
+			this.logger.log(`Created message: ${message.text}`)
+
+			await this.roomService.addLastMessageToRoom(room, message)
+
+			const notif = await this.notifService.createNotification(message, room)
+
+			this.eventEmitter.emit(appEmitters.botStopType, {
+				botUsername: botAccount.username,
+				userId: receivingUserId,
+			})
+
+			this.eventEmitter.emit(appEmitters.messageCreate, { message, roomId: room.id })
+			this.eventEmitter.emit(appEmitters.notificationsCreate, { notif, roomId: room.id, userId: botAccount.id })
+		}, timeOutTime)
+	}
+
+	/**
+	 * Format messages in for model consumption
+	 **/
+	formatMessages(messages: MessageEntity[], botAccount: UserEntity): ChatCompletionRequestMessage[] {
+		const chatHistory: ChatCompletionRequestMessage[] = []
+		const modelPersonality = BOT_USERS.find((bot) => bot.userName === botAccount.username).personality
+		chatHistory.push({
+			role: 'system',
+			content: modelPersonality,
+		})
+
+		const now = new Date()
+		const fiveHoursAgo = new Date(now.getTime() - 3 * 60 * 60 * 1000) // 5 hours ago
+
+		// Filter and limit messages
+		const filteredMessages = messages
+			.filter((message) => {
+				const messageDate = new Date(message.created_at)
+				return messageDate >= fiveHoursAgo
+			})
+			.slice(-10)
+
+		filteredMessages.forEach((message) =>
+			chatHistory.push({
+				role: message.user.id === botAccount.id ? 'assistant' : 'user',
+				content: message.text,
+			}),
 		)
-
-		console.log('This is response', response)
-
-		// return response.choices[0].text.trim();
-		return 'hey'
+		return chatHistory
 	}
 }

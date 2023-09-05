@@ -57,6 +57,7 @@ const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		if (!appSocket) return
 
 		appSocket.on(socketEvents.messageAdded, (payload: MessageSocketEvent) => {
+			console.log('This is messageAdded payload', payload)
 			setMessages((prev) => [...prev, payload.message])
 		})
 		appSocket.on(socketEvents.messagePatched, (payload: MessageSocketEvent) => {

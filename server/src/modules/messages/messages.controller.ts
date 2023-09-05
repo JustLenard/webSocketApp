@@ -17,9 +17,10 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 import { GetCurrentUser } from 'src/common/decorators/getCurrentUser.decorator'
 import { AtGuard } from 'src/common/guards/at.guard'
 import { Routes, appEmitters } from 'src/utils/constants'
-import { UserEntity } from 'src/utils/entities/user.entity'
+import { AccountType, UserEntity } from 'src/utils/entities/user.entity'
 import { MessageI } from 'src/utils/types/entities.types'
 import { NotificationsService } from '../notifications/notifications.service'
+import { OpenAiService } from '../open-ai/open-ai.service'
 import { RoomsService } from '../rooms/rooms.service'
 import { MessageDto } from './dto/create-message.dto'
 import { UpdateMessageDto } from './dto/update-message.dto'
@@ -29,8 +30,9 @@ import { MessageService } from './messages.service'
 export class MessageController {
 	constructor(
 		private messageService: MessageService,
-		private roomService: RoomsService,
+		private openAiService: OpenAiService,
 		private notifService: NotificationsService,
+		private roomService: RoomsService,
 		private readonly eventEmitter: EventEmitter2,
 	) {}
 
@@ -65,6 +67,9 @@ export class MessageController {
 		this.eventEmitter.emit(appEmitters.messageCreate, { message, roomId })
 		this.eventEmitter.emit(appEmitters.notificationsCreate, { notif, roomId, userId: user.id })
 
+		const botAccount = room.users.find((user) => user.accountType === AccountType.bot && room.isGroupChat === false)
+		if (botAccount) this.openAiService.respondToMessage(room, botAccount)
+
 		return message
 	}
 
@@ -91,10 +96,9 @@ export class MessageController {
 		@Param('roomId', ParseIntPipe) roomId: number,
 		@GetCurrentUser() user: UserEntity,
 	) {
-		const { message, isLastMessage } = await this.messageService.deleteMessage(messageId, user.id, roomId)
+		const { message } = await this.messageService.deleteMessage(messageId, user.id, roomId)
 		message.user = { id: message.user.id, username: message.user.username } as UserEntity
 		this.eventEmitter.emit(appEmitters.messageDelete, { message, roomId })
-
 		return 'ok'
 	}
 }
