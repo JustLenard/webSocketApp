@@ -1,7 +1,7 @@
 import { Typography } from '@mui/joy'
 import { Divider, Grid, Stack, useMediaQuery, useTheme } from '@mui/material'
 import { useRooms, useUser } from '../../hooks/contextHooks'
-import { getRandomInt, getReceivingUser } from '../../utils/helpers'
+import { getReceivingUser } from '../../utils/helpers'
 import AppSpinner from '../AppSpinner'
 import AppDrawer from '../drawer/AppDrawer'
 import LeftMenu from '../leftMenu/LeftMenu'

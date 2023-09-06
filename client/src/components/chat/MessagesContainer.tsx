@@ -1,9 +1,7 @@
 import { useEffect, useRef } from 'react'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import { useSocket } from '../../hooks/contextHooks'
+import { useMessages } from '../../hooks/contextHooks'
 import { TMessage } from '../../types/types'
 import Message from './Message'
-import { useMessages } from '../../hooks/contextHooks'
 
 const MessagesContainer = () => {
 	const { messages } = useMessages()
