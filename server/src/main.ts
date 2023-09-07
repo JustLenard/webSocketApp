@@ -44,6 +44,6 @@ async function bootstrap() {
 
 	await app.listen(process.env.PORT)
 	// Start the application
-	this.logger.log(`Application stared on port ${process.env.PORT}`)
+	logger.log(`Application stared on port ${process.env.PORT}`)
 }
 bootstrap()
