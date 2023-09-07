@@ -1,7 +1,9 @@
 import { ColorPaletteProp } from '@mui/joy'
 import dayjs from 'dayjs'
 import { appRoutes } from '../router/Root'
-import { TRoom, IShortUser } from '../types/types'
+import { TRoom } from '../types/types'
+import { IShortUser } from '../types/interfaces'
+
 import { ALPHABET, CURRENT_ROOM_KEY_NAME, GLOBAL_ROOM_NAME, MESSAGE_ROOM, NOTIFICATIONS_ROOM } from './constants'
 import { colorMap } from './letterToColorMap'
 

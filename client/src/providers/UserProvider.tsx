@@ -5,7 +5,7 @@ import { UserContext, UserContextType } from './context/user.context'
 import { isInsideOfApplication, showSpinner } from '../utils/helpers'
 import AppSpinner from '../components/AppSpinner'
 import { handleError } from '../utils/handleAxiosErrors'
-import { IShortUser } from '../types/types'
+import { IShortUser } from '../types/interfaces'
 
 /**
  * Socket provider for the app

@@ -3,6 +3,6 @@ export interface IShortUser {
 	username: string
 }
 
-export interface OnlinseUser extends IShortUser {
+export interface IOnlinseUser extends IShortUser {
 	online?: boolean
 }

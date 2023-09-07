@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import { IShortUser } from '../../types/types'
+import { IShortUser } from '../../types/interfaces'
 
 export type UserContextType = {
 	user: IShortUser | null

@@ -3,7 +3,8 @@ import { Grid, ListItemButton } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useRooms, useSocket, useUser } from '../../hooks/contextHooks'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import { CreateRoomParams, IShortUser } from '../../types/types'
+import { CreateRoomParams } from '../../types/types'
+import { IOnlinseUser } from '../../types/interfaces'
 import { socketEvents } from '../../utils/constants'
 import { handleError } from '../../utils/handleAxiosErrors'
 import AppAvatar from '../avatar/AppAvatar'
@@ -12,8 +13,8 @@ const RightMenu = () => {
 	const { appSocket } = useSocket()
 	const { privateAxios } = useAxiosPrivate()
 
-	const [offlineUsers, setOfflineUsers] = useState<IShortUser[]>([])
-	const [onlineUsers, setOnlineUsers] = useState<IShortUser[]>([])
+	const [offlineUsers, setOfflineUsers] = useState<IOnlinseUser[]>([])
+	const [onlineUsers, setOnlineUsers] = useState<IOnlinseUser[]>([])
 
 	/**
 	 * Get users. Separate them into offline and online
@@ -23,10 +24,10 @@ const RightMenu = () => {
 			try {
 				const response = await privateAxios.get('/users')
 
-				const offUsers: IShortUser[] = []
-				const onUsers: IShortUser[] = []
+				const offUsers: IOnlinseUser[] = []
+				const onUsers: IOnlinseUser[] = []
 
-				response.data.forEach((user: IShortUser) => {
+				response.data.forEach((user: IOnlinseUser) => {
 					if (!user.online) return offUsers.push(user)
 					if (user.online && !onlineUsers.find((onUser) => onUser.id === user.id)) onUsers.push(user)
 				})
@@ -44,14 +45,14 @@ const RightMenu = () => {
 	 **/
 	useEffect(() => {
 		if (!appSocket) return
-		appSocket.on(socketEvents.userConnected, (user: IShortUser) => {
+		appSocket.on(socketEvents.userConnected, (user: IOnlinseUser) => {
 			if (onlineUsers.find((onlineUser) => onlineUser.id === user.id)) return
 
 			setOfflineUsers((prev) => prev.filter((item) => item.id !== user.id))
 
 			setOnlineUsers((prev) => [...prev, user])
 		})
-		appSocket.on(socketEvents.userDisconnected, (user: IShortUser) => {
+		appSocket.on(socketEvents.userDisconnected, (user: IOnlinseUser) => {
 			if (offlineUsers.find((offlineUser) => offlineUser.id === user.id)) return
 
 			setOnlineUsers((prev) => prev.filter((item) => item.id !== user.id))
