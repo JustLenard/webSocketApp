@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt'
 import { IoAdapter } from '@nestjs/platform-socket.io'
 import { dataSource } from 'src/config/dataSourceOptions'
 import { UserEntity } from 'src/utils/entities/user.entity'
-import { AuthenticatedSocket } from 'src/utils/interfaces'
+import { AuthenticatedSocket } from 'src/utils/types/interfaces'
 import { JwtPayload } from 'src/utils/types/types'
 
 export class WebsocketAdapter extends IoAdapter {

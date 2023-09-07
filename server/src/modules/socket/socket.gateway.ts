@@ -12,12 +12,12 @@ import {
 import { Server } from 'socket.io'
 import { AccountType } from 'src/utils/entities/user.entity'
 import { createMessageRoomName, createNotifRoomName } from 'src/utils/helpers'
-import { AuthenticatedSocket } from 'src/utils/interfaces'
 import { BotTypeEvent, CreateMessageEvent, CreateNotificationEvent, CreateRoomEvent } from 'src/utils/types/types'
 import { appEmitters, socketEvents } from '../../utils/constants'
 import { NotificationsService } from '../notifications/notifications.service'
 import { RoomsService } from '../rooms/rooms.service'
 import { GatewaySessionManager } from './socket.sessions'
+import { AuthenticatedSocket } from 'src/utils/types/interfaces'
 
 @WebSocketGateway({
 	cors: {

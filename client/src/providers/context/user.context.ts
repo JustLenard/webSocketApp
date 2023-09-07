@@ -1,8 +1,8 @@
 import { createContext } from 'react'
-import { TUser } from '../../types/types'
+import { IShortUser } from '../../types/types'
 
 export type UserContextType = {
-	user: TUser | null
+	user: IShortUser | null
 }
 
 export const UserContext = createContext<UserContextType>({} as UserContextType)

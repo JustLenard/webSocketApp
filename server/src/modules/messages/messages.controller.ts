@@ -18,13 +18,13 @@ import { GetCurrentUser } from 'src/common/decorators/getCurrentUser.decorator'
 import { AtGuard } from 'src/common/guards/at.guard'
 import { Routes, appEmitters } from 'src/utils/constants'
 import { AccountType, UserEntity } from 'src/utils/entities/user.entity'
-import { MessageI } from 'src/utils/types/entities.types'
 import { NotificationsService } from '../notifications/notifications.service'
 import { OpenAiService } from '../open-ai/open-ai.service'
 import { RoomsService } from '../rooms/rooms.service'
 import { MessageDto } from './dto/create-message.dto'
 import { UpdateMessageDto } from './dto/update-message.dto'
 import { MessageService } from './messages.service'
+import { MessageEntity } from 'src/utils/entities/message.entity'
 
 @Controller(Routes.messages)
 export class MessageController {
@@ -41,7 +41,7 @@ export class MessageController {
 	@UseGuards(AtGuard)
 	@Get()
 	@HttpCode(HttpStatus.OK)
-	async findMessagesForRoom(@Param('roomId', ParseIntPipe) roomId: number): Promise<MessageI[]> {
+	async findMessagesForRoom(@Param('roomId', ParseIntPipe) roomId: number): Promise<MessageEntity[]> {
 		this.logger.log(`Getting messages for room ${roomId}`)
 		return this.messageService.findMessagesForRoom(roomId)
 	}

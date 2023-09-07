@@ -1,3 +1,5 @@
+import { IShortUser } from './interfaces'
+
 /**
  * Authorization
  **/
@@ -34,7 +36,7 @@ export type TRoom = {
 	name: string
 	isGroupChat: boolean
 	description?: string
-	users: TUser[]
+	users: IShortUser[]
 	lastMessage: null | TMessage
 	notifications: number
 }
@@ -49,7 +51,7 @@ export type TPostRoom = {
 export type TMessage = {
 	id: number
 	text: string
-	user: TUser
+	user: IShortUser
 	room: TRoom
 	created_at: Date
 	updated_at: Date
@@ -60,15 +62,9 @@ export type TSentMessage = {
 	room: number
 }
 
-export type TUser = {
-	id: string
-	username: string
-	online?: boolean
-}
-
 export type TNotification = {
 	id: number
-	creator: TUser
+	creator: IShortUser
 	message: TMessage
 	roomId: number
 }

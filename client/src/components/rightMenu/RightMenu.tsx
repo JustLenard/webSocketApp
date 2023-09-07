@@ -3,7 +3,7 @@ import { Grid, ListItemButton } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useRooms, useSocket, useUser } from '../../hooks/contextHooks'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
-import { CreateRoomParams, TUser } from '../../types/types'
+import { CreateRoomParams, IShortUser } from '../../types/types'
 import { socketEvents } from '../../utils/constants'
 import { handleError } from '../../utils/handleAxiosErrors'
 import AppAvatar from '../avatar/AppAvatar'
@@ -12,8 +12,8 @@ const RightMenu = () => {
 	const { appSocket } = useSocket()
 	const { privateAxios } = useAxiosPrivate()
 
-	const [offlineUsers, setOfflineUsers] = useState<TUser[]>([])
-	const [onlineUsers, setOnlineUsers] = useState<TUser[]>([])
+	const [offlineUsers, setOfflineUsers] = useState<IShortUser[]>([])
+	const [onlineUsers, setOnlineUsers] = useState<IShortUser[]>([])
 
 	/**
 	 * Get users. Separate them into offline and online
@@ -23,10 +23,10 @@ const RightMenu = () => {
 			try {
 				const response = await privateAxios.get('/users')
 
-				const offUsers: TUser[] = []
-				const onUsers: TUser[] = []
+				const offUsers: IShortUser[] = []
+				const onUsers: IShortUser[] = []
 
-				response.data.forEach((user: TUser) => {
+				response.data.forEach((user: IShortUser) => {
 					if (!user.online) return offUsers.push(user)
 					if (user.online && !onlineUsers.find((onUser) => onUser.id === user.id)) onUsers.push(user)
 				})
@@ -44,14 +44,14 @@ const RightMenu = () => {
 	 **/
 	useEffect(() => {
 		if (!appSocket) return
-		appSocket.on(socketEvents.userConnected, (user: TUser) => {
+		appSocket.on(socketEvents.userConnected, (user: IShortUser) => {
 			if (onlineUsers.find((onlineUser) => onlineUser.id === user.id)) return
 
 			setOfflineUsers((prev) => prev.filter((item) => item.id !== user.id))
 
 			setOnlineUsers((prev) => [...prev, user])
 		})
-		appSocket.on(socketEvents.userDisconnected, (user: TUser) => {
+		appSocket.on(socketEvents.userDisconnected, (user: IShortUser) => {
 			if (offlineUsers.find((offlineUser) => offlineUser.id === user.id)) return
 
 			setOnlineUsers((prev) => prev.filter((item) => item.id !== user.id))

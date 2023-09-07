@@ -1,7 +1,6 @@
 import { MessageEntity } from '../entities/message.entity'
 import { NotificationsEntity } from '../entities/notifications.entity'
 import { RoomEntity } from '../entities/room.entity'
-import { UserEntity } from '../entities/user.entity'
 
 export type JwtPayload = {
 	username: string

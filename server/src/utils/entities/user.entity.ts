@@ -1,5 +1,5 @@
 import { Global } from '@nestjs/common'
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { RoomEntity } from './room.entity'
 import { MessageEntity } from './message.entity'
 import { NotificationsEntity } from './notifications.entity'

@@ -5,7 +5,7 @@ import { UserContext, UserContextType } from './context/user.context'
 import { isInsideOfApplication, showSpinner } from '../utils/helpers'
 import AppSpinner from '../components/AppSpinner'
 import { handleError } from '../utils/handleAxiosErrors'
-import { TUser } from '../types/types'
+import { IShortUser } from '../types/types'
 
 /**
  * Socket provider for the app
@@ -14,7 +14,7 @@ const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const { privateAxios } = useAxiosPrivate()
 	const { accessToken } = useAuth()
 
-	const [user, setUser] = useState<TUser | null>(null)
+	const [user, setUser] = useState<IShortUser | null>(null)
 	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {

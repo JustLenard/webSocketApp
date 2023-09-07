@@ -6,7 +6,6 @@ import { MessageEntity } from 'src/utils/entities/message.entity'
 import { RoomEntity } from 'src/utils/entities/room.entity'
 import { AccountType, UserEntity } from 'src/utils/entities/user.entity'
 import { generatePassword } from 'src/utils/helpers'
-import { RoomI } from 'src/utils/types/entities.types'
 import { CreateRoomParams } from 'src/utils/types/types'
 import { In, Repository } from 'typeorm'
 
@@ -120,7 +119,7 @@ export class RoomsService implements OnModuleInit {
 
 	async createRoom(room: CreateRoomParams, creator: UserEntity) {
 		this.logger.debug('Creating new room')
-		const newRoom = await this.addUsersToRoom({ ...room, users: [creator] }, room.users)
+		const newRoom = await this.addUsersToRoom({ ...room, users: [creator] } as RoomEntity, room.users)
 		return this.roomRepository.save(newRoom)
 	}
 
@@ -156,7 +155,7 @@ export class RoomsService implements OnModuleInit {
 		return result ? result.id : false
 	}
 
-	async userIsPartOfRoom(room: RoomI, userId: string) {
+	async userIsPartOfRoom(room: RoomEntity, userId: string) {
 		return room.users.find((user) => user.id === userId)
 	}
 
@@ -164,7 +163,7 @@ export class RoomsService implements OnModuleInit {
 		return this.roomRepository.update(room.id, { lastMessage: message })
 	}
 
-	async addUsersToRoom(room: RoomI, userIds: string[]) {
+	async addUsersToRoom(room: RoomEntity, userIds: string[]) {
 		const users = await this.userRepository.findBy({ id: In(userIds) })
 
 		room.users = [...room.users, ...users]

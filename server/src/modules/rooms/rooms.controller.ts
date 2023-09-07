@@ -1,13 +1,13 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Logger, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, HttpStatus, Logger, Post, UseGuards } from '@nestjs/common'
 import { GetCurrentUser } from 'src/common/decorators/getCurrentUser.decorator'
 import { AtGuard } from 'src/common/guards/at.guard'
-import { RoomEntity } from 'src/utils/entities/room.entity'
 import { RoomsService } from './rooms.service'
 import { UserEntity } from 'src/utils/entities/user.entity'
 import { CreateRoomDto } from './dto/create-room.dto'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { Routes, appEmitters } from 'src/utils/constants'
 import { NotificationsService } from '../notifications/notifications.service'
+
 @Controller(Routes.rooms)
 export class RoomControler {
 	constructor(

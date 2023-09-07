@@ -4,7 +4,6 @@ import { MessageEntity } from 'src/utils/entities/message.entity'
 import { NotificationsEntity } from 'src/utils/entities/notifications.entity'
 import { RoomEntity } from 'src/utils/entities/room.entity'
 import { UserEntity } from 'src/utils/entities/user.entity'
-import { SimpleRoomNotifications } from 'src/utils/types/types'
 import { Repository } from 'typeorm'
 
 @Injectable()

@@ -1,11 +1,9 @@
-import { PropsWithChildren, useCallback, useEffect, useState } from 'react'
-import AppSpinner from '../components/AppSpinner'
+import { PropsWithChildren, useEffect, useState } from 'react'
 import { useAuth, useRooms, useSocket } from '../hooks/contextHooks'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { TMessage, MessageSocketEvent } from '../types/types'
+import { MessageSocketEvent, TMessage } from '../types/types'
 import { socketEvents } from '../utils/constants'
 import { handleError } from '../utils/handleAxiosErrors'
-import { showSpinner } from '../utils/helpers'
 import { MessagesContext, MessagesContextType } from './context/messages.context'
 
 /**

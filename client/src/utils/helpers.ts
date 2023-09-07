@@ -1,7 +1,7 @@
 import { ColorPaletteProp } from '@mui/joy'
 import dayjs from 'dayjs'
 import { appRoutes } from '../router/Root'
-import { TRoom, TUser } from '../types/types'
+import { TRoom, IShortUser } from '../types/types'
 import { ALPHABET, CURRENT_ROOM_KEY_NAME, GLOBAL_ROOM_NAME, MESSAGE_ROOM, NOTIFICATIONS_ROOM } from './constants'
 import { colorMap } from './letterToColorMap'
 
@@ -26,7 +26,7 @@ export const showSpinner = (cond1: boolean) => {
 	return false
 }
 
-export const getReceivingUser = (users: TUser[], sendingUserId: string) => {
+export const getReceivingUser = (users: IShortUser[], sendingUserId: string) => {
 	return users.filter((user) => user.id !== sendingUserId)[0]
 }
 
@@ -96,6 +96,6 @@ export const arrayToObj = (arr: string[]) => {
 	}, {})
 }
 
-export const createAuthor = (author: TUser, user: TUser) => {
+export const createAuthor = (author: IShortUser, user: IShortUser) => {
 	return author.username === user.username ? 'You: ' : `${author.username}: `
 }
