@@ -42,8 +42,8 @@ async function bootstrap() {
 	// Enable global validation
 	app.useGlobalPipes(new ValidationPipe())
 
-	await app.listen(5000)
+	await app.listen(process.env.PORT)
 	// Start the application
-	logger.verbose('Application started.')
+	this.logger.log(`Application stared on port ${process.env.PORT}`)
 }
 bootstrap()
