@@ -39,7 +39,7 @@ const UserMenu = () => {
 		>
 			<Stack direction={'row'} alignItems={'center'}>
 				<Avatar size="md">{getSubstring(user.username)}</Avatar>
-				<Typography ml={'1rem'} level="body-lg">
+				<Typography ml={'1rem'} level="body-lg" noWrap>
 					{user.username}
 				</Typography>
 				<IconButton

@@ -116,7 +116,7 @@ const LoginPage: React.FC = () => {
 							<FormLabel>Password</FormLabel>
 							<Input
 								type="password"
-								placeholder="password"
+								placeholder="ex: yourStrongPassword"
 								defaultValue={publicPassword ?? ''}
 								{...register('password')}
 							/>

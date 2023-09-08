@@ -12,6 +12,7 @@ async function bootstrap() {
 
 	const configService = app.get(ConfigService)
 	const allowedOrigins: string[] = configService.get('ALLOWED_ORIGIN').split(',')
+	const PORT: string = configService.get('PORT')
 
 	await dataSource.initialize()
 
@@ -42,8 +43,8 @@ async function bootstrap() {
 	// Enable global validation
 	app.useGlobalPipes(new ValidationPipe())
 
-	await app.listen(process.env.PORT)
+	await app.listen(PORT)
 	// Start the application
-	logger.log(`Application stared on port ${process.env.PORT}`)
+	logger.log(`Application stared on port ${PORT}`)
 }
 bootstrap()

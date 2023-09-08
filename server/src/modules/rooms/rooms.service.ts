@@ -172,7 +172,9 @@ export class RoomsService implements OnModuleInit {
 	}
 
 	async setNewLastMesasge(room: RoomEntity) {
+		console.log('This is room', room)
 		const newLastMessage = room.messages.length > 1 ? room.messages[room.messages.length - 2] : null
+		console.log('This is newLastMessage', newLastMessage)
 
 		room.lastMessage = newLastMessage
 		await this.roomRepository.save(room)

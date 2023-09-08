@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { MessageEntity } from 'src/utils/entities/message.entity'
 import { RoomEntity } from 'src/utils/entities/room.entity'
@@ -14,6 +14,7 @@ export class MessageService {
 		private readonly messageRepository: Repository<MessageEntity>,
 		private roomService: RoomsService,
 	) {}
+	private readonly logger = new Logger('Message service')
 
 	async createMessage(message: MessageDto, user: UserEntity, room: RoomEntity): Promise<MessageEntity> {
 		const newMessage = this.messageRepository.create({
@@ -35,6 +36,7 @@ export class MessageService {
 	}
 
 	async patchMessage(messageId: number, newContent: string, userId: string) {
+		this.logger.log(`Patching message ${messageId}`)
 		const message = await this.messageRepository.findOne({
 			where: { id: messageId, user: { id: userId } },
 			relations: ['user'],
@@ -44,25 +46,30 @@ export class MessageService {
 		}
 		message.text = newContent
 
-		return this.messageRepository.save(message)
+		const res = await this.messageRepository.save(message)
+		console.log('This is res', res)
+		return res
 	}
 
 	async deleteMessage(messageId: number, userId: string, roomId: number) {
+		this.logger.log(`Deleting message ${messageId}`)
 		const message = await this.messageRepository.findOne({
 			where: { id: messageId, user: { id: userId }, room: { id: roomId } },
 			relations: ['user', 'room'],
 		})
+		console.log('This is message', message)
 
 		if (!message) {
 			throw new BadRequestException('Cannot delete message')
 		}
 
 		const { room, isLastMessage } = await this.roomService.isLastMessageInRoom(message)
+		console.log('This is isLastMessage', isLastMessage)
 
 		if (isLastMessage) {
-			const newLastMessage = await this.roomService.setNewLastMesasge(room)
+			await this.roomService.setNewLastMesasge(room)
 			await this.messageRepository.delete({ id: messageId })
-			return { isLastMessage, message: newLastMessage }
+			return { isLastMessage, message }
 		}
 
 		await this.messageRepository.delete({ id: messageId })
