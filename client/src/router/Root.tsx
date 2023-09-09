@@ -1,5 +1,5 @@
 import { lazy } from 'react'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, redirect } from 'react-router-dom'
 import LoadingPage from './LoadingPage'
 import ProtectedRoute from './ProtectedRoute'
 
@@ -7,6 +7,7 @@ import ProtectedRoute from './ProtectedRoute'
  * All the project routes
  **/
 export const appRoutes = {
+	root: '/',
 	login: '/login',
 	signUp: '/sign-up',
 	chat: '/chat',
@@ -58,6 +59,10 @@ const router = createBrowserRouter([
 				<LazyNotFound />
 			</LoadingPage>
 		),
+	},
+	{
+		path: appRoutes.root,
+		loader: () => redirect(appRoutes.chat),
 	},
 ])
 
