@@ -2,23 +2,26 @@ import { ListItem, ListItemContent, ListItemDecorator, Typography } from '@mui/j
 import { ListItemButton, Stack } from '@mui/material'
 import { useRooms, useSocket, useUser } from '../../hooks/contextHooks'
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
+import { setLeftDrawerState } from '../../redux/slices/drawer.slice'
 import { markRoomNotifAsRead } from '../../redux/slices/notifications.slice'
 import { TRoom } from '../../types/types'
 import { socketEvents } from '../../utils/constants'
-import { createAuthor, getReceivingUser, utcTimeToHumanTime } from '../../utils/helpers'
+import { createAuthor, getReceivingUser } from '../../utils/helpers'
 import AppBadge from '../AppBadge'
 import AppSpinner from '../AppSpinner'
-import AppAvatar from '../avatar/AppAvatar'
 import TimeDisplay from '../TimeDisplay'
+import AppAvatar from '../avatar/AppAvatar'
 
 const RoomListItem: React.FC<TRoom> = ({ id, isGroupChat, name, users }) => {
 	const dispatch = useAppDispatch()
+
 	const { appSocket } = useSocket()
 	const { currentRoom, changeCurrentRoom } = useRooms()
 	const { user } = useUser()
 	const notificationForRoom = useAppSelector((state) => state.notif[id])
 
 	const handleClick = () => {
+		dispatch(setLeftDrawerState(false))
 		changeCurrentRoom(id)
 
 		if (!notificationForRoom?.unreadNotificationsAmount) return

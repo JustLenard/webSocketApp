@@ -1,16 +1,14 @@
 import { List, Typography } from '@mui/joy'
 import { Grid } from '@mui/material'
-import { useSocket, useUser } from '../../hooks/contextHooks'
-import AppSpinner from '../AppSpinner'
-import RoomListItem from './RoomListItem'
-import { useRooms } from '../../hooks/contextHooks'
-import UserMenu from '../userMenu/UserMenu'
-import { getRandomInt } from '../../utils/helpers'
 import { useEffect } from 'react'
-import { socketEvents } from '../../utils/constants'
-import { NotificationSocketEvent } from '../../types/types'
+import { useRooms, useSocket } from '../../hooks/contextHooks'
 import { useAppDispatch } from '../../hooks/reduxHooks'
 import { newNotification } from '../../redux/slices/notifications.slice'
+import { NotificationSocketEvent } from '../../types/types'
+import { socketEvents } from '../../utils/constants'
+import AppSpinner from '../AppSpinner'
+import UserMenu from '../userMenu/UserMenu'
+import RoomListItem from './RoomListItem'
 
 const LeftMenu = () => {
 	const { appSocket } = useSocket()

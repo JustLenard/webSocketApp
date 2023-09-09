@@ -1,19 +1,13 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import {
-	TRoom,
-	SimpleRoomNotifications,
-	NotificationSocketEvent,
-	TNotification,
-	TCreateNewnotification,
-} from '../../types/types'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { SimpleRoomNotifications, TCreateNewnotification, TRoom } from '../../types/types'
 
 const initialState: Record<number, SimpleRoomNotifications> = {}
 
 /**
- * Log In Slice
+ * Notifications Slice
  */
-export const authSlice = createSlice({
-	name: 'auth',
+export const notifSlice = createSlice({
+	name: 'notifications',
 	initialState,
 	reducers: {
 		setUpNotification: (state, action: PayloadAction<TRoom[]>) => {
@@ -50,6 +44,6 @@ export const authSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { addNewRoom, markRoomNotifAsRead, setUpNotification, newNotification } = authSlice.actions
+export const { addNewRoom, markRoomNotifAsRead, setUpNotification, newNotification } = notifSlice.actions
 
-export default authSlice.reducer
+export default notifSlice.reducer

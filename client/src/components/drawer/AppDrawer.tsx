@@ -1,20 +1,19 @@
-import Button from '@mui/material/Button'
-import SwipeableDrawer from '@mui/material/SwipeableDrawer'
-import { PropsWithChildren, ReactNode, useState } from 'react'
-import RightMenu from '../rightMenu/RightMenu'
-import { Box, IconButton, useMediaQuery, useTheme } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
-
-type Anchor = 'top' | 'left' | 'bottom' | 'right'
-type MUI_BreakPoint = 'xs' | 'sm' | 'md' | 'lg'
+import { IconButton } from '@mui/material'
+import SwipeableDrawer from '@mui/material/SwipeableDrawer'
+import { ReactNode } from 'react'
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
+import { setLeftDrawerState, setRightDrawerState } from '../../redux/slices/drawer.slice'
+import { Drawers } from '../../types/types'
 
 interface Props {
 	children: ReactNode
-	direction: Anchor
+	direction: Drawers
 }
 
 const AppDrawer: React.FC<Props> = ({ children, direction }) => {
-	const [state, setState] = useState(false)
+	const open = useAppSelector((state) => state.drawer[direction])
+	const dispatch = useAppDispatch()
 
 	const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
 		if (
@@ -24,11 +23,8 @@ const AppDrawer: React.FC<Props> = ({ children, direction }) => {
 		) {
 			return
 		}
-
-		setState(open)
+		direction === 'right' ? dispatch(setRightDrawerState(open)) : dispatch(setLeftDrawerState(open))
 	}
-
-	// const shouldRenderBox = useMediaQuery((theme) => theme.breakpoints.down('md'))
 
 	return (
 		<>
@@ -44,7 +40,7 @@ const AppDrawer: React.FC<Props> = ({ children, direction }) => {
 			</IconButton>
 			<SwipeableDrawer
 				anchor={direction}
-				open={state}
+				open={open}
 				onClose={toggleDrawer(false)}
 				onOpen={toggleDrawer(true)}
 				sx={{

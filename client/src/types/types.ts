@@ -96,3 +96,5 @@ export type TCreateNewnotification = {
 	roomId: number
 	incrementNotifCount: boolean
 }
+
+export type Drawers = 'left' | 'right'

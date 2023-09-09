@@ -8,6 +8,8 @@ import { IOnlinseUser } from '../../types/interfaces'
 import { socketEvents } from '../../utils/constants'
 import { handleError } from '../../utils/handleAxiosErrors'
 import AppAvatar from '../avatar/AppAvatar'
+import { useAppDispatch } from '../../hooks/reduxHooks'
+import { setRightDrawerState } from '../../redux/slices/drawer.slice'
 
 const RightMenu = () => {
 	const { appSocket } = useSocket()
@@ -131,10 +133,12 @@ interface ProfileItemProps {
 }
 
 const ProfileListItem: React.FC<ProfileItemProps> = ({ id, username }) => {
+	const dispatch = useAppDispatch()
 	const { user } = useUser()
 	const { createNewRoom } = useRooms()
 
 	const handleClick = () => {
+		dispatch(setRightDrawerState(false))
 		if (user?.id === id) return
 		const newRoom: CreateRoomParams = {
 			name: `${user?.username}-${username}`,

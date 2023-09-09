@@ -1,13 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { authSlice } from './slices/notifications.slice'
+import { notifSlice } from './slices/notifications.slice'
+import { drawerSlice } from './slices/drawer.slice'
 
 /**
  * Create the store. All reducers go in here
  */
-
 export const store = configureStore({
 	reducer: {
-		notif: authSlice.reducer,
+		notif: notifSlice.reducer,
+		drawer: drawerSlice.reducer,
 	},
 })
 
