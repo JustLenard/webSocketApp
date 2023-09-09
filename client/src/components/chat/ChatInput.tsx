@@ -25,6 +25,9 @@ const ChatInput = () => {
 	const { currentRoom } = useRooms()
 
 	const handleMessageSubmit: SubmitHandler<ChatForm> = (formData) => {
+		if (!appSocket || !currentRoom) return
+		appSocket.emit(socketEvents.onTypingStop, currentRoom.id)
+		setIsTyping(false)
 		sendMessage(formData.message.trim())
 		resetField('message')
 	}
