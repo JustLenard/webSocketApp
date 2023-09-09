@@ -47,32 +47,36 @@ export class MessageService {
 		message.text = newContent
 
 		const res = await this.messageRepository.save(message)
-		console.log('This is res', res)
 		return res
 	}
 
 	async deleteMessage(messageId: number, userId: string, roomId: number) {
 		this.logger.log(`Deleting message ${messageId}`)
-		const message = await this.messageRepository.findOne({
+		const messageToDelete = await this.messageRepository.findOne({
 			where: { id: messageId, user: { id: userId }, room: { id: roomId } },
-			relations: ['user', 'room'],
+			relations: ['user', 'room', 'room.lastMessage'],
 		})
-		console.log('This is message', message)
+		const roomMessages = await this.findMessagesForRoom(roomId)
 
-		if (!message) {
+		if (!messageToDelete) {
 			throw new BadRequestException('Cannot delete message')
 		}
 
-		const { room, isLastMessage } = await this.roomService.isLastMessageInRoom(message)
-		console.log('This is isLastMessage', isLastMessage)
-
+		/**
+		 * If the messageToDelete is the last message of the room, reasign the last message
+		 **/
+		const isLastMessage = messageToDelete.id === messageToDelete.room.lastMessage.id
+		this.logger.log(`Message ${messageId} is lastMessage ${isLastMessage}`)
 		if (isLastMessage) {
-			await this.roomService.setNewLastMesasge(room)
+			this.logger.log(`Setting a new lastMesage for room`)
+			await this.roomService.setNewLastMesasge(roomMessages, messageToDelete.room)
 			await this.messageRepository.delete({ id: messageId })
-			return { isLastMessage, message }
+			this.logger.log(`Message ${messageId} deleted`)
+			return { isLastMessage, message: messageToDelete }
 		}
 
 		await this.messageRepository.delete({ id: messageId })
-		return { isLastMessage, message }
+		this.logger.log(`Message ${messageId} deleted`)
+		return { isLastMessage, message: messageToDelete }
 	}
 }
