@@ -1,4 +1,3 @@
-import { Box } from '@mui/material'
 import AppProviders from './providers'
 import Root from './router/Root'
 
