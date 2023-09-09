@@ -25,7 +25,7 @@ export class MessageService {
 		return this.messageRepository.save(newMessage)
 	}
 
-	async findMessagesForRoom(roomId: number): Promise<any[]> {
+	async findMessagesForRoom(roomId: number): Promise<MessageEntity[]> {
 		return this.messageRepository
 			.createQueryBuilder('message')
 			.leftJoin('message.room', 'room')
