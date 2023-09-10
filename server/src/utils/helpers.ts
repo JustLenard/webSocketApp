@@ -14,6 +14,7 @@ export const selectRandomArrayElement = <T>(elements: T[]): T => {
 export const generatePassword = (length: number) => {
 	const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+'
 	let password = ''
+
 	for (let i = 0; i < length; i++) {
 		const randomIndex = getRandomInt(charset.length - 1)
 		password += charset.charAt(randomIndex)
