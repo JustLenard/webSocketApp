@@ -25,7 +25,7 @@ export class WebsocketAdapter extends IoAdapter {
 				const decodedToken: JwtPayload = await this.jwtService.verifyAsync(accesToken, {
 					secret: process.env.ACCESS_TOKEN_SECRET,
 				})
-				this.logger.log(`Token decoded belongs to user ${decodedToken.username}, id: ${decodedToken.sub}`)
+				this.logger.log(`Decoded token belongs to user ${decodedToken.username}, id: ${decodedToken.sub}`)
 
 				const user = await userRepository.findOneBy({ id: decodedToken.sub })
 
@@ -36,7 +36,6 @@ export class WebsocketAdapter extends IoAdapter {
 
 				this.logger.log('Received invalid token')
 				socket.disconnect()
-				socket.emit('badJwt', 'bad jwt')
 			}
 		})
 		return server
