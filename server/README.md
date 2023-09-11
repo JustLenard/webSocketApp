@@ -15,6 +15,11 @@ messaging with WebSockets, OpenAI integration for bot users, automatic data popu
 -   [License](#license)
 -   [Contact Information](#contact-information)
 
+## Project Overview
+
+This is the server for your chat application. It includes real-time chat, OpenAi powered bots, user-friendly setup,
+security features, automatic data population, and more. Explore the README to get started.
+
 ## Prerequisites
 
 To run the Chat Application backend server, you need to have the following software and environment variables
@@ -110,7 +115,7 @@ Here are the key environment variables:
 
 ## Start Application
 
-    `yarn run dev`
+    yarn run dev
 
 ## Features
 
