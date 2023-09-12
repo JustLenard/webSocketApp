@@ -86,10 +86,11 @@ Here are the key environment variables:
     ALLOWED_ORIGIN=http://localhost:5173
     ```
 
--   **Cookie:** Set the domain for cookies.
+-   **Cookie:** Set the domain for cookies. SECURE can be either false or true
 
     ```
     DOMAIN=localhost
+    SECURE=false
     ```
 
 -   **Timezone:** Leave this as UTC.

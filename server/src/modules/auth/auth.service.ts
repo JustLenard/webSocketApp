@@ -195,20 +195,10 @@ export class AuthService {
 		return tokens
 	}
 
-	async validateUser(username: string, password: string): Promise<any> {
-		const user = await this.usersService.findByUsername(username)
-
-		if (user && user.password === password) {
-			const { username, password, ...rest } = user
-			return rest
-		}
-		return null
-	}
-
 	async setCookie(res: Response, value: string, cookieName = REFRESH_TOKEN) {
 		return res.cookie(cookieName, value, {
 			httpOnly: true,
-			secure: false,
+			secure: process.env.SECURE === 'true',
 			domain: process.env.DOMAIN,
 			sameSite: 'strict',
 		})
