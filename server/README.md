@@ -1,4 +1,4 @@
-## Table of Contents
+`## Table of Contents
 
 -   [Project Overview](#project-overview)
 -   [Prerequisites](#prerequisites)
@@ -19,7 +19,7 @@ security features, automatic data population, and more. Explore the README to ge
 To run the backend server, you need to have the following installed:
 
 -   [Node.js](https://nodejs.org/en)
--   [A package a manager (yarn , npm, pnpm)](https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable)
+-   [A package a manager (yarn , npm, pnpm)](https://yarnpkg.com/getting-started)
 -   [PostgreSQL](https://www.postgresql.org/)
 
 ## Installation

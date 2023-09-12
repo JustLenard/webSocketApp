@@ -21,7 +21,7 @@ utilizes a variety of technologies on the frontend to deliver a responsive and u
 To run the frontend application, you need to have the following installed:
 
 -   [Node.js](https://nodejs.org/en)
--   [A package a manager (yarn , npm, pnpm)](https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable)
+-   [A package a manager (yarn , npm, pnpm)](https://yarnpkg.com/getting-started)
 
 ## Installation
 
@@ -45,8 +45,8 @@ To run the frontend application, you need to have the following installed:
 
 ### Configuration
 
-The backend server uses environment variables for configuration. Create a `.env` file in the server directory based on
-the `.env.example` file provided. Modify the values as needed for your environment.
+The client app uses environment variables for configuration. Create a `.env` file in the server directory based on the
+`.env.example` file provided. Modify the values as needed for your environment.
 
 Here are the key environment variables:
 
