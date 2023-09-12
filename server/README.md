@@ -24,7 +24,7 @@ To run the backend server, you need to have the following installed:
 
 ## Installation
 
-1. **Clone the repository:**
+1. **Clone the repository if you didn't yet:**
 
     ```bash
     git clone https://github.com/JustLenard/webSocketApp.git

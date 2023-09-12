@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { appAxios } from '../api/axios'
+import { appAxios } from '../axios/axios'
 import { useAuth } from './contextHooks'
 import useRefreshToken from './useRefresh'
 import { appRoutes } from '../router/Root'

@@ -89,9 +89,11 @@ export class OpenAiService {
 		})
 
 		const now = new Date()
-		const fiveHoursAgo = new Date(now.getTime() - 3 * 60 * 60 * 1000) // 5 hours ago
+		const fiveHoursAgo = new Date(now.getTime() - 3 * 60 * 60 * 1000) // 3 hours ago
 
-		// Filter and limit messages
+		/**
+		 * Filter and limit messages
+		 **/
 		const filteredMessages = messages
 			.filter((message) => {
 				const messageDate = new Date(message.created_at)
