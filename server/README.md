@@ -1,9 +1,3 @@
-# Chat Application Backend Server
-
-This README file provides instructions for setting up and running the backend server of the Chat Application. The server
-is built using TypeScript and NestJS, and it includes various features such as authentication with JWT, real-time
-messaging with WebSockets, OpenAI integration for bot users, automatic data population, and typing indicators.
-
 ## Table of Contents
 
 -   [Project Overview](#project-overview)
@@ -22,14 +16,11 @@ security features, automatic data population, and more. Explore the README to ge
 
 ## Prerequisites
 
-To run the Chat Application backend server, you need to have the following software and environment variables
-configured:
+To run the backend server, you need to have the following installed:
 
 -   [Node.js](https://nodejs.org/en)
--   [Yarn (Node Package Manager)](https://www.npmjs.com/package/yarn)
+-   [A package a manager (yarn , npm, pnpm)](https://classic.yarnpkg.com/lang/en/docs/install/#debian-stable)
 -   [PostgreSQL](https://www.postgresql.org/)
-
-...
 
 ## Installation
 
