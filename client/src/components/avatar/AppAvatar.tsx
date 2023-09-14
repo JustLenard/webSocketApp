@@ -1,6 +1,5 @@
 import { Avatar } from '@mui/joy'
 import { getColorPalletteProp, getSubstring } from '../../utils/helpers'
-import { colorMap } from '../../utils/letterToColorMap'
 
 type Props = {
 	username: string

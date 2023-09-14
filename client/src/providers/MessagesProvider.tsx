@@ -1,5 +1,5 @@
 import { PropsWithChildren, useEffect, useState } from 'react'
-import { useAuth, useRooms, useSocket } from '../hooks/contextHooks'
+import { useRooms, useSocket } from '../hooks/contextHooks'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
 import { MessageSocketEvent, TMessage } from '../types/types'
 import { socketEvents } from '../utils/constants'
@@ -11,26 +11,22 @@ import { MessagesContext, MessagesContextType } from './context/messages.context
  */
 const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 	const { privateAxios } = useAxiosPrivate()
-	const { loggedIn } = useAuth()
 	const { appSocket } = useSocket()
 	const { currentRoom } = useRooms()
 
 	const [messages, setMessages] = useState<TMessage[]>([])
 	const [editingMessageId, setEditingMessageId] = useState<null | number>(null)
-	const [loading, setLoading] = useState(true)
 
 	/**
 	 * Get messages for the selected room
 	 **/
 	const getMessagesForRoom = async (roomId: number) => {
 		try {
-			setLoading(true)
 			const response = await privateAxios.get(`room/${roomId}/messages`)
 			setMessages(response.data)
 		} catch (err) {
 			handleError(err)
 		}
-		setLoading(false)
 	}
 
 	const sendMessage = async (messageContent: string) => {
@@ -83,8 +79,6 @@ const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 		editingMessageId,
 		setEditingMessageId,
 	}
-
-	// if (showSpinner(loading)) return <AppSpinner contained text="Loading messages" />
 
 	return <MessagesContext.Provider value={contextValue}>{children}</MessagesContext.Provider>
 }

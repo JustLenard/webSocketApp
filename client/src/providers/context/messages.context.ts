@@ -1,5 +1,4 @@
-import { Socket } from 'socket.io-client'
-import { CreateRoomParams, TMessage, TRoom } from '../../types/types'
+import { TMessage } from '../../types/types'
 import { Dispatch, SetStateAction, createContext } from 'react'
 
 export type MessagesContextType = {

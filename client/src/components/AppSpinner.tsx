@@ -30,7 +30,7 @@ const WholePageSpinner: React.FC<{ text: string | undefined }> = ({ text }) => (
 /**
  * Show spinner in the middle of a container
  **/
-const ContainedSpinner: React.FC<{ text: string | undefined }> = ({ text }) => (
+const ContainedSpinner: React.FC<{ text: string | undefined }> = () => (
 	<Box
 		sx={{
 			height: '100%',

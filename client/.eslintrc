@@ -1,0 +1,44 @@
+{
+	"env": {
+		"browser": true,
+		"es2021": true,
+		"node": true
+	},
+	"extends": [
+		"eslint:recommended",
+		"plugin:react/recommended",
+		"plugin:@typescript-eslint/recommended",
+		"eslint-config-prettier"
+	],
+	"overrides": [],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": "latest",
+		"ecmaFeatures": {
+			"jsx": true
+		},
+		"sourceType": "module"
+	},
+	"plugins": ["react", "@typescript-eslint", "unused-imports"],
+	"rules": {
+		"eqeqeq": 2,
+		"react/destructuring-assignment": 2,
+		"react/jsx-uses-react": 0,
+		"react/react-in-jsx-scope": 0,
+		"react/jsx-uses-vars": 2,
+		"react/function-component-definition": [2, { "namedComponents": "arrow-function" }],
+		"react/prop-types": [0, { "ignore": "ignore" }],
+		"@typescript-eslint/no-empty-interface": 1,
+
+		// Allow using require('path')
+		"@typescript-eslint/no-var-requires": 0,
+
+		// Turn this one if you want to get rid of all the unused imports in all your files on commit. Keep off otherwise
+		"@typescript-eslint/no-unused-vars": "off",
+		"unused-imports/no-unused-imports-ts": "error",
+		"unused-imports/no-unused-vars": [
+			"warn",
+			{ "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
+		]
+	}
+}
