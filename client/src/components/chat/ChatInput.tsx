@@ -12,12 +12,7 @@ type ChatForm = {
 
 const ChatInput = () => {
 	const { sendMessage } = useMessages()
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		resetField,
-	} = useForm<ChatForm>()
+	const { register, handleSubmit, resetField } = useForm<ChatForm>()
 
 	const [timer, setTimer] = useState<ReturnType<typeof setTimeout>>()
 	const [isTyping, setIsTyping] = useState(false)
@@ -46,7 +41,7 @@ const ChatInput = () => {
 		} else {
 			setIsTyping(true)
 			appSocket.emit(socketEvents.onTypingStart, currentRoom.id)
-			clearTimeout(timer!)
+			clearTimeout(timer)
 			setTimer(
 				setTimeout(() => {
 					appSocket.emit(socketEvents.onTypingStop, currentRoom.id)

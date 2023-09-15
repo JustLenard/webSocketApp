@@ -135,7 +135,7 @@ const LoginPage: React.FC = () => {
 						fontSize="sm"
 						sx={{ alignSelf: 'center' }}
 					>
-						Don't have an account?
+						{"Don't have an account?"}
 					</Typography>
 				</Sheet>
 			</main>

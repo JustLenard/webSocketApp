@@ -20,7 +20,7 @@ const RoomListItem: React.FC<TRoom> = ({ id, isGroupChat, name, users }) => {
 	const { user } = useUser()
 	const notificationForRoom = useAppSelector((state) => state.notif[id])
 
-	const handleClick = () => {
+	const onRoomClick = () => {
 		dispatch(setLeftDrawerState(false))
 		changeCurrentRoom(id)
 
@@ -39,7 +39,7 @@ const RoomListItem: React.FC<TRoom> = ({ id, isGroupChat, name, users }) => {
 
 	return (
 		<ListItemButton
-			onClick={handleClick}
+			onClick={onRoomClick}
 			selected={currentRoom.id === id}
 			sx={{ width: 'inherit', flex: '1 0 auto', maxHeight: '72px' }}
 		>

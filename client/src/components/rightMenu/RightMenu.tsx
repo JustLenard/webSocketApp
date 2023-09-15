@@ -97,7 +97,7 @@ const RightMenu = () => {
 							mb: '1rem',
 						}}
 					>
-						{onlineUsers.map((user, i) => (
+						{onlineUsers.map((user) => (
 							<ProfileListItem id={user.id} username={user.username} key={user.id} />
 						))}
 					</List>
@@ -117,7 +117,7 @@ const RightMenu = () => {
 							mb: '1rem',
 						}}
 					>
-						{offlineUsers.map((user, i) => (
+						{offlineUsers.map((user) => (
 							<ProfileListItem id={user.id} username={user.username} key={user.id} />
 						))}
 					</List>

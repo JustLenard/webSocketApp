@@ -58,7 +58,7 @@ const LeftMenu = () => {
 					mb: '1rem',
 				}}
 			>
-				{rooms.map((room, i) => (
+				{rooms.map((room) => (
 					<RoomListItem {...room} key={room.id} />
 				))}
 			</List>
