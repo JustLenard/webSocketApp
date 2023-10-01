@@ -129,7 +129,7 @@ const LoginPage: React.FC = () => {
 							</Button>
 						</Stack>
 					</form>
-					<Button onClick={logInAsGuest}>Log in as guest</Button>
+					<Button onClick={logInAsGuest}>Use Guest Account</Button>
 					<Typography
 						endDecorator={<Link to={appRoutes.signUp}>Sign up</Link>}
 						fontSize="sm"
