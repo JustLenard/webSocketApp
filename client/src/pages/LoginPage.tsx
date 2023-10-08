@@ -96,7 +96,7 @@ const LoginPage: React.FC = () => {
 						<Typography level="h4" component="h1">
 							<b>Welcome!</b>
 						</Typography>
-						<Typography level="body-sm">Sign in to continue.</Typography>
+						<Typography level="body-sm">Sign in or use a guest account to continue.</Typography>
 					</div>
 
 					{manualErrors && renderErrors(manualErrors)}
@@ -129,13 +129,13 @@ const LoginPage: React.FC = () => {
 							</Button>
 						</Stack>
 					</form>
-					<Button onClick={logInAsGuest}>Use Guest Account</Button>
+					<Button onClick={logInAsGuest}>No account? No problem, click here!</Button>
 					<Typography
-						endDecorator={<Link to={appRoutes.signUp}>Sign up</Link>}
+						endDecorator={<Link to={appRoutes.signUp}>Sign up!</Link>}
 						fontSize="sm"
 						sx={{ alignSelf: 'center' }}
 					>
-						{"Don't have an account?"}
+						{'Want an account for yourself?'}
 					</Typography>
 				</Sheet>
 			</main>
