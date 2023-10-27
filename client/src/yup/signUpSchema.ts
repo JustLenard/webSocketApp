@@ -7,7 +7,7 @@ export const SignUpFormSchema: ObjectSchema<SignUpForm> = object({
 	password: string()
 		.required('Password is required')
 		.min(6, 'Password length should be at least 6 characters')
-		.max(12, 'Password cannot exceed more than 12 characters')
+		.max(24, 'Password cannot exceed more than 24 characters')
 		.test(
 			'customValidation',
 			'Password should be at least 6 characters long and have a minimum of one letter and number',
@@ -22,6 +22,6 @@ export const SignUpFormSchema: ObjectSchema<SignUpForm> = object({
 	cpassword: string()
 		.required('Confirm Password is required')
 		.min(6, 'Password length should be at least 6 characters')
-		.max(12, 'Password cannot exceed more than 12 characters')
+		.max(24, 'Password cannot exceed more than 24 characters')
 		.oneOf([ref('password')], "Passwords don't match"),
 })
