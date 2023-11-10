@@ -3,6 +3,7 @@ import ChatPanel from '../components/chat/ChatPanel'
 import LeftMenu from '../components/leftMenu/LeftMenu'
 import RightMenu from '../components/rightMenu/RightMenu'
 import MessagesProvider from '../providers/MessagesProvider'
+import ProfileModal from '../components/modals/ProfileModal'
 
 const ChatPage = () => {
 	const theme = useTheme()
@@ -37,6 +38,9 @@ const ChatPage = () => {
 					</Grid>
 				)}
 			</Grid>
+
+			{/* Modals */}
+			<ProfileModal />
 		</Grid>
 	)
 }

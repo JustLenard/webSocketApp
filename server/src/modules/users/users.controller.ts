@@ -1,9 +1,12 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Param, Patch, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common'
 import { GetCurrentUser } from 'src/common/decorators/getCurrentUser.decorator'
 import { AtGuard } from 'src/common/guards/at.guard'
-import { Routes } from 'src/utils/constants'
+import { Routes, UserProfileFileFields } from 'src/utils/constants'
 import { UserEntity } from 'src/utils/entities/user.entity'
 import { UsersService } from './users.service'
+import { FileFieldsInterceptor } from '@nestjs/platform-express'
+import { UpdateUserProfileParams, UserProfileFiles } from 'src/utils/types/types'
+import { UpdateUserProfileDto } from './dto/update-user-profile.dto'
 
 @Controller(Routes.user)
 export class UsersController {
@@ -14,6 +17,33 @@ export class UsersController {
 	whoAmI(@GetCurrentUser() user: UserEntity) {
 		return this.usersService.whoAmI(user.id)
 	}
+
+	@Patch('/user-profile')
+	@UseInterceptors(FileFieldsInterceptor(UserProfileFileFields))
+	async updateUserProfile(
+		@GetCurrentUser() user: UserEntity,
+		@UploadedFiles()
+		files: UserProfileFiles,
+		@Body() updateUserProfileDto: UpdateUserProfileDto,
+	) {
+		console.log('Inside Users/Profiles Controller')
+		console.log('This is files', files)
+		console.log('This is updateUserProfileDto', updateUserProfileDto)
+
+		const params: UpdateUserProfileParams = {}
+		updateUserProfileDto.username && (params.username = updateUserProfileDto.username)
+		files.avatar && (params.avatar = files.avatar[0])
+
+		console.log('This is params', params)
+
+		// return this.userProfileService.createProfileOrUpdate(user, params)
+	}
+
+	// @UseGuards(AtGuard)
+	// @Get('/profile')
+	// profile(@GetCurrentUser() user: UserEntity) {
+	// 	return this.usersService.whoAmI(user.id)
+	// }
 
 	@UseGuards(AtGuard)
 	@Get()

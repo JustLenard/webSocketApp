@@ -55,3 +55,13 @@ export type SimpleRoomNotifications = {
 	lastMessage: MessageEntity
 	unreadNotificationsAmount: number
 }
+export type UserProfileFiles = Partial<{
+	banner: Express.Multer.File[]
+	avatar: Express.Multer.File[]
+}>
+
+export type UpdateUserProfileParams = Partial<{
+	username: string
+	banner: Express.Multer.File
+	avatar: Express.Multer.File
+}>

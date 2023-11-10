@@ -1,3 +1,5 @@
+import { MulterField } from '@nestjs/platform-express/multer/interfaces/multer-options.interface'
+
 export const ALPHABET = [...Array(26)].map((_, i) => (i + 10).toString(36))
 export const NUMBERS = [...Array(10)].map((_, i) => i.toString())
 
@@ -94,3 +96,14 @@ export enum appEmitters {
 	botType = 'bot.type',
 	botStopType = 'bot.stop.type',
 }
+
+export const UserProfileFileFields: MulterField[] = [
+	{
+		name: 'banner',
+		maxCount: 1,
+	},
+	{
+		name: 'avatar',
+		maxCount: 1,
+	},
+]

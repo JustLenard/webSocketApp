@@ -98,3 +98,5 @@ export type TCreateNewnotification = {
 }
 
 export type Drawers = 'left' | 'right'
+
+export type AppModalTypes = 'personalProfileModal'
