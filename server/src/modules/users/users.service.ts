@@ -4,6 +4,8 @@ import { Repository } from 'typeorm'
 import { UserEntity } from '../../utils/entities/user.entity'
 import { GatewaySessionManager } from '../socket/socket.sessions'
 import { IShortUser } from 'src/utils/types/interfaces'
+import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 @Injectable()
 export class UsersService {
@@ -17,11 +19,37 @@ export class UsersService {
 		this.logger.log(`Getting users`)
 		const users = await this.userRepostiry.find()
 
-		return users.map((user) => ({
-			id: user.id,
-			username: user.username,
-			online: this.getOnlineStatus(user),
-		}))
+		const { BUCKET_NAME, BUCKET_REGION, ACCESS_KEY, SECRET_ACCESS_KEY } = process.env
+
+		console.log('This is BUCKET_REGION', BUCKET_REGION)
+		console.log('This is BUCKET_NAME', BUCKET_NAME)
+
+		const s3 = new S3Client({
+			credentials: {
+				accessKeyId: ACCESS_KEY,
+				secretAccessKey: SECRET_ACCESS_KEY,
+			},
+			region: BUCKET_REGION,
+		})
+
+		const res = users.map(async (user) => {
+			const command = new GetObjectCommand({
+				Bucket: BUCKET_NAME,
+				Key: 'hardcode',
+			})
+
+			const imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 })
+			console.log('This is imageUrl', imageUrl)
+
+			return {
+				id: user.id,
+				username: user.username,
+				online: this.getOnlineStatus(user),
+				imageUrl: imageUrl,
+			}
+		})
+
+		return await Promise.all(res)
 	}
 
 	getOnlineStatus(user: UserEntity) {

@@ -3,12 +3,12 @@ import { getColorPalletteProp, getSubstring } from '../../utils/helpers'
 
 type Props = {
 	username: string
-	src?: string
+	imageUrl?: string
 }
 
-const AppAvatar: React.FC<Props> = ({ src, username }) => {
+const AppAvatar: React.FC<Props> = ({ imageUrl, username }) => {
 	return (
-		<Avatar color={getColorPalletteProp(username)} src={src}>
+		<Avatar color={getColorPalletteProp(username)} src={imageUrl}>
 			{getSubstring(username)}
 		</Avatar>
 	)

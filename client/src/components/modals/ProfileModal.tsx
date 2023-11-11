@@ -69,7 +69,13 @@ const ProfileModal = () => {
 						<h2>React File Upload Form</h2>
 						<form onSubmit={handleFormSubmit}>
 							<label htmlFor="file">Choose a file:</label>
-							<input type="file" id="file" accept=".png, .jpg, .jpeg" onChange={handleFileChange} />
+							<input
+								type="file"
+								id="file"
+								accept=".png, .jpg, .jpeg"
+								onChange={handleFileChange}
+								multiple={false}
+							/>
 
 							<button type="submit">Upload File</button>
 						</form>
