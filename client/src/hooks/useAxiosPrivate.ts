@@ -3,14 +3,17 @@ import { appAxios } from '../axios/axios'
 import { useAuth } from './contextHooks'
 import useRefreshToken from './useRefresh'
 
-const useAxiosPrivate = () => {
+const useAxiosPrivate = (multipartFormData = false) => {
 	const refresh = useRefreshToken()
 	const { accessToken, setAccessToken } = useAuth()
 
 	useEffect(() => {
 		if (!accessToken || !setAccessToken) return
+
 		const requestIntercept = appAxios.interceptors.request.use(
 			(config) => {
+				multipartFormData && (config.headers['Content-Type'] = 'multipart/form-data')
+
 				if (!config.headers['Authorization'] && accessToken) {
 					config.headers['Authorization'] = `Bearer ${accessToken}`
 				}

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRooms, useSocket, useUser } from '../../hooks/contextHooks'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { CreateRoomParams } from '../../types/types'
-import { IOnlinseUser } from '../../types/interfaces'
+import { IOnlinseUser, IShortUser } from '../../types/interfaces'
 import { socketEvents } from '../../utils/constants'
 import { handleError } from '../../utils/handleAxiosErrors'
 import AppAvatar from '../avatar/AppAvatar'
@@ -98,7 +98,12 @@ const RightMenu = () => {
 						}}
 					>
 						{onlineUsers.map((user) => (
-							<ProfileListItem id={user.id} username={user.username} key={user.id} />
+							<ProfileListItem
+								id={user.id}
+								username={user.username}
+								key={user.id}
+								imageUrl={user.imageUrl}
+							/>
 						))}
 					</List>
 				)}
@@ -118,7 +123,12 @@ const RightMenu = () => {
 						}}
 					>
 						{offlineUsers.map((user) => (
-							<ProfileListItem id={user.id} username={user.username} key={user.id} />
+							<ProfileListItem
+								id={user.id}
+								username={user.username}
+								key={user.id}
+								imageUrl={user.imageUrl}
+							/>
 						))}
 					</List>
 				)}
@@ -127,12 +137,7 @@ const RightMenu = () => {
 	)
 }
 
-interface ProfileItemProps {
-	id: string
-	username: string
-}
-
-const ProfileListItem: React.FC<ProfileItemProps> = ({ id, username }) => {
+const ProfileListItem: React.FC<IShortUser> = ({ id, username, imageUrl }) => {
 	const dispatch = useAppDispatch()
 	const { user } = useUser()
 	const { createNewRoom } = useRooms()
@@ -153,7 +158,7 @@ const ProfileListItem: React.FC<ProfileItemProps> = ({ id, username }) => {
 		<ListItemButton onClick={handleClick}>
 			<ListItem>
 				<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
-					<AppAvatar username={username} />
+					<AppAvatar username={username} imageUrl={imageUrl} />
 				</ListItemDecorator>
 
 				<ListItemContent>

@@ -5,6 +5,7 @@ import { UserEntity } from 'src/utils/entities/user.entity'
 import { DataSource, DataSourceOptions } from 'typeorm'
 
 import * as dotenv from 'dotenv'
+import { ProfileEntity } from 'src/utils/entities/profile.entity'
 dotenv.config()
 
 export const dataSourceOptions = (): DataSourceOptions => {
@@ -15,7 +16,7 @@ export const dataSourceOptions = (): DataSourceOptions => {
 		username: process.env.PG_USERNAME,
 		password: process.env.PG_PASSWORD,
 		database: process.env.PG_DATABASE,
-		entities: [UserEntity, RoomEntity, MessageEntity, NotificationsEntity],
+		entities: [UserEntity, RoomEntity, MessageEntity, NotificationsEntity, ProfileEntity],
 		synchronize: true,
 		extra: {
 			timezone: 'UTC', // Set the appropriate timezone here

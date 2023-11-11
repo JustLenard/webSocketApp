@@ -10,9 +10,14 @@ import { UsersModule } from '../users/users.module'
 import { UsersService } from '../users/users.service'
 import { MessageController } from './messages.controller'
 import { MessageService } from './messages.service'
+import { ProfileEntity } from 'src/utils/entities/profile.entity'
 
 @Module({
-	imports: [TypeOrmModule.forFeature([MessageEntity, UserEntity, NotificationsEntity]), RoomsModule, UsersModule],
+	imports: [
+		TypeOrmModule.forFeature([MessageEntity, UserEntity, NotificationsEntity, ProfileEntity]),
+		RoomsModule,
+		UsersModule,
+	],
 	controllers: [MessageController],
 	providers: [MessageService, UsersService, NotificationsService, OpenAiService],
 })

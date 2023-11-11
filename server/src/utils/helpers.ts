@@ -1,4 +1,5 @@
 import { MESSAGE_ROOM, NOTIFICATIONS_ROOM } from './constants'
+import { v4 as uuidv4 } from 'uuid'
 
 export const getRandomInt = (max: number, min = 0) => {
 	min = Math.ceil(min)
@@ -29,3 +30,5 @@ export const createMessageRoomName = (roomId: number) => {
 export const createNotifRoomName = (roomId: number) => {
 	return `${NOTIFICATIONS_ROOM}-${roomId}`
 }
+
+export const generateUUIDV4 = () => uuidv4()
