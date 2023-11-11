@@ -1,8 +1,18 @@
 import { Global } from '@nestjs/common'
-import { BaseEntity, Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import {
+	BaseEntity,
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToMany,
+	OneToMany,
+	OneToOne,
+	PrimaryGeneratedColumn,
+} from 'typeorm'
 import { RoomEntity } from './room.entity'
 import { MessageEntity } from './message.entity'
 import { NotificationsEntity } from './notifications.entity'
+import { ProfileEntity } from './profile.entity'
 
 export enum AccountType {
 	default = 'default',
@@ -51,4 +61,8 @@ export class UserEntity extends BaseEntity {
 
 	@OneToMany(() => NotificationsEntity, (notif) => notif.creator)
 	createdNotifications: NotificationsEntity[]
+
+	@OneToOne(() => ProfileEntity, { cascade: ['insert', 'update'] })
+	@JoinColumn()
+	profile: ProfileEntity
 }

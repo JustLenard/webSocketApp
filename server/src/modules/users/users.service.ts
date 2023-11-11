@@ -6,18 +6,23 @@ import { GatewaySessionManager } from '../socket/socket.sessions'
 import { IShortUser } from 'src/utils/types/interfaces'
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { UpdateUserProfileParams } from 'src/utils/types/types'
+import { ProfileEntity } from 'src/utils/entities/profile.entity'
 
 @Injectable()
 export class UsersService {
 	constructor(
 		@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>,
+		@InjectRepository(ProfileEntity) private profileRepository: Repository<ProfileEntity>,
 		@Inject(GatewaySessionManager) private sessions: GatewaySessionManager,
 	) {}
 	private logger = new Logger('Users service')
 
 	async findAll(): Promise<IShortUser[]> {
 		this.logger.log(`Getting users`)
-		const users = await this.userRepostiry.find()
+		const users = await this.userRepostiry.find({
+			relations: ['profile'],
+		})
 
 		const { BUCKET_NAME, BUCKET_REGION, ACCESS_KEY, SECRET_ACCESS_KEY } = process.env
 
@@ -33,13 +38,19 @@ export class UsersService {
 		})
 
 		const res = users.map(async (user) => {
-			const command = new GetObjectCommand({
-				Bucket: BUCKET_NAME,
-				Key: 'hardcode',
-			})
+			let imageUrl
 
-			const imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 })
-			console.log('This is imageUrl', imageUrl)
+			console.log('This is user.profile', user)
+
+			if (user.profile?.avatar) {
+				const command = new GetObjectCommand({
+					Bucket: BUCKET_NAME,
+					Key: user.profile.avatar,
+				})
+
+				imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 })
+				console.log('This is imageUrl', imageUrl)
+			}
 
 			return {
 				id: user.id,
@@ -73,5 +84,19 @@ export class UsersService {
 
 	async findByUsername(username: string) {
 		return this.userRepostiry.findOneBy({ username })
+	}
+
+	async updateOrCreateProfile(user: UserEntity, imageName: string) {
+		if (!user.profile) {
+			user.profile = await this.createProfile()
+			user.profile.avatar = imageName
+
+			this.userRepostiry.save(user)
+		}
+	}
+
+	createProfile() {
+		const newProfile = this.profileRepository.create()
+		return this.profileRepository.save(newProfile)
 	}
 }

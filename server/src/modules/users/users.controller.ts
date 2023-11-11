@@ -8,6 +8,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express'
 import { UpdateUserProfileParams, UserProfileFiles } from 'src/utils/types/types'
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { generateUUIDV4 } from 'src/utils/helpers'
 
 @Controller(Routes.user)
 export class UsersController {
@@ -19,7 +20,7 @@ export class UsersController {
 		return this.usersService.whoAmI(user.id)
 	}
 
-	// @UseGuards(AtGuard)
+	@UseGuards(AtGuard)
 	@Patch('/user-profile')
 	@UseInterceptors(FileFieldsInterceptor(UserProfileFileFields))
 	async updateUserProfile(
@@ -28,10 +29,6 @@ export class UsersController {
 		files: UserProfileFiles,
 		@Body() updateUserProfileDto: UpdateUserProfileDto,
 	) {
-		console.log('Inside Users/Profiles Controller')
-		console.log('This is files', files)
-		console.log('This is updateUserProfileDto', updateUserProfileDto)
-
 		const { BUCKET_NAME, BUCKET_REGION, ACCESS_KEY, SECRET_ACCESS_KEY } = process.env
 
 		console.log('This is BUCKET_REGION', BUCKET_REGION)
@@ -47,16 +44,19 @@ export class UsersController {
 
 		console.log('This is files.avatar.filename', files.avatar[0].filename)
 
+		const imageKeyName = generateUUIDV4()
+
 		const command = new PutObjectCommand({
 			Bucket: BUCKET_NAME,
-			Key: 'hardcode',
-			// Key: files.avatar[0].originalname,
+			Key: imageKeyName,
 			Body: files.avatar[0].buffer,
 			ContentType: files.avatar[0].mimetype,
 		})
-
 		const response = await s3.send(command)
+
 		console.log('This is response', response)
+
+		this.usersService.updateOrCreateProfile(user, imageKeyName)
 
 		// const params: UpdateUserProfileParams = {}
 		// updateUserProfileDto.username && (params.username = updateUserProfileDto.username)

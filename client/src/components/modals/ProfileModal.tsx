@@ -1,46 +1,44 @@
+import { Avatar, Button, Typography } from '@mui/joy'
 import Modal from '@mui/joy/Modal'
 import ModalClose from '@mui/joy/ModalClose'
 import Sheet from '@mui/joy/Sheet'
-import Typography from '@mui/joy/Typography'
 import { Fragment, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
+import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { changeProfileModalState } from '../../redux/slices/modalStates.slice'
-import { Avatar, Button } from '@mui/joy'
-import axios from 'axios'
-import { baseAxios } from '../../axios/axios'
 
 const ProfileModal = () => {
 	const { personalProfileModal } = useAppSelector((state) => state.modals)
 	const dispatch = useAppDispatch()
+	const { privateAxios } = useAxiosPrivate(true)
 
-	const [selectedFile, setSelectedFile] = useState(null)
+	const [selectedFile, setSelectedFile] = useState<File | null>(null)
+	const [previewUrl, setPreviewUrl] = useState<null | string>(null)
 
-	const handleFileChange = (event) => {
-		setSelectedFile(event.target.files[0])
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (!e.target.files?.length) return
+
+		const file = e.target.files[0]
+
+		setSelectedFile(file)
+
+		const previewUrl = URL.createObjectURL(file)
+		setPreviewUrl(previewUrl)
 	}
 
-	const handleFormSubmit = async (event) => {
+	const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
+		if (!selectedFile) return
 
-		// You can perform further actions, such as sending the file to a server, here.
-		if (selectedFile) {
-			console.log('File selected:', selectedFile)
-			// Add your logic to handle the file on the server here.
-			const formData = new FormData()
-			formData.append('username', 'wassup')
-			formData.append('avatar', selectedFile)
+		const formData = new FormData()
+		formData.append('avatar', selectedFile)
 
-			console.log('This is formData', formData)
+		console.log('This is formData', formData)
 
-			const response = await baseAxios.patch('users/user-profile', formData, {
-				headers: {
-					'Content-Type': 'multipart/form-data',
-				},
-			})
-
-			console.log('This is response.data', response.data)
-		} else {
-			console.log('No file selected.')
+		try {
+			await privateAxios.patch('users/user-profile', formData)
+		} catch (e) {
+			console.log(e)
 		}
 	}
 
@@ -60,26 +58,43 @@ const ProfileModal = () => {
 						borderRadius: 'md',
 						p: 3,
 						boxShadow: 'lg',
+						width: '20%',
 					}}
 				>
 					<ModalClose variant="plain" sx={{ m: 1 }} />
-					<Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" size="lg" />
-					<Button> Upload Profile pic</Button>
-					<div>
-						<h2>React File Upload Form</h2>
-						<form onSubmit={handleFormSubmit}>
-							<label htmlFor="file">Choose a file:</label>
+					<Typography color="neutral" level="title-lg" variant="plain" textAlign={'center'}>
+						Profile
+					</Typography>
+					<Avatar
+						size="lg"
+						src={previewUrl ?? undefined}
+						sx={{
+							height: 150,
+							width: 150,
+							my: '1rem',
+							mx: 'auto',
+						}}
+					/>
+
+					<form
+						onSubmit={handleFormSubmit}
+						style={{
+							display: 'flex',
+							justifyContent: 'center',
+						}}
+					>
+						<Button variant="soft" component="label">
+							Upload
 							<input
+								hidden
 								type="file"
 								id="file"
 								accept=".png, .jpg, .jpeg"
 								onChange={handleFileChange}
 								multiple={false}
 							/>
-
-							<button type="submit">Upload File</button>
-						</form>
-					</div>
+						</Button>
+					</form>
 				</Sheet>
 			</Modal>
 		</Fragment>
