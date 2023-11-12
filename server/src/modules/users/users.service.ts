@@ -1,62 +1,38 @@
-import { Inject, Injectable, Logger } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
-import { UserEntity } from '../../utils/entities/user.entity'
-import { GatewaySessionManager } from '../socket/socket.sessions'
-import { IShortUser } from 'src/utils/types/interfaces'
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import { UpdateUserProfileParams } from 'src/utils/types/types'
+import { Inject, Injectable, Logger } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
 import { ProfileEntity } from 'src/utils/entities/profile.entity'
+import { generateUUIDV4 } from 'src/utils/helpers'
+import { IShortUser } from 'src/utils/types/interfaces'
+import { UpdateUserProfileParams } from 'src/utils/types/types'
+import { Repository } from 'typeorm'
+import { UserEntity } from '../../utils/entities/user.entity'
+import { ImageStorageService } from '../image-storage/image-storage.service'
+import { GatewaySessionManager } from '../socket/socket.sessions'
 
 @Injectable()
 export class UsersService {
 	constructor(
-		@InjectRepository(UserEntity) private userRepostiry: Repository<UserEntity>,
+		@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
 		@InjectRepository(ProfileEntity) private profileRepository: Repository<ProfileEntity>,
 		@Inject(GatewaySessionManager) private sessions: GatewaySessionManager,
+		@Inject('uploadImages') private readonly imageStorageService: ImageStorageService,
 	) {}
 	private logger = new Logger('Users service')
 
 	async findAll(): Promise<IShortUser[]> {
 		this.logger.log(`Getting users`)
-		const users = await this.userRepostiry.find({
+		const users = await this.userRepository.find({
 			relations: ['profile'],
 		})
 
-		const { BUCKET_NAME, BUCKET_REGION, ACCESS_KEY, SECRET_ACCESS_KEY } = process.env
-
-		console.log('This is BUCKET_REGION', BUCKET_REGION)
-		console.log('This is BUCKET_NAME', BUCKET_NAME)
-
-		const s3 = new S3Client({
-			credentials: {
-				accessKeyId: ACCESS_KEY,
-				secretAccessKey: SECRET_ACCESS_KEY,
-			},
-			region: BUCKET_REGION,
-		})
-
 		const res = users.map(async (user) => {
-			let imageUrl
-
-			console.log('This is user.profile', user)
-
-			if (user.profile?.avatar) {
-				const command = new GetObjectCommand({
-					Bucket: BUCKET_NAME,
-					Key: user.profile.avatar,
-				})
-
-				imageUrl = await getSignedUrl(s3, command, { expiresIn: 3600 })
-				console.log('This is imageUrl', imageUrl)
-			}
-
 			return {
 				id: user.id,
 				username: user.username,
 				online: this.getOnlineStatus(user),
-				imageUrl: imageUrl,
+				imageUrl: user.profile?.avatar ? await this.imageStorageService.get(user.profile.avatar) : undefined,
 			}
 		})
 
@@ -71,11 +47,11 @@ export class UsersService {
 	}
 
 	async findById(id: string) {
-		return await this.userRepostiry.findOneBy({ id })
+		return await this.userRepository.findOneBy({ id })
 	}
 
 	async whoAmI(id: string) {
-		const user = await this.userRepostiry.findOneBy({ id })
+		const user = await this.userRepository.findOneBy({ id })
 		return {
 			id: user.id,
 			username: user.username,
@@ -83,20 +59,41 @@ export class UsersService {
 	}
 
 	async findByUsername(username: string) {
-		return this.userRepostiry.findOneBy({ username })
-	}
-
-	async updateOrCreateProfile(user: UserEntity, imageName: string) {
-		if (!user.profile) {
-			user.profile = await this.createProfile()
-			user.profile.avatar = imageName
-
-			this.userRepostiry.save(user)
-		}
+		return this.userRepository.findOneBy({ username })
 	}
 
 	createProfile() {
 		const newProfile = this.profileRepository.create()
 		return this.profileRepository.save(newProfile)
+	}
+
+	async createProfileOrUpdate(user: UserEntity, params: UpdateUserProfileParams) {
+		console.log('CreateProfileOrUpdate')
+		if (!user.profile) {
+			console.log('User has no profile. Creating...')
+			user.profile = await this.createProfile()
+			return this.updateProfile(user, params)
+		}
+		console.log('User has profile')
+		return this.updateProfile(user, params)
+	}
+
+	async updateProfile(user: UserEntity, params: UpdateUserProfileParams) {
+		console.log(params)
+		if (params.avatar) user.profile.avatar = await this.updateAvatar(params.avatar)
+		return this.userRepository.save(user)
+	}
+
+	async updateBanner(file: Express.Multer.File) {
+		const key = generateUUIDV4()
+		await this.imageStorageService.upload({ key, file })
+		return key
+	}
+
+	async updateAvatar(file: Express.Multer.File) {
+		console.log('Updating Avatar')
+		const key = generateUUIDV4()
+		await this.imageStorageService.upload({ key, file })
+		return key
 	}
 }

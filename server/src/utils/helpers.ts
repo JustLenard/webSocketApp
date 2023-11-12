@@ -1,3 +1,4 @@
+import * as sharp from 'sharp'
 import { MESSAGE_ROOM, NOTIFICATIONS_ROOM } from './constants'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -32,3 +33,5 @@ export const createNotifRoomName = (roomId: number) => {
 }
 
 export const generateUUIDV4 = () => uuidv4()
+
+export const compressImage = (attachment: Express.Multer.File) => sharp(attachment.buffer).resize(300).jpeg().toBuffer()

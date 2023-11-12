@@ -94,6 +94,7 @@ const ProfileModal = () => {
 								multiple={false}
 							/>
 						</Button>
+						{selectedFile && <Button type="submit">Submit</Button>}
 					</form>
 				</Sheet>
 			</Modal>

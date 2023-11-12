@@ -61,7 +61,11 @@ export type UserProfileFiles = Partial<{
 }>
 
 export type UpdateUserProfileParams = Partial<{
-	username: string
 	banner: Express.Multer.File
 	avatar: Express.Multer.File
 }>
+
+export type UploadImageParams = {
+	key: string
+	file: Express.Multer.File
+}
