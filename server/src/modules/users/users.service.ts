@@ -1,5 +1,3 @@
-import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { Inject, Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ProfileEntity } from 'src/utils/entities/profile.entity'
@@ -51,10 +49,21 @@ export class UsersService {
 	}
 
 	async whoAmI(id: string) {
-		const user = await this.userRepository.findOneBy({ id })
+		const user = await this.userRepository.findOne({
+			where: {
+				id: id,
+			},
+			relations: ['profile'],
+		})
+		const avatar = user.profile?.avatar
+		const avatarUrl = avatar ? await this.imageStorageService.get(avatar) : undefined
+
 		return {
 			id: user.id,
 			username: user.username,
+			profile: {
+				avatar: avatarUrl,
+			},
 		}
 	}
 
@@ -70,16 +79,16 @@ export class UsersService {
 	async createProfileOrUpdate(user: UserEntity, params: UpdateUserProfileParams) {
 		console.log('CreateProfileOrUpdate')
 		if (!user.profile) {
-			console.log('User has no profile. Creating...')
+			this.logger.log('User has no profile. Creating...')
 			user.profile = await this.createProfile()
 			return this.updateProfile(user, params)
 		}
-		console.log('User has profile')
+		this.logger.log('User has profile')
 		return this.updateProfile(user, params)
 	}
 
 	async updateProfile(user: UserEntity, params: UpdateUserProfileParams) {
-		console.log(params)
+		this.logger.log(params)
 		if (params.avatar) user.profile.avatar = await this.updateAvatar(params.avatar)
 		return this.userRepository.save(user)
 	}
@@ -91,7 +100,7 @@ export class UsersService {
 	}
 
 	async updateAvatar(file: Express.Multer.File) {
-		console.log('Updating Avatar')
+		this.logger.log('Updating Avatar')
 		const key = generateUUIDV4()
 		await this.imageStorageService.upload({ key, file })
 		return key

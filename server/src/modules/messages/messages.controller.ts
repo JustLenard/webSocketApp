@@ -6,6 +6,7 @@ import {
 	Get,
 	HttpCode,
 	HttpStatus,
+	Inject,
 	Logger,
 	Param,
 	ParseIntPipe,
@@ -18,13 +19,13 @@ import { GetCurrentUser } from 'src/common/decorators/getCurrentUser.decorator'
 import { AtGuard } from 'src/common/guards/at.guard'
 import { Routes, appEmitters } from 'src/utils/constants'
 import { AccountType, UserEntity } from 'src/utils/entities/user.entity'
+import { ImageStorageService } from '../image-storage/image-storage.service'
 import { NotificationsService } from '../notifications/notifications.service'
 import { OpenAiService } from '../open-ai/open-ai.service'
 import { RoomsService } from '../rooms/rooms.service'
 import { MessageDto } from './dto/create-message.dto'
 import { UpdateMessageDto } from './dto/update-message.dto'
 import { MessageService } from './messages.service'
-import { MessageEntity } from 'src/utils/entities/message.entity'
 
 @Controller(Routes.messages)
 export class MessageController {
@@ -34,6 +35,7 @@ export class MessageController {
 		private notifService: NotificationsService,
 		private roomService: RoomsService,
 		private readonly eventEmitter: EventEmitter2,
+		@Inject('uploadImages') private readonly imageStorageService: ImageStorageService,
 	) {}
 
 	private logger = new Logger('Message controler')
@@ -41,9 +43,19 @@ export class MessageController {
 	@UseGuards(AtGuard)
 	@Get()
 	@HttpCode(HttpStatus.OK)
-	async findMessagesForRoom(@Param('roomId', ParseIntPipe) roomId: number): Promise<MessageEntity[]> {
+	async findMessagesForRoom(@Param('roomId', ParseIntPipe) roomId: number) {
 		this.logger.log(`Getting messages for room ${roomId}`)
-		return this.messageService.findMessagesForRoom(roomId)
+		const messages = await this.messageService.getMessagesForRoom(roomId)
+
+		return Promise.all(
+			messages.map(async (message) => {
+				const avatar = message.user.profile?.avatar
+				if (avatar) {
+					message.user.profile.avatar = await this.imageStorageService.get(avatar)
+				}
+				return message
+			}),
+		)
 	}
 
 	@UseGuards(AtGuard)

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common'
+import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { MessageEntity } from 'src/utils/entities/message.entity'
 import { RoomEntity } from 'src/utils/entities/room.entity'
@@ -6,6 +6,7 @@ import { UserEntity } from 'src/utils/entities/user.entity'
 import { Repository } from 'typeorm'
 import { RoomsService } from '../rooms/rooms.service'
 import { MessageDto } from './dto/create-message.dto'
+import { ImageStorageService } from '../image-storage/image-storage.service'
 
 @Injectable()
 export class MessageService {
@@ -13,6 +14,7 @@ export class MessageService {
 		@InjectRepository(MessageEntity)
 		private readonly messageRepository: Repository<MessageEntity>,
 		private roomService: RoomsService,
+		@Inject('uploadImages') private readonly imageStorageService: ImageStorageService,
 	) {}
 	private readonly logger = new Logger('Message service')
 
@@ -25,12 +27,13 @@ export class MessageService {
 		return this.messageRepository.save(newMessage)
 	}
 
-	async findMessagesForRoom(roomId: number): Promise<MessageEntity[]> {
+	async getMessagesForRoom(roomId: number): Promise<MessageEntity[]> {
 		return this.messageRepository
 			.createQueryBuilder('message')
 			.leftJoin('message.room', 'room')
 			.where('room.id = :roomId', { roomId })
 			.leftJoinAndSelect('message.user', 'user')
+			.leftJoinAndSelect('user.profile', 'profile')
 			.orderBy('message.created_at', 'ASC')
 			.getMany()
 	}
@@ -56,7 +59,7 @@ export class MessageService {
 			where: { id: messageId, user: { id: userId }, room: { id: roomId } },
 			relations: ['user', 'room', 'room.lastMessage'],
 		})
-		const roomMessages = await this.findMessagesForRoom(roomId)
+		const roomMessages = await this.getMessagesForRoom(roomId)
 
 		if (!messageToDelete) {
 			throw new BadRequestException('Cannot delete message')

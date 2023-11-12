@@ -37,6 +37,7 @@ const ProfileModal = () => {
 
 		try {
 			await privateAxios.patch('users/user-profile', formData)
+			dispatch(changeProfileModalState(false))
 		} catch (e) {
 			console.log(e)
 		}
@@ -83,7 +84,13 @@ const ProfileModal = () => {
 							justifyContent: 'center',
 						}}
 					>
-						<Button variant="soft" component="label">
+						<Button
+							variant="soft"
+							component="label"
+							sx={{
+								mr: '2rem',
+							}}
+						>
 							Upload
 							<input
 								hidden

@@ -9,6 +9,6 @@ export class ProfileEntity {
 	@Column({ nullable: true })
 	avatar?: string
 
-	@OneToOne(() => UserEntity)
+	@OneToOne(() => UserEntity, (user) => user.profile)
 	user: UserEntity
 }

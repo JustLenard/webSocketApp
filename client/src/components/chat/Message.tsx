@@ -28,7 +28,7 @@ export const Message: React.FC<Props> = ({ message, prev }) => {
 			<Stack spacing={2} direction="row" alignItems="center">
 				{showUserInfo && (
 					<div style={{ width: '40px' }}>
-						<AppAvatar username={message.user.username} />
+						<AppAvatar username={message.user.username} imageUrl={message.user.profile?.avatar} />
 					</div>
 				)}
 				<Stack width={'100%'}>

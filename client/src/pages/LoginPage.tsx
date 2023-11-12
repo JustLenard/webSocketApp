@@ -81,7 +81,7 @@ const LoginPage: React.FC = () => {
 					sx={{
 						width: 300,
 						mx: 'auto',
-						my: 4,
+						my: 10,
 						py: 3,
 						px: 2,
 						display: 'flex',
@@ -102,7 +102,11 @@ const LoginPage: React.FC = () => {
 					{manualErrors && renderErrors(manualErrors)}
 
 					<form onSubmit={handleSubmit(onSubmit)}>
-						<FormControl>
+						<FormControl
+							sx={{
+								mb: '.5rem',
+							}}
+						>
 							<FormLabel>Username</FormLabel>
 							<Input
 								placeholder="ex: Connor"

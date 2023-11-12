@@ -45,7 +45,7 @@ const RoomListItem: React.FC<TRoom> = ({ id, isGroupChat, name, users }) => {
 		>
 			<ListItem sx={{ width: 'inherit' }}>
 				<ListItemDecorator sx={{ alignSelf: 'flex-start', mr: '.5rem' }}>
-					<AppAvatar username={conversationName} />
+					<AppAvatar username={conversationName} imageUrl={receivingUser.profile?.avatar} />
 				</ListItemDecorator>
 				<ListItemContent>
 					<Stack justifyContent={'space-between'} flexDirection={'row'}>

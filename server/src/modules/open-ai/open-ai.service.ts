@@ -32,7 +32,7 @@ export class OpenAiService {
 	 **/
 	async respondToMessage(room: RoomEntity, botAccount: UserEntity) {
 		this.logger.log(`Triggerring model response`)
-		const messages = await this.messageService.findMessagesForRoom(room.id)
+		const messages = await this.messageService.getMessagesForRoom(room.id)
 		const receivingUserId = room.users.filter((user) => user.id !== botAccount.id)[0].id
 
 		/**
