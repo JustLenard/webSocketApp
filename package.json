@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "react-toastify": "^9.1.3"
-  },
-  "devDependencies": {
-    "@types/react-toastify": "^4.1.0"
-  }
-}
