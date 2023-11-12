@@ -34,8 +34,6 @@ const ProfileModal = () => {
 		const formData = new FormData()
 		formData.append('avatar', selectedFile)
 
-		console.log('This is formData', formData)
-
 		try {
 			await privateAxios.patch('users/user-profile', formData)
 			dispatch(changeProfileModalState(false))
