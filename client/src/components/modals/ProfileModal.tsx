@@ -3,6 +3,7 @@ import Modal from '@mui/joy/Modal'
 import ModalClose from '@mui/joy/ModalClose'
 import Sheet from '@mui/joy/Sheet'
 import { Fragment, useState } from 'react'
+import { toast } from 'react-toastify'
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
 import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { changeProfileModalState } from '../../redux/slices/modalStates.slice'
@@ -38,8 +39,10 @@ const ProfileModal = () => {
 		try {
 			await privateAxios.patch('users/user-profile', formData)
 			dispatch(changeProfileModalState(false))
+			toast.success('Success!')
 		} catch (e) {
 			console.log(e)
+			toast.error('Something went wrong. Try again later')
 		}
 	}
 
