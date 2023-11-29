@@ -38,6 +38,7 @@ const ProfileModal = () => {
 			await privateAxios.patch('users/user-profile', formData)
 			dispatch(changeProfileModalState(false))
 			toast.success('Success!')
+			location.reload()
 		} catch (e) {
 			console.log(e)
 			toast.error('Something went wrong. Try again later')
