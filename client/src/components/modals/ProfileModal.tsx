@@ -37,7 +37,7 @@ const ProfileModal = () => {
 		try {
 			await privateAxios.patch('users/user-profile', formData)
 			dispatch(changeProfileModalState(false))
-			toast.success('Success!')
+			toast.success('Image uplaoded!')
 			location.reload()
 		} catch (e) {
 			console.log(e)
