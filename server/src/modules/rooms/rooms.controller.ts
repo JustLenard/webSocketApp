@@ -40,6 +40,7 @@ export class RoomControler {
 	@Post()
 	@HttpCode(HttpStatus.CREATED)
 	async createRoom(@GetCurrentUser() user: UserEntity, @Body() dto: CreateRoomDto) {
+		console.log('This is dto', dto)
 		const privateChat = await this.roomService.checkIfPrivateChatExits(user.id, dto.users[0])
 
 		if (privateChat) {

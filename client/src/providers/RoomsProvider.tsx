@@ -35,6 +35,7 @@ const RoomsProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
 	const createNewRoom = async (newRoom: CreateRoomParams) => {
 		try {
+			console.log('This is newRoom', newRoom)
 			const response = await privateAxios.post('/rooms', newRoom)
 
 			if (typeof response.data === 'number') {

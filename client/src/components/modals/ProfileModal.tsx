@@ -5,13 +5,13 @@ import Sheet from '@mui/joy/Sheet'
 import { Fragment, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate'
 import { changeProfileModalState } from '../../redux/slices/modalStates.slice'
+import useFormDataAxios from '../../hooks/useFormDataAxios'
 
 const ProfileModal = () => {
 	const { personalProfileModal } = useAppSelector((state) => state.modals)
 	const dispatch = useAppDispatch()
-	const { privateAxios } = useAxiosPrivate(true)
+	const { formDataAxios } = useFormDataAxios()
 
 	const [selectedFile, setSelectedFile] = useState<File | null>(null)
 	const [previewUrl, setPreviewUrl] = useState<null | string>(null)
@@ -35,7 +35,7 @@ const ProfileModal = () => {
 		formData.append('avatar', selectedFile)
 
 		try {
-			await privateAxios.patch('users/user-profile', formData)
+			await formDataAxios.patch('users/user-profile', formData)
 			dispatch(changeProfileModalState(false))
 			toast.success('Image uplaoded!')
 			location.reload()
