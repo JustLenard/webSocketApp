@@ -4,7 +4,7 @@ import AppSpinner from '../components/AppSpinner'
 import { useAuth } from '../hooks/contextHooks'
 import { socketEvents } from '../utils/constants'
 import { isInsideOfApplication, showSpinner } from '../utils/helpers'
-import { SocketContext, SocketContextType } from './context/socket.contetx'
+import { SocketContext, SocketContextType } from './context/socket.context'
 
 const websocketURL = import.meta.env.VITE_SERVER_URL
 

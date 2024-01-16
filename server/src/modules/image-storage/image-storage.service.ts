@@ -36,13 +36,12 @@ export class ImageStorageService implements IImageStorageService {
 	}
 
 	async upload(params: UploadImageParams) {
-		const f = await compressImage(params.file)
-		console.log('This is f', f)
+		const compresedImage = await compressImage(params.file)
 		const command = new PutObjectCommand({
 			Bucket: process.env.BUCKET_NAME,
 			Key: params.key,
 			// Body: params.file.buffer,
-			Body: f,
+			Body: compresedImage,
 
 			ContentType: params.file.mimetype,
 		})

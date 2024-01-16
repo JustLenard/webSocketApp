@@ -1,4 +1,4 @@
-import { SocketContext } from '../providers/context/socket.contetx'
+import { SocketContext } from '../providers/context/socket.context'
 import { RoomsContext } from '../providers/context/rooms.context'
 import { MessagesContext } from '../providers/context/messages.context'
 import { useContext } from 'react'
